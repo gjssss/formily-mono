@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "build": "export NODE_ENV=production && tsdown --config-loader=tsx",
-    "dev": "export NODE_ENV=development && tsdown --watch --config-loader=tsx",
+    "dev": "export NODE_ENV=development && tsdown --watch --ignore-watch=src/.generated --config-loader=tsx",
     "lint": "eslint",
     "prepublishOnly": "nr build",
     "release": "bumpp",
