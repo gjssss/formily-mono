@@ -30,12 +30,16 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
+    "@formily/core": "^2.3.7",
+    "@formily/element-plus": "^1.1.0",
+    "@formily/vue": "^2.3.7",
     "vue": "^3.5.22"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
     "@antfu/ni": "^26.0.1",
     "@antfu/utils": "^9.2.1",
+    "@formily-djd/component": "workspace:*",
     "@types/node": "^24.5.2",
     "@unocss/reset": "^66.5.2",
     "ansis": "^4.2.0",

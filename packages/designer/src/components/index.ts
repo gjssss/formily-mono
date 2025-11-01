@@ -1,5 +1,9 @@
-import Component from './MyCounter.vue'
-import Component2 from './sayHello.vue'
+import CavasComponent from './canvas.vue'
+import ConfigPanelComponent from './configPanel.vue'
+import DesignerComponent from './designer.vue'
+import MaterialPanelComponent from './materialPanel.vue'
 
-export const MyCounter = Component
-export const SayHello = Component2
+export const CavasComp = CavasComponent
+export const ConfigPanel = ConfigPanelComponent
+export const MaterialPanel = MaterialPanelComponent
+export const Designer = DesignerComponent

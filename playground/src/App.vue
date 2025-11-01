@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { MyCounter } from '@formily-djd/component'
-
+import { Designer } from '@formily-djd/designer'
+import { Input } from '@formily-djd/component'
 </script>
 
 <template>
-  <MyCounter></MyCounter>
+  <Designer :components="{ Input }" />
 </template>
 
 <style scoped></style>

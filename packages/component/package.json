@@ -30,6 +30,8 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
+    "@formily/core": "^2.3.7",
+    "@formily/vue": "^2.3.7",
     "vue": "^3.5.22"
   },
   "devDependencies": {
@@ -41,6 +43,7 @@
     "ansis": "^4.2.0",
     "bumpp": "^10.2.3",
     "chokidar": "^4.0.3",
+    "element-plus": "^2.11.7",
     "eslint": "^9.36.0",
     "exsolve": "^1.0.7",
     "lightningcss": "^1.30.1",
