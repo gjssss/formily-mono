@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "vue": "^3.5.22",
-    "@placeholder/component": "workspace:*",
-    "@placeholder/ts-lib": "workspace:*"
+    "@formily-djd/component": "workspace:*",
+    "@formily-djd/designer": "workspace:*"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",

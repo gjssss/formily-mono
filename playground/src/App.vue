@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { fn } from '@placeholder/ts-lib'
-import { MyCounter } from '@placeholder/component'
+import { MyCounter } from '@formily-djd/component'
 
-console.log(fn())
 </script>
 
 <template>

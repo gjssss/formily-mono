@@ -1,9 +1,9 @@
 {
-  "name": "@formily-djd/component",
+  "name": "@formily-djd/designer",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "pnpm@10.17.1",
-  "description": "djd formily component",
+  "description": "djd formily designer",
   "author": "<auther>",
   "license": "MIT",
   "keywords": [],
