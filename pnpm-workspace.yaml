@@ -1,0 +1,30 @@
+packages:
+  - 'packages/*'
+  - 'playground'
+catalog:
+  '@antfu/eslint-config': ^5.4.1
+  '@antfu/ni': ^26.0.1
+  '@antfu/utils': ^9.2.1
+  '@types/node': ^24.5.2
+  '@unocss/reset': ^66.5.2
+  ansis: ^4.2.0
+  bumpp: ^10.2.3
+  chokidar: ^4.0.3
+  eslint: ^9.36.0
+  exsolve: ^1.0.7
+  lightningcss: ^1.30.1
+  lint-staged: ^16.2.3
+  magic-string: ^0.30.19
+  simple-git-hooks: ^2.13.1
+  tinyexec: ^1.0.1
+  tinyglobby: 0.2.15
+  tsdown: ^0.15.5
+  tsx: 4.20.6
+  typescript: ^5.9.2
+  unocss: ^66.5.2
+  unplugin-vue: ^7.0.1
+  vite: ^7.1.7
+  vitest: ^3.2.4
+  vitest-package-exports: ^0.1.1
+  vue: ^3.5.22
+  yaml: ^2.8.1
