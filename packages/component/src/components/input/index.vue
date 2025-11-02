@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { useField } from '@formily/vue'
 
+const field = useField()
 </script>
 
 <template>
-  <ElInput />
+  <ElInput
+    :placeholder="field.componentProps?.placeholder"
+    :maxlength="field.componentProps?.maxlength"
+    :disabled="field.pattern === 'disabled'"
+  />
 </template>
-
-<style>
-
-</style>

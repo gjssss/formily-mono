@@ -107,6 +107,9 @@ importers:
       '@formily/element-plus':
         specifier: ^1.1.0
         version: 1.1.0(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
+      '@formily/reactive':
+        specifier: ^2.3.7
+        version: 2.3.7
       '@formily/vue':
         specifier: ^2.3.7
         version: 2.3.7(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))

@@ -1,50 +1,77 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
-import { createForm, onFormValuesChange } from '@formily/core'
-// import { CavasComp, ConfigPanel, MaterialPanel } from './index'
-import { Form, FormItem, Input } from '@formily/element-plus'
-import { createSchemaField } from '@formily/vue'
-import { ref } from 'vue'
-import fieldWrap from './fieldWrap/index.vue'
+import { onMounted } from 'vue'
+import { useCreateDesignStore } from '../core/useCreateDesignStore'
+import Canvas from './canvas.vue'
+import ConfigPanel from './configPanel.vue'
 
 defineProps<{
   components: Record<string, FormilyComponent>
 }>()
 
-const form = createForm({
-  effects() {
-    onFormValuesChange((form) => {
-      console.log(`表单值变化: ${JSON.stringify(form.values)}`)
-    })
-  },
-})
-const { SchemaField } = createSchemaField({
-  components: {
-    FormItem,
-    Input,
-  },
-})
+// 创建设计器状态（会自动 provide 给子组件）
+const store = useCreateDesignStore()
 
-const activeKey = ref<string>('')
+// 初始化：添加一个默认的 Input 字段用于演示
+onMounted(() => {
+  // 添加测试字段
+  store.addField({
+    id: 'field_1',
+    name: 'username',
+    componentName: 'Input',
+    schema: {
+      type: 'string',
+      title: '用户名',
+      'x-component': 'Input',
+      'x-component-props': {
+        placeholder: '请输入用户名',
+        maxlength: 20,
+      },
+    },
+  })
+
+  console.log('设计器初始化完成')
+})
 </script>
 
 <template>
-  <div>
-    组件面板
-    {{ activeKey || 'null' }}
-    <div v-for="(component, key) in components" :key="key">
-      {{ key }}
-      <fieldWrap v-model:selected-key="activeKey" :field-key="key">
-        <component :is="component.component" />
-      </fieldWrap>
-    </div>
-    <div>
-      属性
-      <Form v-if="activeKey" :form="form">
-        <SchemaField :schema="components[activeKey].setterSchema" />
-      </Form>
+  <div class="designer">
+    <div class="designer-layout">
+      <!-- 画布 -->
+      <div class="designer-canvas">
+        <Canvas :components="components" />
+      </div>
+
+      <!-- 配置面板 -->
+      <div class="designer-config">
+        <ConfigPanel :components="components" />
+      </div>
     </div>
   </div>
 </template>
 
-<style></style>
+<style scoped>
+.designer {
+  width: 100%;
+  height: 100vh;
+}
+
+.designer-layout {
+  display: flex;
+  height: 100%;
+}
+
+.designer-canvas {
+  flex: 1;
+  padding: 16px;
+  border-right: 1px solid #dcdfe6;
+  overflow-y: auto;
+}
+
+.designer-config {
+  width: 320px;
+  padding: 16px;
+  background-color: #f5f7fa;
+  overflow-y: auto;
+}
+</style>
