@@ -1,7 +1,7 @@
-import { createForm, onFormValuesChange } from '@formily/core'
 import type { Form } from '@formily/core'
 import type { ISchema } from '@formily/vue'
 import type { DesignStore } from './types'
+import { createForm, onFormValuesChange } from '@formily/core'
 import { schemaToSetterValues, setterValuesToSchema } from './utils'
 
 /**
@@ -17,25 +17,26 @@ export function createConfigForm(setterSchema: ISchema, store: DesignStore): For
   const configForm = createForm({
     // 初始值：从选中节点的 Schema 提取
     values: selectedField
-      ? schemaToSetterValues(selectedField.schema, setterSchema)
+      ? schemaToSetterValues(selectedField, setterSchema)
       : {},
 
     effects() {
       // 监听配置表单值变化
       onFormValuesChange((form) => {
-        const currentField = store.getSelectedField()
-        if (!currentField)
+        const currentFieldSchema = store.getSelectedField()
+        const fieldName = store.selectedFieldName.value
+        if (!currentFieldSchema || !fieldName)
           return
 
         // 将表单值映射回组件 Schema
         const newSchema = setterValuesToSchema(
           form.values,
           setterSchema,
-          currentField.schema,
+          currentFieldSchema,
         )
 
         // 更新 store（响应式更新）
-        store.updateFieldSchema(currentField.id, newSchema)
+        store.updateFieldSchema(fieldName, newSchema)
 
         console.log('配置表单值变化:', form.values)
         console.log('更新后的 Schema:', newSchema)

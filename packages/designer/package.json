@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "packageManager": "pnpm@10.17.1",
   "description": "djd formily designer",
-  "author": "<auther>",
+  "author": "gaojinsong2010@gmail.com",
   "license": "MIT",
   "keywords": [],
   "sideEffects": false,
@@ -30,8 +30,10 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
+    "@formily-djd/utils": "workspace:*",
     "@formily/core": "^2.3.7",
     "@formily/element-plus": "^1.1.0",
+    "@formily/json-schema": "^2.3.7",
     "@formily/vue": "^2.3.7",
     "vue": "^3.5.22"
   },

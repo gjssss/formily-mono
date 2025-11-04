@@ -1,25 +1,16 @@
-import type { InjectionKey, Ref } from 'vue'
 import type { ISchema } from '@formily/vue'
-
-export interface FieldNode {
-  id: string
-  name: string
-  componentName: string
-  schema: ISchema
-}
+import type { InjectionKey, Ref } from 'vue'
 
 export interface DesignStore {
-  // 所有字段节点
-  fields: Ref<Record<string, FieldNode>>
-  // 当前选中的字段 ID
-  selectedFieldId: Ref<string | null>
-  // 表单的根 Schema
-  formSchema: Ref<ISchema>
+  // 表单的根 Schema（唯一数据源）
+  formSchema: Ref<any>
+  // 当前选中的字段名称
+  selectedFieldName: Ref<string | null>
   // 方法
-  addField: (field: FieldNode) => void
-  updateFieldSchema: (fieldId: string, newSchema: ISchema) => void
-  selectField: (fieldId: string | null) => void
-  getSelectedField: () => FieldNode | null
+  addField: (name: string, schema: ISchema) => void
+  updateFieldSchema: (name: string, newSchema: ISchema) => void
+  selectField: (name: string | null) => void
+  getSelectedField: () => ISchema | null
 }
 
 /**

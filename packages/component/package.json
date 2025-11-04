@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "packageManager": "pnpm@10.17.1",
   "description": "djd formily component",
-  "author": "<auther>",
+  "author": "gaojinsong2010@gmail.com",
   "license": "MIT",
   "keywords": [],
   "sideEffects": false,
@@ -30,9 +30,11 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
+    "@formily-djd/utils": "workspace:*",
     "@formily/core": "^2.3.7",
     "@formily/vue": "^2.3.7",
     "vue": "^3.5.22"
+
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",

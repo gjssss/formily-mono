@@ -1,5 +1,5 @@
 import type { ISchema } from '@formily/vue'
-import type { DesignStore, FieldNode } from './types'
+import type { DesignStore } from './types'
 import { provide, ref } from 'vue'
 import { DesignStoreKey } from './types'
 
@@ -14,65 +14,59 @@ import { DesignStoreKey } from './types'
  * ```
  */
 export function useCreateDesignStore(): DesignStore {
-  // 响应式状态
-  const fields = ref<Record<string, FieldNode>>({})
-  const selectedFieldId = ref<string | null>(null)
-  const formSchema = ref<ISchema>({
+  // 响应式状态 - 唯一数据源
+  const formSchema = ref<any>({
     type: 'object',
     properties: {},
   })
+  const selectedFieldName = ref<string | null>(null)
 
   /**
    * 添加字段到设计器
+   * @param name 字段名称（作为 schema properties 的 key）
+   * @param schema 字段的 Schema 定义
    */
-  function addField(field: FieldNode): void {
-    fields.value[field.id] = field
-
-    // 同步更新 formSchema
+  function addField(name: string, schema: ISchema): void {
     if (!formSchema.value.properties) {
       formSchema.value.properties = {}
     }
-    formSchema.value.properties[field.name] = field.schema
+    formSchema.value.properties[name] = schema
   }
 
   /**
    * 更新字段的 Schema
+   * @param name 字段名称
+   * @param newSchema 新的 Schema 定义
    */
-  function updateFieldSchema(fieldId: string, newSchema: ISchema): void {
-    const field = fields.value[fieldId]
-    if (!field)
+  function updateFieldSchema(name: string, newSchema: ISchema): void {
+    if (!formSchema.value.properties?.[name])
       return
 
-    // 更新 field 节点的 schema
-    field.schema = JSON.parse(JSON.stringify(newSchema))
-
-    // 同步更新 formSchema
-    if (formSchema.value.properties) {
-      formSchema.value.properties[field.name] = newSchema
-    }
+    // 更新 schema
+    formSchema.value.properties[name] = newSchema
   }
 
   /**
    * 选中字段
+   * @param name 字段名称
    */
-  function selectField(fieldId: string | null): void {
-    selectedFieldId.value = fieldId
+  function selectField(name: string | null): void {
+    selectedFieldName.value = name
   }
 
   /**
-   * 获取当前选中的字段
+   * 获取当前选中的字段 Schema
    */
-  function getSelectedField(): FieldNode | null {
-    if (!selectedFieldId.value)
+  function getSelectedField(): ISchema | null {
+    if (!selectedFieldName.value)
       return null
-    return fields.value[selectedFieldId.value] || null
+    return formSchema.value.properties?.[selectedFieldName.value] || null
   }
 
   // 创建 store 对象
   const store: DesignStore = {
-    fields,
-    selectedFieldId,
     formSchema,
+    selectedFieldName,
     addField,
     updateFieldSchema,
     selectField,

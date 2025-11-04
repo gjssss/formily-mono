@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
-import { FormProvider, createSchemaField } from '@formily/vue'
-import { FormItem, Input, InputNumber } from '@formily/element-plus'
-import { computed, watch, shallowRef } from 'vue'
 import type { Form as FormilyForm } from '@formily/core'
-import { useDesignStore } from '../core/useDesignStore'
+import { FormItem, Input, InputNumber } from '@formily/element-plus'
+import { createSchemaField, FormProvider } from '@formily/vue'
+import { computed, shallowRef, watch } from 'vue'
 import { createConfigForm } from '../core/configForm'
+import { useDesignStore } from '../core/useDesignStore'
 import { schemaToSetterValues } from '../core/utils'
 
 const props = defineProps<{
@@ -30,18 +30,26 @@ const configForm = shallowRef<FormilyForm | null>(null)
 // 当前选中的字段
 const selectedField = computed(() => store.getSelectedField())
 
-// 获取 Setter Schema
-const setterSchema = computed(() => {
+// 获取组件名称
+const componentName = computed(() => {
   if (!selectedField.value)
     return null
+  return selectedField.value['x-component'] as string
+})
 
-  const componentDef = props.components[selectedField.value.componentName]
+// 获取 Setter Schema
+const setterSchema = computed(() => {
+  const name = componentName.value
+  if (!name)
+    return null
+
+  const componentDef = props.components[name]
   return componentDef?.setterSchema
 })
 
 // 监听选中节点变化，重新创建配置表单
 watch(
-  () => store.selectedFieldId.value,
+  () => store.selectedFieldName.value,
   () => {
     if (selectedField.value && setterSchema.value) {
       // 创建新的配置表单
@@ -56,7 +64,7 @@ watch(
 
 // 监听选中字段的 schema 变化，同步到配置表单
 watch(
-  () => selectedField.value?.schema,
+  () => selectedField.value,
   (newSchema) => {
     if (configForm.value && newSchema && setterSchema.value) {
       // 将 Schema 转换为配置表单值并设置
@@ -76,7 +84,7 @@ watch(
     </div>
 
     <div v-else>
-      <h3>{{ selectedField.componentName }} 配置</h3>
+      <h3>{{ componentName }} 配置</h3>
 
       <FormProvider v-if="configForm" :form="configForm">
         <SchemaField :schema="setterSchema" />

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
 import { createForm } from '@formily/core'
-import { createSchemaField, FormProvider } from '@formily/vue'
-import { computed } from 'vue'
+import { createSchemaField, FormProvider, useField, useFieldSchema } from '@formily/vue'
+import { defineComponent, h, watch } from 'vue'
 import { useDesignStore } from '../core/useDesignStore'
 
 const props = defineProps<{
@@ -15,25 +15,75 @@ const store = useDesignStore()
 // 创建渲染表单
 const renderForm = createForm()
 
-// 创建 SchemaField，注册所有渲染组件
-const { SchemaField } = createSchemaField({
-  components: Object.entries(props.components).reduce(
-    (acc, [key, def]) => {
-      acc[key] = def.component
-      return acc
-    },
-    {} as Record<string, any>,
-  ),
+// 创建自定义 FormItem，用于处理字段选中
+const DesignFormItem = defineComponent({
+  name: 'DesignFormItem',
+  setup(_props, { slots }) {
+    const field = useField()
+    const fieldSchema = useFieldSchema()
+
+    const handleClick = (e: MouseEvent) => {
+      e.stopPropagation()
+      // 选中当前字段（使用字段的 name）
+      const fieldName = field.value?.path?.toString() || null
+      store.selectField(fieldName)
+    }
+
+    return () => {
+      const fieldName = field.value?.path?.toString()
+      const isSelected = fieldName === store.selectedFieldName.value
+
+      return h(
+        'div',
+        {
+          class: ['design-field-wrapper', { active: isSelected }],
+          onClick: handleClick,
+        },
+        [
+          // 字段标题
+          fieldSchema.value?.title
+            ? h('div', { class: 'field-title' }, fieldSchema.value.title as string)
+            : null,
+          // 字段内容
+          h('div', { class: 'field-content' }, slots.default?.()),
+        ],
+      )
+    }
+  },
 })
 
-// 所有字段
-const fields = computed(() => Object.values(store.fields.value))
-
-// 处理字段点击
-function handleFieldClick(fieldId: string) {
-  store.selectField(fieldId)
-  console.log('选中字段:', fieldId)
+// 创建 SchemaField，注册所有渲染组件 + 自定义 FormItem
+const { SchemaField } = createSchemaField({
+  components: {
+    ...Object.entries(props.components).reduce(
+      (acc, [key, def]) => {
+        acc[key] = def.component
+        return acc
+      },
+      {} as Record<string, any>,
+    ),
+    FormItem: DesignFormItem, // 使用自定义 FormItem
+  },
+})
+const schema = {
+  type: 'object',
+  properties: {
+    username: {
+      'type': 'string',
+      'title': '用户名',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': {
+        placeholder: '请输入用户名',
+        maxlength: 200,
+      },
+    },
+  },
 }
+
+watch(store.formSchema, (newSchema) => {
+  console.log('formSchema changed', newSchema)
+}, { deep: true })
 </script>
 
 <template>
@@ -42,38 +92,44 @@ function handleFieldClick(fieldId: string) {
 
     <div class="canvas-content">
       <FormProvider :form="renderForm">
-        <div
-          v-for="field in fields"
-          :key="field.id"
-          class="field-wrapper"
-          :class="{ active: store.selectedFieldId.value === field.id }"
-          @click="handleFieldClick(field.id)"
-        >
-          <!-- 使用 SchemaField 渲染单个字段 -->
-          <SchemaField
-            :name="field.name"
-            :schema="field.schema"
-          />
-        </div>
+        <SchemaField :schema="schema" />
       </FormProvider>
     </div>
   </div>
 </template>
 
 <style scoped>
-.field-wrapper {
-  padding: 8px;
-  margin: 4px 0;
-  border: 2px solid transparent;
-  cursor: pointer;
+.canvas {
+  height: 100%;
 }
 
-.field-wrapper.active {
+.canvas-content {
+  padding: 16px;
+}
+
+:deep(.design-field-wrapper) {
+  padding: 12px;
+  margin: 8px 0;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+:deep(.design-field-wrapper:hover) {
+  border-color: #c0c4cc;
+  background-color: #fafafa;
+}
+
+:deep(.design-field-wrapper.active) {
   border-color: #409eff;
   background-color: #ecf5ff;
 }
 
-.field-wrapper:hover {
-  border-color: #c0c4cc;
+:deep(.field-title) {
+  font-size: 12px;
+  color: #606266;
+  margin-bottom: 4px;
+  font-weight: 500;
 }
 </style>

@@ -15,18 +15,14 @@ const store = useCreateDesignStore()
 // 初始化：添加一个默认的 Input 字段用于演示
 onMounted(() => {
   // 添加测试字段
-  store.addField({
-    id: 'field_1',
-    name: 'username',
-    componentName: 'Input',
-    schema: {
-      type: 'string',
-      title: '用户名',
-      'x-component': 'Input',
-      'x-component-props': {
-        placeholder: '请输入用户名',
-        maxlength: 20,
-      },
+  store.addField('username', {
+    type: 'string',
+    title: '用户名',
+    'x-decorator': 'FormItem',
+    'x-component': 'Input',
+    'x-component-props': {
+      placeholder: '请输入用户名',
+      maxlength: 20,
     },
   })
 

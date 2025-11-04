@@ -1,8 +1,8 @@
 import type { FormilyComponent } from '@/types'
-import Comp from './index.vue'
 import Setter from './setter'
+import Component from './ui.vue'
 
 export default {
-  component: Comp,
+  component: Component,
   setterSchema: Setter,
 } as FormilyComponent

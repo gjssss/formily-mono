@@ -1,35 +1,5 @@
 import type { ISchema } from '@formily/vue'
-
-/**
- * 根据路径获取对象的值
- * @example getByPath({ a: { b: { c: 1 } } }, 'a.b.c') // 1
- */
-export function getByPath(obj: any, path: string): any {
-  if (!path)
-    return obj
-  return path.split('.').reduce((acc, key) => acc?.[key], obj)
-}
-
-/**
- * 根据路径设置对象的值
- * @example setByPath({}, 'a.b.c', 1) // { a: { b: { c: 1 } } }
- */
-export function setByPath(obj: any, path: string, value: any): void {
-  if (!path) {
-    return
-  }
-
-  const keys = path.split('.')
-  const lastKey = keys.pop()!
-  const target = keys.reduce((acc, key) => {
-    if (!acc[key] || typeof acc[key] !== 'object') {
-      acc[key] = {}
-    }
-    return acc[key]
-  }, obj)
-
-  target[lastKey] = value
-}
+import { getByPath, setByPath } from '@formily-djd/utils'
 
 /**
  * 将组件 Schema 转换为 Setter 表单的值

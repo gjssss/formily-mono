@@ -12,6 +12,7 @@ export default antfu(
   {
     rules: {
       'pnpm/json-enforce-catalog': 'off',
+      'no-console': 'off',
     },
   },
 )
