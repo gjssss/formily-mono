@@ -3,5 +3,6 @@ import App from './App.vue'
 import '@formily-djd/component/css'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import '@formily-djd/designer/css'
 
 createApp(App).use(ElementPlus).mount('#app')

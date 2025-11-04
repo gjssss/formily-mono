@@ -10,17 +10,6 @@ const props = defineProps<{
 
 const field = useField()
 
-// const bindProps: Record<string, ComputedRef<any>> = {}
-
-// for (const [key, value] of Object.entries(props.setterSchema.properties || {})) {
-//   bindProps[key] = computed(() => getByPath(field.value, value['x-path'], { transformKey: (key) => {
-//     if (key in SchemaStateMap)
-//       return SchemaStateMap[key as keyof typeof SchemaStateMap]
-//     return key
-//   } }))
-//   console.log(bindProps[key])
-// }
-
 const bindProps = computed(() => {
   const bindProps: Record<string, any> = {}
 

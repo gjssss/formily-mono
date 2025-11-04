@@ -16,8 +16,8 @@ const store = useCreateDesignStore()
 onMounted(() => {
   // 添加测试字段
   store.addField('username', {
-    type: 'string',
-    title: '用户名',
+    'type': 'string',
+    'title': '用户名',
     'x-decorator': 'FormItem',
     'x-component': 'Input',
     'x-component-props': {

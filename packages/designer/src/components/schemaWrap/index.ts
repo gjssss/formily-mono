@@ -1,4 +1,4 @@
-import type { FormilyComponent } from 'dist/index.mjs'
+import type { FormilyComponent } from '@formily-djd/component'
 import { defineComponent, h } from 'vue'
 import Comp from './index.vue'
 

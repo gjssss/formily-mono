@@ -1,4 +1,5 @@
 import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'tsdown'
 import Vue from 'unplugin-vue/rolldown'
 import { buildCSS } from './scripts/build-css'
@@ -12,6 +13,9 @@ export default defineConfig({
   entry: [
     'src/index.ts',
   ],
+  alias: {
+    '@': fileURLToPath(new URL('./src', import.meta.url)),
+  },
   fixedExtension: true,
   plugins: [
     Vue(),
