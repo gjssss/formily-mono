@@ -16,6 +16,7 @@ export default defineConfig({
   plugins: [
     Vue(),
   ],
+  ignoreWatch: ['src/.generated'],
   treeshake: true,
   minify: process.env.NODE_ENV === 'production',
   clean: process.env.NODE_ENV === 'production',

@@ -4,6 +4,7 @@ import { onMounted } from 'vue'
 import { useCreateDesignStore } from '../core/useCreateDesignStore'
 import Canvas from './canvas.vue'
 import ConfigPanel from './configPanel.vue'
+import Render from './render/index.vue'
 
 defineProps<{
   components: Record<string, FormilyComponent>
@@ -25,6 +26,40 @@ onMounted(() => {
       maxlength: 20,
     },
   })
+  store.addField('array', {
+    'type': 'array',
+    'x-decorator': 'FormItem',
+    'x-component': 'Array',
+    'x-component-props': {
+      title: '<Title>',
+    },
+    'title': 'Array',
+    'x-display': 'visible',
+    'x-pattern': 'editable',
+    'x-validator': [],
+    'items': {
+      type: 'object',
+      properties: {
+        szcefrhl5fd: {
+          'type': 'string',
+          'title': 'Input',
+          'x-decorator': 'FormItem',
+          'x-component': 'Input',
+          'x-index': 1,
+        },
+      },
+    },
+    'x-index': 0,
+    'properties': {
+      // '290bcam3tir': {
+      //   'type': 'void',
+      //   'title': 'Addition',
+      //   'x-component': 'ArrayCards.Addition',
+      //   'x-designable-id': '290bcam3tir',
+      //   'x-index': 0,
+      // },
+    },
+  })
 
   console.log('设计器初始化完成')
 })
@@ -35,7 +70,8 @@ onMounted(() => {
     <div class="designer-layout">
       <!-- 画布 -->
       <div class="designer-canvas">
-        <Canvas :components="components" />
+        <!-- <Canvas :components="components" /> -->
+        <Render :schema="store.formSchema.value" :components="components" />
       </div>
 
       <!-- 配置面板 -->

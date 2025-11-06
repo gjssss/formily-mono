@@ -29,5 +29,12 @@ export function buildComponentProps(schema: ISchema, setterSchema: ISchema): Rec
  */
 export function shouldRecurse(schema: ISchema): boolean {
   const type = schema.type
-  return (type === 'object' || type === 'void') && !!schema.properties
+  return (type === 'object' || type === 'void' || type === 'array') && !!schema.properties
+}
+
+/**
+ * 判断是否渲染数组组件
+ */
+export function shouldRenderArrayComponent(schema: ISchema): boolean {
+  return schema.type === 'array' && !!schema.items
 }
