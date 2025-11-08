@@ -19,6 +19,11 @@ const { SchemaField } = createSchemaField({
     return acc
   }, {} as Record<string, Component>),
 })
+
+// 暴露 form 实例给父组件
+defineExpose({
+  form,
+})
 </script>
 
 <template>

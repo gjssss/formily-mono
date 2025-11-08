@@ -7,6 +7,7 @@ import { computed, defineComponent, h, inject } from 'vue'
 import { ArrayFieldKey, ArrayItemKey } from '@/shared'
 import ArrayInner from './arrayInner.vue'
 import ArrayItemInner from './arrayItemInner.vue'
+import { useKey } from './composable'
 
 export function schemaWrapper(comp: FormilyComponent): Component {
   return defineComponent({
@@ -18,7 +19,7 @@ export function schemaWrapper(comp: FormilyComponent): Component {
       const arrayField = inject<ArrayField | undefined>(ArrayFieldKey, undefined)
       const arrayItemIndex = inject<{ index?: number } | undefined>(ArrayItemKey, undefined)
       // console.log('field', field.value)
-
+      const { getKey } = useKey(schema.value)
       const bindProps = computed(() => {
         const bindProps: Record<string, any> = {
           value: props.value,
@@ -38,7 +39,32 @@ export function schemaWrapper(comp: FormilyComponent): Component {
           : arrayField?.value as unknown as ArrayField
 
         if (arrayFieldValue) {
+          // 添加到末尾
           bindProps.onAdd = () => arrayFieldValue.push({})
+          bindProps.onPush = () => arrayFieldValue.push({})
+
+          // 添加到开头
+          bindProps.onUnshift = () => arrayFieldValue.unshift({})
+
+          // 删除指定项
+          bindProps.onRemove = (index: number) => arrayFieldValue.remove(index)
+
+          // 移动项
+          bindProps.onMove = (from: number, to: number) => arrayFieldValue.move(from, to)
+
+          // 上移
+          bindProps.onMoveUp = (index: number) => {
+            if (index > 0) {
+              arrayFieldValue.move(index, index - 1)
+            }
+          }
+
+          // 下移
+          bindProps.onMoveDown = (index: number) => {
+            if (index < arrayFieldValue.value.length - 1) {
+              arrayFieldValue.move(index, index + 1)
+            }
+          }
         }
 
         if (arrayItemIndex?.index !== undefined) {
@@ -54,12 +80,12 @@ export function schemaWrapper(comp: FormilyComponent): Component {
           const items = arrayField?.value || []
 
           const renderItems = items.length > 0
-            ? items.map((_item, index) =>
+            ? items.map((item, index) =>
                 h(ArrayItemInner, {
                   index,
                 }, {
                   default: () => h(RecursionField, {
-                    key: index,
+                    key: getKey(item, index),
                     schema: schema.value.items,
                     name: index,
                   }),
