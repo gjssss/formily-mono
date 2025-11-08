@@ -2,6 +2,10 @@
 import { provide } from 'vue'
 import { ArrayItemKey } from '@/shared'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const props = defineProps<{
   index?: number
 }>()

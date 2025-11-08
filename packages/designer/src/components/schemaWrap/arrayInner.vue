@@ -5,6 +5,7 @@ import { ArrayFieldKey } from '@/shared'
 
 defineOptions({
   name: 'ArrayInner',
+  inheritAttrs: false,
 })
 const field = useField()
 provide(ArrayFieldKey, field)

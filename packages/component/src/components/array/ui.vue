@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineOptions({
   name: 'Array',
+  inheritAttrs: false,
 })
 const props = defineProps<{
   title?: string

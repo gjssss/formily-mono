@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineOptions({
   name: 'ArrayItem',
+  inheritAttrs: false,
 })
 const props = defineProps<{
   arrayIndex?: number

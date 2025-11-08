@@ -15,8 +15,8 @@ export function schemaWrapper(comp: FormilyComponent): Component {
       const { setterSchema } = comp
       const field = useField()
       const schema = useFieldSchema()
-      const arrayField = inject<ArrayField>(ArrayFieldKey)
-      const arrayItemIndex = inject<{ index?: number }>(ArrayItemKey)
+      const arrayField = inject<ArrayField | undefined>(ArrayFieldKey, undefined)
+      const arrayItemIndex = inject<{ index?: number } | undefined>(ArrayItemKey, undefined)
       // console.log('field', field.value)
 
       const bindProps = computed(() => {
@@ -36,9 +36,15 @@ export function schemaWrapper(comp: FormilyComponent): Component {
         const arrayFieldValue = schema.value?.type === 'array'
           ? field.value as ArrayField
           : arrayField?.value as unknown as ArrayField
-        bindProps.onAdd = () => arrayFieldValue?.push({})
 
-        bindProps.arrayIndex = arrayItemIndex?.index
+        if (arrayFieldValue) {
+          bindProps.onAdd = () => arrayFieldValue.push({})
+        }
+
+        if (arrayItemIndex?.index !== undefined) {
+          bindProps.arrayIndex = arrayItemIndex.index
+        }
+
         return bindProps
       })
 

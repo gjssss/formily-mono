@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineOptions({
   name: 'InputComponent',
+  inheritAttrs: false,
 })
 const props = defineProps<{
   title?: string
