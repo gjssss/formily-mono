@@ -69,8 +69,8 @@ onMounted(() => {
     <div class="designer-layout">
       <!-- 画布 -->
       <div class="designer-canvas">
-        <Canvas :components="components" />
-        <!-- <Render :schema="store.formSchema.value" :components="components" /> -->
+        <!-- <Canvas :components="components" /> -->
+        <Render :schema="store.formSchema.value" :components="components" />
       </div>
 
       <!-- 配置面板 -->

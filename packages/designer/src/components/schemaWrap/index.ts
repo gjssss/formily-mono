@@ -11,7 +11,7 @@ import ArrayItemInner from './arrayItemInner.vue'
 export function schemaWrapper(comp: FormilyComponent): Component {
   return defineComponent({
     name: 'SchemaWrapper',
-    setup(_props, context) {
+    setup(props: any, context) {
       const { setterSchema } = comp
       const field = useField()
       const schema = useFieldSchema()
@@ -20,7 +20,10 @@ export function schemaWrapper(comp: FormilyComponent): Component {
       // console.log('field', field.value)
 
       const bindProps = computed(() => {
-        const bindProps: Record<string, any> = {}
+        const bindProps: Record<string, any> = {
+          value: props.value,
+          onChange: props.onChange,
+        }
 
         for (const [key, value] of Object.entries(setterSchema.properties || {})) {
           bindProps[key] = getByPath(schema.value, value['x-path'], { transformKey: (key) => {

@@ -4,6 +4,8 @@ defineOptions({
 })
 const props = defineProps<{
   title?: string
+  value?: string
+  onChange?: (value: string) => void
   placeholder?: string
   maxlength?: string | number
 }>()
@@ -16,6 +18,7 @@ const props = defineProps<{
   <ElInput
     :placeholder="props.placeholder"
     :maxlength="props.maxlength"
-    :disabled="Number(props.maxlength) < 100"
+    :model-value="props.value"
+    @update:model-value="props.onChange"
   />
 </template>
