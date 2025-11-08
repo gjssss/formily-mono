@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'InputComponent',
+})
 const props = defineProps<{
   title?: string
   placeholder?: string

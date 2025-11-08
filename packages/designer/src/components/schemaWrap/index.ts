@@ -1,17 +1,22 @@
 import type { FormilyComponent } from '@formily-djd/component'
+import type { ArrayField } from '@formily/core'
 import type { Component } from 'vue'
 import { getByPath, SchemaStateMap } from '@formily-djd/utils'
-import { useField, useFieldSchema } from '@formily/vue'
-import { computed, defineComponent, h } from 'vue'
-import ArrayComponent from './array.vue'
+import { RecursionField, useField, useFieldSchema } from '@formily/vue'
+import { computed, defineComponent, h, inject } from 'vue'
+import { ArrayFieldKey, ArrayItemKey } from '@/shared'
+import ArrayInner from './arrayInner.vue'
+import ArrayItemInner from './arrayItemInner.vue'
 
 export function schemaWrapper(comp: FormilyComponent): Component {
   return defineComponent({
     name: 'SchemaWrapper',
-    setup() {
+    setup(_props, context) {
       const { setterSchema } = comp
-      // const field = useField()
+      const field = useField()
       const schema = useFieldSchema()
+      const arrayField = inject<ArrayField>(ArrayFieldKey)
+      const arrayItemIndex = inject<{ index?: number }>(ArrayItemKey)
       // console.log('field', field.value)
 
       const bindProps = computed(() => {
@@ -24,19 +29,43 @@ export function schemaWrapper(comp: FormilyComponent): Component {
             return key
           } })
         }
+
+        const arrayFieldValue = schema.value?.type === 'array'
+          ? field.value as ArrayField
+          : arrayField?.value as unknown as ArrayField
+        bindProps.onAdd = () => arrayFieldValue?.push({})
+
+        bindProps.arrayIndex = arrayItemIndex?.index
         return bindProps
       })
 
       return () => {
         if (schema.value?.type === 'array') {
-          const renderArrayContent = h(ArrayComponent, {
-            items: schema.value?.items,
-          })
-          return h(comp.component, bindProps.value, {
-            array: () => renderArrayContent,
+          const arrayField = field.value as ArrayField
+          const items = arrayField?.value || []
+
+          const renderItems = items.length > 0
+            ? items.map((_item, index) =>
+                h(ArrayItemInner, {
+                  index,
+                }, {
+                  default: () => h(RecursionField, {
+                    key: index,
+                    schema: schema.value.items,
+                    name: index,
+                  }),
+                }),
+              )
+            : null
+
+          return h(ArrayInner, {}, {
+            default: () => h(comp.component, bindProps.value, {
+              default: () => renderItems,
+            }),
           })
         }
-        return h(comp.component, bindProps.value)
+        // 关键：传递 context.slots，让 ObjectField 生成的 properties slots 能够渲染
+        return h(comp.component, bindProps.value, context.slots)
       }
     },
   })

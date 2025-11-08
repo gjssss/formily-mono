@@ -1,21 +1,21 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'Array',
+})
 const props = defineProps<{
   title?: string
+  onAdd?: () => void
 }>()
 </script>
 
 <template>
   <div>
     <div>array title: {{ props.title }}</div>
-    <ElButton>
+    <ElButton @click="props.onAdd">
       添加
     </ElButton>
-    <ElButton>
-      删除
-    </ElButton>
-    <div>--------------------------------</div>
-    <slot name="array" />
     <div>--------------------------------</div>
     <slot />
+    <div>--------------------------------</div>
   </div>
 </template>

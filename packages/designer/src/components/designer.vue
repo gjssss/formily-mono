@@ -17,13 +17,18 @@ const store = useCreateDesignStore()
 onMounted(() => {
   // 添加测试字段
   store.addField('username', {
-    'type': 'string',
-    'title': '用户名',
-    'x-decorator': 'FormItem',
-    'x-component': 'Input',
-    'x-component-props': {
-      placeholder: '请输入用户名',
-      maxlength: 20,
+    type: 'object',
+    properties: {
+      input: {
+        'type': 'string',
+        'title': '用户名',
+        'x-decorator': 'FormItem',
+        'x-component': 'Input',
+        'x-component-props': {
+          placeholder: '请输入用户名',
+          maxlength: 20,
+        },
+      },
     },
   })
   store.addField('array', {
@@ -38,27 +43,21 @@ onMounted(() => {
     'x-pattern': 'editable',
     'x-validator': [],
     'items': {
-      type: 'object',
-      properties: {
+      'type': 'object',
+      'x-component': 'ArrayItem',
+      'properties': {
         szcefrhl5fd: {
           'type': 'string',
           'title': 'Input',
           'x-decorator': 'FormItem',
           'x-component': 'Input',
+          'x-designable-id': 'szcefrhl5fd',
           'x-index': 1,
         },
       },
     },
     'x-index': 0,
-    'properties': {
-      // '290bcam3tir': {
-      //   'type': 'void',
-      //   'title': 'Addition',
-      //   'x-component': 'ArrayCards.Addition',
-      //   'x-designable-id': '290bcam3tir',
-      //   'x-index': 0,
-      // },
-    },
+    'properties': {},
   })
 
   console.log('设计器初始化完成')
@@ -70,8 +69,8 @@ onMounted(() => {
     <div class="designer-layout">
       <!-- 画布 -->
       <div class="designer-canvas">
-        <!-- <Canvas :components="components" /> -->
-        <Render :schema="store.formSchema.value" :components="components" />
+        <Canvas :components="components" />
+        <!-- <Render :schema="store.formSchema.value" :components="components" /> -->
       </div>
 
       <!-- 配置面板 -->

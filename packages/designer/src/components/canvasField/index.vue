@@ -35,7 +35,7 @@ function clickHandler() {
       v-if="xComponent && ComponentSettings[xComponent]"
       v-bind="buildComponentProps(props.schema, ComponentSettings[xComponent].setterSchema)"
     >
-      <template v-if="shouldRenderArrayComponent(props.schema)" #array>
+      <template v-if="shouldRenderArrayComponent(props.schema)">
         <CanvasField :schema="(props.schema.items as any)" />
       </template>
       <!-- 递归类型：object/void/array -->
