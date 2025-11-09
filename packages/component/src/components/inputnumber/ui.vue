@@ -13,6 +13,8 @@ const props = defineProps<{
   step?: number
   precision?: number
   placeholder?: string
+  controls?: boolean
+  controlsPosition?: '' | 'right'
 }>()
 </script>
 
@@ -28,6 +30,8 @@ const props = defineProps<{
       :max="props.max"
       :step="props.step"
       :precision="props.precision"
+      :controls="props.controls"
+      :controls-position="props.controlsPosition || undefined"
       @update:model-value="props.onChange"
     />
   </div>

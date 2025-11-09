@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { ISchema } from '@formily/vue'
 import type { FormilyComponent } from '@formily-djd/component'
 import type { Form } from '@formily/core'
+import type { ISchema } from '@formily/vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useCreateDesignStore } from '../core/useCreateDesignStore'
 import Canvas from './canvas.vue'
@@ -39,7 +39,7 @@ watch(() => store.formSchema.value, (newSchema) => {
 }, { deep: true })
 
 // 获取表单值
-const getFormValues = () => {
+function getFormValues() {
   return renderRef.value?.form?.values || {}
 }
 
@@ -141,7 +141,7 @@ onMounted(() => {
 }
 
 .designer-config {
-  width: 320px;
+  width: 520px;
   padding: 16px;
   background-color: #f5f7fa;
   overflow-y: auto;

@@ -3,12 +3,75 @@ import type { ISchema } from '@formily/vue'
 export default {
   type: 'object',
   properties: {
+    // 基础属性
     title: {
       'type': 'string',
       'title': '字段标题',
       'x-component': 'Input',
       'x-decorator': 'FormItem',
       'x-path': 'title',
+    },
+    description: {
+      'type': 'string',
+      'title': '字段描述',
+      'x-component': 'Input',
+      'x-decorator': 'FormItem',
+      'x-path': 'description',
+    },
+    required: {
+      'type': 'boolean',
+      'title': '是否必填',
+      'x-component': 'Switch',
+      'x-decorator': 'FormItem',
+      'x-path': 'required',
+    },
+    // 显示和交互
+    'x-display': {
+      'type': 'string',
+      'title': '显示状态',
+      'x-component': 'Select',
+      'x-decorator': 'FormItem',
+      'x-path': 'x-display',
+      'x-component-props': {
+        options: [
+          { label: '显示', value: 'visible' },
+          { label: '隐藏（占位）', value: 'hidden' },
+          { label: '隐藏（不占位）', value: 'none' },
+        ],
+      },
+    },
+    'x-pattern': {
+      'type': 'string',
+      'title': '交互模式',
+      'x-component': 'Select',
+      'x-decorator': 'FormItem',
+      'x-path': 'x-pattern',
+      'x-component-props': {
+        options: [
+          { label: '可编辑', value: 'editable' },
+          { label: '禁用', value: 'disabled' },
+          { label: '只读', value: 'readOnly' },
+        ],
+      },
+    },
+    // 组件特定属性
+    type: {
+      'type': 'string',
+      'title': '类型',
+      'x-component': 'Select',
+      'x-decorator': 'FormItem',
+      'x-path': 'x-component-props.type',
+      'x-component-props': {
+        options: [
+          { label: '日期', value: 'date' },
+          { label: '日期时间', value: 'datetime' },
+          { label: '日期范围', value: 'daterange' },
+          { label: '日期时间范围', value: 'datetimerange' },
+          { label: '年', value: 'year' },
+          { label: '月', value: 'month' },
+          { label: '周', value: 'week' },
+        ],
+      },
     },
     placeholder: {
       'type': 'string',
@@ -19,23 +82,37 @@ export default {
     },
     format: {
       'type': 'string',
-      'title': '格式',
+      'title': '显示格式',
       'x-component': 'Input',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.format',
+      'x-component-props': {
+        placeholder: '如: YYYY-MM-DD',
+      },
     },
-    type: {
+    valueFormat: {
       'type': 'string',
-      'title': '类型',
-      'x-component': 'Select',
+      'title': '值格式',
+      'x-component': 'Input',
       'x-decorator': 'FormItem',
-      'x-path': 'x-component-props.type',
-      'enum': [
-        { label: '日期', value: 'date' },
-        { label: '日期时间', value: 'datetime' },
-        { label: '日期范围', value: 'daterange' },
-        { label: '日期时间范围', value: 'datetimerange' },
-      ],
+      'x-path': 'x-component-props.valueFormat',
+      'x-component-props': {
+        placeholder: '如: YYYY-MM-DD',
+      },
+    },
+    clearable: {
+      'type': 'boolean',
+      'title': '可清空',
+      'x-component': 'Switch',
+      'x-decorator': 'FormItem',
+      'x-path': 'x-component-props.clearable',
+    },
+    editable: {
+      'type': 'boolean',
+      'title': '可输入',
+      'x-component': 'Switch',
+      'x-decorator': 'FormItem',
+      'x-path': 'x-component-props.editable',
     },
   },
 } as ISchema

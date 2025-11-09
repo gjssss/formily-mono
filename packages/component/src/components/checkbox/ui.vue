@@ -4,17 +4,19 @@ defineOptions({
   inheritAttrs: false,
 })
 
-interface Option {
-  label: string
-  value: string | number
-}
-
 const props = defineProps<{
   title?: string
   value?: (string | number)[]
   onChange?: (value: (string | number)[]) => void
   options?: Option[]
+  min?: number
+  max?: number
 }>()
+
+interface Option {
+  label: string
+  value: string | number
+}
 </script>
 
 <template>
@@ -24,15 +26,10 @@ const props = defineProps<{
     </div>
     <ElCheckboxGroup
       :model-value="props.value"
+      :options="props.options"
+      :min="props.min"
+      :max="props.max"
       @update:model-value="props.onChange"
-    >
-      <ElCheckbox
-        v-for="option in props.options"
-        :key="option.value"
-        :label="option.value"
-      >
-        {{ option.label }}
-      </ElCheckbox>
-    </ElCheckboxGroup>
+    />
   </div>
 </template>

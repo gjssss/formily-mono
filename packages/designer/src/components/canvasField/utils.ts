@@ -5,7 +5,9 @@ import { getByPath } from '@formily-djd/utils'
  * 根据 setterSchema 中的 x-path 从 schema 中提取组件属性
  */
 export function buildComponentProps(schema: ISchema, setterSchema: ISchema): Record<string, any> {
-  const componentProps: Record<string, any> = {}
+  const componentProps: Record<string, any> = {
+    ...(schema?.['x-component-props'] || {}),
+  }
 
   if (!setterSchema.properties) {
     return componentProps

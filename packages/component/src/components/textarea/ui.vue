@@ -12,6 +12,8 @@ const props = defineProps<{
   rows?: number
   maxlength?: string | number
   showWordLimit?: boolean
+  autosize?: boolean | { minRows?: number, maxRows?: number }
+  resize?: 'none' | 'vertical' | 'horizontal' | 'both'
 }>()
 </script>
 
@@ -26,6 +28,8 @@ const props = defineProps<{
       :rows="props.rows"
       :maxlength="props.maxlength"
       :show-word-limit="props.showWordLimit"
+      :autosize="props.autosize"
+      :resize="props.resize"
       :model-value="props.value"
       @update:model-value="props.onChange"
     />

@@ -12,6 +12,16 @@ import { useKey } from './composable'
 export function schemaWrapper(comp: FormilyComponent): Component {
   return defineComponent({
     name: 'SchemaWrapper',
+    props: {
+      value: {
+        type: [String, Number, Boolean, Array, Object],
+        default: undefined,
+      },
+      onChange: {
+        type: Function,
+        default: undefined,
+      },
+    },
     setup(props: any, context) {
       const { setterSchema } = comp
       const field = useField()
@@ -24,6 +34,7 @@ export function schemaWrapper(comp: FormilyComponent): Component {
         const bindProps: Record<string, any> = {
           value: props.value,
           onChange: props.onChange,
+          ...(schema.value?.['x-component-props'] || {}),
         }
 
         for (const [key, value] of Object.entries(setterSchema.properties || {})) {
@@ -99,7 +110,6 @@ export function schemaWrapper(comp: FormilyComponent): Component {
             }),
           })
         }
-        // 关键：传递 context.slots，让 ObjectField 生成的 properties slots 能够渲染
         return h(comp.component, bindProps.value, context.slots)
       }
     },

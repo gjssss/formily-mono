@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
 import type { Form as FormilyForm } from '@formily/core'
-import { FormItem, Input, InputNumber } from '@formily/element-plus'
+import { ArrayItems, Checkbox, FormItem, Input, InputNumber, Radio, Select, Space, Switch } from '@formily/element-plus'
 import { createSchemaField, FormProvider } from '@formily/vue'
 import { computed, shallowRef, watch } from 'vue'
 import { createConfigForm } from '../core/configForm'
@@ -21,6 +21,12 @@ const { SchemaField } = createSchemaField({
     FormItem,
     Input,
     InputNumber,
+    Checkbox,
+    Radio,
+    Switch,
+    Select,
+    Space,
+    ArrayItems,
   },
 })
 

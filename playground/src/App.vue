@@ -99,7 +99,7 @@ const testSchemas = {
           showWordLimit: true,
         },
       },
-      // Select
+      // Select (可以通过设计器配置 options)
       city: {
         'type': 'string',
         'title': '城市',
@@ -107,10 +107,13 @@ const testSchemas = {
         'x-component': 'Select',
         'x-component-props': {
           placeholder: '请选择城市',
+          clearable: true,
+          filterable: true,
           options: [
             { label: '北京', value: 'beijing' },
             { label: '上海', value: 'shanghai' },
             { label: '广州', value: 'guangzhou' },
+            { label: '深圳', value: 'shenzhen' },
           ],
         },
       },

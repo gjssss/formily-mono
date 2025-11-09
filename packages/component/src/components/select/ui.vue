@@ -17,6 +17,8 @@ const props = defineProps<{
   options?: Option[]
   multiple?: boolean
   clearable?: boolean
+  filterable?: boolean
+  allowCreate?: boolean
 }>()
 </script>
 
@@ -30,6 +32,8 @@ const props = defineProps<{
       :model-value="props.value"
       :multiple="props.multiple"
       :clearable="props.clearable"
+      :filterable="props.filterable"
+      :allow-create="props.allowCreate"
       @update:model-value="props.onChange"
     >
       <ElOption

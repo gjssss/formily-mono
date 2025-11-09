@@ -10,7 +10,10 @@ const props = defineProps<{
   onChange?: (value: string | Date) => void
   placeholder?: string
   format?: string
-  type?: 'date' | 'datetime' | 'daterange' | 'datetimerange'
+  valueFormat?: string
+  type?: 'date' | 'datetime' | 'daterange' | 'datetimerange' | 'year' | 'month' | 'week'
+  clearable?: boolean
+  editable?: boolean
 }>()
 </script>
 
@@ -23,7 +26,10 @@ const props = defineProps<{
       :placeholder="props.placeholder"
       :model-value="props.value"
       :format="props.format"
+      :value-format="props.valueFormat"
       :type="props.type || 'date'"
+      :clearable="props.clearable"
+      :editable="props.editable"
       @update:model-value="props.onChange"
     />
   </div>
