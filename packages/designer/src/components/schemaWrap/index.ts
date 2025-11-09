@@ -1,7 +1,7 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { ArrayField } from '@formily/core'
 import type { Component } from 'vue'
-import { getByPath, SchemaStateMap } from '@formily-djd/utils'
+import { getByPath } from '@formily-djd/utils'
 import { RecursionField, useField, useFieldSchema } from '@formily/vue'
 import { computed, defineComponent, h, inject } from 'vue'
 import { ArrayFieldKey, ArrayItemKey } from '@/shared'
@@ -28,21 +28,17 @@ export function schemaWrapper(comp: FormilyComponent): Component {
       const schema = useFieldSchema()
       const arrayField = inject<ArrayField | undefined>(ArrayFieldKey, undefined)
       const arrayItemIndex = inject<{ index?: number } | undefined>(ArrayItemKey, undefined)
-      // console.log('field', field.value)
+
       const { getKey } = useKey(schema.value)
+
       const bindProps = computed(() => {
-        const bindProps: Record<string, any> = {
+        const _bindProps: Record<string, any> = {
           value: props.value,
           onChange: props.onChange,
-          ...(schema.value?.['x-component-props'] || {}),
         }
 
         for (const [key, value] of Object.entries(setterSchema.properties || {})) {
-          bindProps[key] = getByPath(schema.value, value['x-path'], { transformKey: (key) => {
-            if (key in SchemaStateMap)
-              return SchemaStateMap[key as keyof typeof SchemaStateMap]
-            return key
-          } })
+          _bindProps[key] = getByPath(schema.value, value['x-path'])
         }
 
         const arrayFieldValue = schema.value?.type === 'array'
@@ -51,27 +47,27 @@ export function schemaWrapper(comp: FormilyComponent): Component {
 
         if (arrayFieldValue) {
           // 添加到末尾
-          bindProps.onAdd = () => arrayFieldValue.push({})
-          bindProps.onPush = () => arrayFieldValue.push({})
+          _bindProps.onAdd = () => arrayFieldValue.push({})
+          _bindProps.onPush = () => arrayFieldValue.push({})
 
           // 添加到开头
-          bindProps.onUnshift = () => arrayFieldValue.unshift({})
+          _bindProps.onUnshift = () => arrayFieldValue.unshift({})
 
           // 删除指定项
-          bindProps.onRemove = (index: number) => arrayFieldValue.remove(index)
+          _bindProps.onRemove = (index: number) => arrayFieldValue.remove(index)
 
           // 移动项
-          bindProps.onMove = (from: number, to: number) => arrayFieldValue.move(from, to)
+          _bindProps.onMove = (from: number, to: number) => arrayFieldValue.move(from, to)
 
           // 上移
-          bindProps.onMoveUp = (index: number) => {
+          _bindProps.onMoveUp = (index: number) => {
             if (index > 0) {
               arrayFieldValue.move(index, index - 1)
             }
           }
 
           // 下移
-          bindProps.onMoveDown = (index: number) => {
+          _bindProps.onMoveDown = (index: number) => {
             if (index < arrayFieldValue.value.length - 1) {
               arrayFieldValue.move(index, index + 1)
             }
@@ -79,10 +75,10 @@ export function schemaWrapper(comp: FormilyComponent): Component {
         }
 
         if (arrayItemIndex?.index !== undefined) {
-          bindProps.arrayIndex = arrayItemIndex.index
+          _bindProps.arrayIndex = arrayItemIndex.index
         }
 
-        return bindProps
+        return _bindProps
       })
 
       return () => {
