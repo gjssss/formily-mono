@@ -16,6 +16,7 @@
   "dependencies": {
     "@formily-djd/component": "workspace:*",
     "@formily-djd/designer": "workspace:*",
+    "@formily/vue": "^2.3.7",
     "element-plus": "^2.11.7",
     "vue": "^3.5.22"
   },
