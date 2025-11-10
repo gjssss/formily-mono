@@ -4,6 +4,7 @@ import type { Component } from 'vue'
 import { getByPath } from '@formily-djd/utils'
 import { RecursionField, useField, useFieldSchema } from '@formily/vue'
 import { computed, defineComponent, h, inject } from 'vue'
+import { baseFieldConfigSchema } from '@/core/baseFieldConfig'
 import { ArrayFieldKey, ArrayItemKey } from '@/shared'
 import ArrayInner from './arrayInner.vue'
 import ArrayItemInner from './arrayItemInner.vue'
@@ -37,8 +38,20 @@ export function schemaWrapper(comp: FormilyComponent): Component {
           onChange: props.onChange,
         }
 
+        // 映射基础配置的属性
+        for (const [key, value] of Object.entries(baseFieldConfigSchema.properties || {})) {
+          const path = value['x-path']
+          if (path) {
+            _bindProps[key] = getByPath(schema.value, path)
+          }
+        }
+
+        // 映射组件特定的属性
         for (const [key, value] of Object.entries(setterSchema.properties || {})) {
-          _bindProps[key] = getByPath(schema.value, value['x-path'])
+          const path = value['x-path']
+          if (path) {
+            _bindProps[key] = getByPath(schema.value, path)
+          }
         }
 
         const arrayFieldValue = schema.value?.type === 'array'

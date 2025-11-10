@@ -1,5 +1,6 @@
 import type { ISchema } from '@formily/json-schema'
 import { getByPath } from '@formily-djd/utils'
+import { baseFieldConfigSchema } from '@/core/baseFieldConfig'
 
 /**
  * 根据 setterSchema 中的 x-path 从 schema 中提取组件属性
@@ -9,19 +10,31 @@ export function buildComponentProps(schema: ISchema, setterSchema: ISchema): Rec
     ...(schema?.['x-component-props'] || {}),
   }
 
-  if (!setterSchema.properties) {
-    return componentProps
+  // 处理基础配置的属性映射
+  if (baseFieldConfigSchema.properties) {
+    Object.entries(baseFieldConfigSchema.properties).forEach(([key, fieldSchema]) => {
+      const xPath = (fieldSchema as ISchema)['x-path']
+      if (xPath) {
+        const value = getByPath(schema, xPath)
+        if (value !== undefined) {
+          componentProps[key] = value
+        }
+      }
+    })
   }
 
-  Object.entries(setterSchema.properties).forEach(([key, fieldSchema]) => {
-    const xPath = (fieldSchema as ISchema)['x-path']
-    if (xPath) {
-      const value = getByPath(schema, xPath)
-      if (value !== undefined) {
-        componentProps[key] = value
+  // 处理组件特定的属性映射
+  if (setterSchema.properties) {
+    Object.entries(setterSchema.properties).forEach(([key, fieldSchema]) => {
+      const xPath = (fieldSchema as ISchema)['x-path']
+      if (xPath) {
+        const value = getByPath(schema, xPath)
+        if (value !== undefined) {
+          componentProps[key] = value
+        }
       }
-    }
-  })
+    })
+  }
 
   return componentProps
 }

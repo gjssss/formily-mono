@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
 import type { Form as FormilyForm } from '@formily/core'
+import type { ISchema } from '@formily/vue'
 import { ArrayItems, Checkbox, FormItem, Input, InputNumber, Radio, Select, Space, Switch } from '@formily/element-plus'
 import { createSchemaField, FormProvider } from '@formily/vue'
 import { computed, shallowRef, watch } from 'vue'
+import { baseFieldConfigSchema } from '../core/baseFieldConfig'
 import { createConfigForm } from '../core/configForm'
 import { useDesignStore } from '../core/useDesignStore'
 import { schemaToSetterValues } from '../core/utils'
@@ -43,8 +45,8 @@ const componentName = computed(() => {
   return selectedField.value['x-component'] as string
 })
 
-// 获取 Setter Schema
-const setterSchema = computed(() => {
+// 获取组件的 Setter Schema
+const componentSetterSchema = computed(() => {
   const name = componentName.value
   if (!name)
     return null
@@ -53,13 +55,29 @@ const setterSchema = computed(() => {
   return componentDef?.setterSchema
 })
 
+// 合并后的完整 Setter Schema（基础配置 + 组件配置）
+const fullSetterSchema = computed(() => {
+  if (!componentSetterSchema.value)
+    return null
+
+  return {
+    type: 'object',
+    properties: {
+      // 包含基础配置和组件配置的所有属性
+      ...baseFieldConfigSchema.properties,
+      ...(componentSetterSchema.value.properties || {}),
+    },
+  } as ISchema
+})
+
 // 监听选中节点变化，重新创建配置表单
 watch(
   () => store.selectedFieldName.value,
   () => {
-    if (selectedField.value && setterSchema.value) {
-      // 创建新的配置表单
-      configForm.value = createConfigForm(setterSchema.value, store)
+    if (selectedField.value && fullSetterSchema.value) {
+      // 创建新的配置表单（使用合并后的 schema）
+      // 创建时已经会设置初始值，不需要额外调用 setValues
+      configForm.value = createConfigForm(fullSetterSchema.value, store)
     }
     else {
       configForm.value = null
@@ -68,33 +86,85 @@ watch(
   { immediate: true },
 )
 
-// 监听选中字段的 schema 变化，同步到配置表单
-watch(
-  () => selectedField.value,
-  (newSchema) => {
-    if (configForm.value && newSchema && setterSchema.value) {
-      // 将 Schema 转换为配置表单值并设置
-      const newValues = schemaToSetterValues(newSchema, setterSchema.value)
-      configForm.value.setValues(newValues)
-      console.log('字段 Schema 变化，同步配置表单值:', newValues)
-    }
-  },
-  { deep: true },
-)
+// 折叠面板激活项（默认展开）
+const activeCollapse = shallowRef(['base', 'component'])
+
+// 用于强制重新渲染 SchemaField
+const formKey = computed(() => store.selectedFieldName.value || 'empty')
 </script>
 
 <template>
   <div class="config-panel">
-    <div v-if="!selectedField">
+    <div v-if="!selectedField" class="config-empty">
       <p>请选择一个字段</p>
     </div>
 
-    <div v-else>
-      <h3>{{ componentName }} 配置</h3>
+    <div v-else class="config-content">
+      <h3 class="config-title">
+        {{ componentName }} 配置
+      </h3>
 
-      <FormProvider v-if="configForm" :form="configForm">
-        <SchemaField :schema="setterSchema" />
+      <FormProvider v-if="configForm" :key="formKey" :form="configForm">
+        <!-- 折叠面板 -->
+        <ElCollapse v-model="activeCollapse" class="config-section">
+          <!-- 基础配置区域 -->
+          <ElCollapseItem name="base" title="基础配置">
+            <SchemaField :schema="baseFieldConfigSchema" />
+          </ElCollapseItem>
+
+          <!-- 组件配置区域 -->
+          <ElCollapseItem v-if="componentSetterSchema" name="component" title="组件配置">
+            <SchemaField :schema="componentSetterSchema" />
+          </ElCollapseItem>
+        </ElCollapse>
       </FormProvider>
     </div>
   </div>
 </template>
+
+<style scoped>
+.config-panel {
+  height: 100%;
+}
+
+.config-empty {
+  padding: 20px;
+  text-align: center;
+  color: #909399;
+}
+
+.config-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.config-title {
+  margin: 0;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #ebeef5;
+  background-color: #fff;
+}
+
+.config-section {
+  flex: 1;
+  overflow-y: auto;
+  border: none;
+}
+
+.config-section :deep(.el-collapse-item__header) {
+  font-weight: 600;
+  background-color: #f5f7fa;
+  padding: 0 16px;
+}
+
+.config-section :deep(.el-collapse-item__content) {
+  padding: 16px;
+}
+
+.config-section :deep(.el-form-item) {
+  margin-bottom: 18px;
+}
+</style>
