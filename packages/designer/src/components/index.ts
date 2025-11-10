@@ -1,5 +1,5 @@
 import CanvasComponent from './canvas.vue'
-import ConfigPanelComponent from './configPanel.vue'
+import ConfigPanelComponent from './configPanel/index.vue'
 import DesignerComponent from './designer.vue'
 import MaterialPanelComponent from './materialPanel.vue'
 

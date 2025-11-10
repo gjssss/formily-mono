@@ -1,4 +1,3 @@
-export * from './configForm'
 export * from './types'
 export * from './useCreateDesignStore'
 export * from './useDesignStore'
