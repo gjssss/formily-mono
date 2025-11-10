@@ -1,8 +1,8 @@
 import type { Form } from '@formily/core'
 import type { ISchema } from '@formily/vue'
-import type { DesignStore } from './types'
+import type { DesignStore } from '@/core/types'
 import { createForm, onFormValuesChange } from '@formily/core'
-import { schemaToSetterValues, setterValuesToSchema } from './utils'
+import { schemaToSetterValues, setterValuesToSchema } from '@/core/utils'
 
 /**
  * 创建配置表单
@@ -37,9 +37,6 @@ export function createConfigForm(setterSchema: ISchema, store: DesignStore): For
 
         // 更新 store（响应式更新）
         store.updateFieldSchema(fieldName, newSchema)
-
-        console.log('配置表单值变化:', form.values)
-        console.log('更新后的 Schema:', newSchema)
       })
     },
   })

@@ -5,10 +5,9 @@ import type { ISchema } from '@formily/vue'
 import { ArrayItems, Checkbox, FormItem, Input, InputNumber, Radio, Select, Space, Switch } from '@formily/element-plus'
 import { createSchemaField, FormProvider } from '@formily/vue'
 import { computed, shallowRef, watch } from 'vue'
-import { baseFieldConfigSchema } from '../core/baseFieldConfig'
-import { createConfigForm } from '../core/configForm'
-import { useDesignStore } from '../core/useDesignStore'
-import { schemaToSetterValues } from '../core/utils'
+import { baseFieldConfigSchema } from '@/core/baseFieldConfig'
+import { createConfigForm } from './configForm'
+import { useDesignStore } from '@/core/useDesignStore'
 
 const props = defineProps<{
   components: Record<string, FormilyComponent>
@@ -64,8 +63,8 @@ const fullSetterSchema = computed(() => {
     type: 'object',
     properties: {
       // 包含基础配置和组件配置的所有属性
-      ...baseFieldConfigSchema.properties,
-      ...(componentSetterSchema.value.properties || {}),
+      ...baseFieldConfigSchema.properties as Record<string, ISchema>,
+      ...(componentSetterSchema.value.properties as Record<string, ISchema> || {}),
     },
   } as ISchema
 })
@@ -75,8 +74,6 @@ watch(
   () => store.selectedFieldName.value,
   () => {
     if (selectedField.value && fullSetterSchema.value) {
-      // 创建新的配置表单（使用合并后的 schema）
-      // 创建时已经会设置初始值，不需要额外调用 setValues
       configForm.value = createConfigForm(fullSetterSchema.value, store)
     }
     else {
@@ -87,7 +84,7 @@ watch(
 )
 
 // 折叠面板激活项（默认展开）
-const activeCollapse = shallowRef(['base', 'component'])
+const activeCollapse = shallowRef(['base', 'operate', 'component'])
 
 // 用于强制重新渲染 SchemaField
 const formKey = computed(() => store.selectedFieldName.value || 'empty')
@@ -110,6 +107,14 @@ const formKey = computed(() => store.selectedFieldName.value || 'empty')
           <!-- 基础配置区域 -->
           <ElCollapseItem name="base" title="基础配置">
             <SchemaField :schema="baseFieldConfigSchema" />
+          </ElCollapseItem>
+
+          <ElCollapseItem name="operate" title="操作配置">
+            <div>
+              <ElButton type="primary">
+                条件渲染
+              </ElButton>
+            </div>
           </ElCollapseItem>
 
           <!-- 组件配置区域 -->

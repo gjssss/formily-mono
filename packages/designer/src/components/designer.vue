@@ -5,7 +5,7 @@ import type { ISchema } from '@formily/vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useCreateDesignStore } from '../core/useCreateDesignStore'
 import Canvas from './canvas.vue'
-import ConfigPanel from './configPanel.vue'
+import ConfigPanel from './configPanel/index.vue'
 import Render from './render/index.vue'
 
 const props = withDefaults(defineProps<{

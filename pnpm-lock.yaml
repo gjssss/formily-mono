@@ -153,6 +153,9 @@ importers:
       chokidar:
         specifier: ^4.0.3
         version: 4.0.3
+      element-plus:
+        specifier: ^2.11.7
+        version: 2.11.7(vue@3.5.22(typescript@5.9.3))
       eslint:
         specifier: ^9.36.0
         version: 9.39.0(jiti@2.6.1)
