@@ -116,6 +116,9 @@ importers:
       '@formily/json-schema':
         specifier: ^2.3.7
         version: 2.3.7(typescript@5.9.3)
+      '@formily/reactive-vue':
+        specifier: ^2.3.7
+        version: 2.3.7(vue@3.5.22(typescript@5.9.3))
       '@formily/shared':
         specifier: ^2.3.7
         version: 2.3.7

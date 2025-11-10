@@ -69,6 +69,21 @@ const testSchemas = {
           placeholder: '请输入密码',
           maxlength: 50,
         },
+        "x-reactions": {
+          "dependencies": [
+            {
+              "property": "value",
+              "type": "any",
+              "source": "username",
+              "name": "username_value"
+            }
+          ],
+          "fulfill": {
+            "state": {
+              "visible": "{{$deps.username_value === '123123'}}"
+            }
+          }
+        }
       },
     },
   },
@@ -263,23 +278,18 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
 
     <!-- Designer 组件 -->
     <div class="designer-wrapper">
-      <Designer
-        ref="designerRef"
-        v-model="schema"
-        :mode="mode"
-        :components="{
-          Input,
-          Array,
-          ArrayItem,
-          Select,
-          Checkbox,
-          Radio,
-          DatePicker,
-          TextArea,
-          Switch,
-          InputNumber,
-        }"
-      />
+      <Designer ref="designerRef" v-model="schema" :mode="mode" :components="{
+        Input,
+        Array,
+        ArrayItem,
+        Select,
+        Checkbox,
+        Radio,
+        DatePicker,
+        TextArea,
+        Switch,
+        InputNumber,
+      }" />
     </div>
   </div>
 </template>

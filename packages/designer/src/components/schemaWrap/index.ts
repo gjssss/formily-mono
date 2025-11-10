@@ -1,6 +1,8 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { ArrayField } from '@formily/core'
 import type { Component } from 'vue'
+import { isVoidField } from '@formily/core'
+import { observer } from '@formily/reactive-vue'
 import { getByPath } from '@formily-djd/utils'
 import { RecursionField, useField, useFieldSchema } from '@formily/vue'
 import { computed, defineComponent, h, inject } from 'vue'
@@ -11,31 +13,52 @@ import ArrayItemInner from './arrayItemInner.vue'
 import { useKey } from './composable'
 
 export function schemaWrapper(comp: FormilyComponent): Component {
-  return defineComponent({
-    name: 'SchemaWrapper',
-    props: {
-      value: {
-        type: [String, Number, Boolean, Array, Object],
-        default: undefined,
+  return observer(
+    defineComponent({
+      name: 'SchemaWrapper',
+      props: {
+        value: {
+          type: [String, Number, Boolean, Array, Object],
+          default: undefined,
+        },
+        onChange: {
+          type: Function,
+          default: undefined,
+        },
       },
-      onChange: {
-        type: Function,
-        default: undefined,
-      },
-    },
-    setup(props: any, context) {
-      const { setterSchema } = comp
-      const field = useField()
-      const schema = useFieldSchema()
-      const arrayField = inject<ArrayField | undefined>(ArrayFieldKey, undefined)
-      const arrayItemIndex = inject<{ index?: number } | undefined>(ArrayItemKey, undefined)
+      setup(props: any, context) {
+        const { setterSchema } = comp
+        const field = useField()
+        const schema = useFieldSchema()
+        const arrayField = inject<ArrayField | undefined>(ArrayFieldKey, undefined)
+        const arrayItemIndex = inject<{ index?: number } | undefined>(ArrayItemKey, undefined)
 
-      const { getKey } = useKey(schema.value)
+        const { getKey } = useKey(schema.value)
 
       const bindProps = computed(() => {
+        const currentField = field.value
         const _bindProps: Record<string, any> = {
           value: props.value,
           onChange: props.onChange,
+        }
+
+        // 映射 field 的状态到组件 props（支持 x-reactions 的状态控制）
+        if (currentField && !isVoidField(currentField)) {
+          // 处理 pattern 模式：disabled, readOnly, readPretty
+          if (currentField.pattern === 'disabled' || currentField.pattern === 'readPretty') {
+            _bindProps.disabled = true
+          }
+          if (currentField.pattern === 'readOnly') {
+            _bindProps.readOnly = true
+          }
+
+          // 直接映射状态属性
+          if (currentField.disabled !== undefined) {
+            _bindProps.disabled = currentField.disabled
+          }
+          if (currentField.readOnly !== undefined) {
+            _bindProps.readOnly = currentField.readOnly
+          }
         }
 
         // 映射基础配置的属性
@@ -95,8 +118,20 @@ export function schemaWrapper(comp: FormilyComponent): Component {
       })
 
       return () => {
+        const currentField = field.value
+
+        // 检查字段的显示状态 - 支持 x-reactions 的 visible 控制
+        if (!currentField) {
+          return h('template', {}, {})
+        }
+
+        // 如果字段不可见，返回空模板
+        if (currentField.display !== 'visible') {
+          return h('template', {}, {})
+        }
+
         if (schema.value?.type === 'array') {
-          const arrayField = field.value as ArrayField
+          const arrayField = currentField as ArrayField
           const items = arrayField?.value || []
 
           const renderItems = items.length > 0
@@ -122,5 +157,6 @@ export function schemaWrapper(comp: FormilyComponent): Component {
         return h(comp.component, bindProps.value, context.slots)
       }
     },
-  })
+  }),
+  )
 }

@@ -4,7 +4,8 @@
       "Bash(mkdir:*)",
       "Bash(tree:*)",
       "Bash(cat:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(xargs:*)"
     ],
     "deny": [],
     "ask": []
