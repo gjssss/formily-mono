@@ -2,7 +2,6 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { ISchema } from '@formily/json-schema'
 import { computed, inject } from 'vue'
-import { useDesignStore } from '@/core'
 import { ComponentSettingsKey } from '@/shared'
 import { buildComponentProps, shouldRecurse, shouldRenderArrayComponent } from './utils'
 
@@ -13,22 +12,30 @@ defineOptions({
 const props = defineProps<{
   schema?: ISchema
   fieldName?: string
+  nodePath?: string // 节点路径，用于唯一标识组件（如 "username" 或 "array.items.properties.input"）
 }>()
 
-const store = useDesignStore()
 const ComponentSettings = inject<Record<string, FormilyComponent>>(ComponentSettingsKey) ?? {}
 
 const xComponent = computed(() => props.schema?.['x-component'])
 
-function clickHandler() {
+// 当前节点的完整路径
+const currentNodePath = computed(() => {
+  if (!props.nodePath)
+    return props.fieldName || ''
   if (!props.fieldName)
-    return
-  store.selectField(props.fieldName)
+    return props.nodePath
+  return props.nodePath ? `${props.nodePath}.${props.fieldName}` : props.fieldName
+})
+
+// 用于生成子节点路径的基础路径
+function getChildBasePath(): string {
+  return currentNodePath.value ? `${currentNodePath.value}.properties` : ''
 }
 </script>
 
 <template>
-  <div v-if="props.schema" @click.stop="clickHandler">
+  <div v-if="props.schema" :data-node-id="currentNodePath">
     <!-- 处理外部有组件包裹的 object -->
     <component
       :is="ComponentSettings[xComponent].component"
@@ -36,12 +43,16 @@ function clickHandler() {
       v-bind="buildComponentProps(props.schema, ComponentSettings[xComponent].setterSchema)"
     >
       <template v-if="shouldRenderArrayComponent(props.schema)">
-        <CanvasField :schema="(props.schema.items as any)" />
+        <CanvasField :schema="(props.schema.items as any)" :node-path="`${getChildBasePath()}.items`" />
       </template>
       <!-- 递归类型：object/void/array -->
       <template v-if="shouldRecurse(props.schema)">
         <template v-for="key in Object.keys(props.schema?.properties || {})" :key="key">
-          <CanvasField :schema="(props.schema?.properties as any)?.[key]" :field-name="key" />
+          <CanvasField
+            :schema="(props.schema?.properties as any)?.[key]"
+            :field-name="key"
+            :node-path="getChildBasePath()"
+          />
         </template>
       </template>
       <!-- 递归类型：object/void/array -->
@@ -51,7 +62,11 @@ function clickHandler() {
     <!-- 没有组件包裹的只能是 void/object 类型 -->
     <template v-else>
       <template v-for="key in Object.keys(props.schema?.properties || {})" :key="key">
-        <CanvasField :schema="(props.schema?.properties as any)?.[key]" :field-name="key" />
+        <CanvasField
+          :schema="(props.schema?.properties as any)?.[key]"
+          :field-name="key"
+          :node-path="getChildBasePath()"
+        />
       </template>
     </template>
     <!-- 没有组件包裹的只能是 void/object 类型 -->

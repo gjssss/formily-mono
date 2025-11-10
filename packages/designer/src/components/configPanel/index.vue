@@ -6,8 +6,8 @@ import { ArrayItems, Checkbox, FormItem, Input, InputNumber, Radio, Select, Spac
 import { createSchemaField, FormProvider } from '@formily/vue'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { baseFieldConfigSchema } from '@/core/baseFieldConfig'
-import { createConfigForm } from './configForm'
 import { useDesignStore } from '@/core/useDesignStore'
+import { createConfigForm } from './configForm'
 import ReactionsEditor from './ReactionsEditor.vue'
 
 const props = defineProps<{

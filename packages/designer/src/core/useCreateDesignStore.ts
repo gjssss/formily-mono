@@ -1,5 +1,6 @@
 import type { ISchema } from '@formily/vue'
 import type { DesignStore } from './types'
+import { getByPath } from '@formily-djd/utils'
 import { provide, ref } from 'vue'
 import { DesignStoreKey } from './types'
 
@@ -20,6 +21,8 @@ export function useCreateDesignStore(): DesignStore {
     properties: {},
   })
   const selectedFieldName = ref<string | null>(null)
+  const selectedNodeId = ref<string | null>(null)
+  const hoveredNodeId = ref<string | null>(null)
 
   /**
    * 添加字段到设计器
@@ -60,17 +63,41 @@ export function useCreateDesignStore(): DesignStore {
   function getSelectedField(): ISchema | null {
     if (!selectedFieldName.value)
       return null
-    return formSchema.value.properties?.[selectedFieldName.value] || null
+    console.log('getSelectedField', formSchema.value.properties, selectedFieldName.value)
+    return getByPath(formSchema.value.properties, selectedFieldName.value) || null
+  }
+
+  /**
+   * 选中节点（通过节点 ID）
+   * @param nodeId 节点 ID（完整路径）
+   * @param fieldName 字段名称（可选，用于配置面板）
+   */
+  function selectNode(nodeId: string | null, fieldName: string | null = null): void {
+    console.log('selectNode', nodeId, fieldName)
+    selectedNodeId.value = nodeId
+    selectedFieldName.value = fieldName || nodeId
+  }
+
+  /**
+   * 设置悬浮的节点
+   * @param nodeId 节点 ID（字段路径）
+   */
+  function setHover(nodeId: string | null): void {
+    hoveredNodeId.value = nodeId
   }
 
   // 创建 store 对象
   const store: DesignStore = {
     formSchema,
     selectedFieldName,
+    selectedNodeId,
+    hoveredNodeId,
     addField,
     updateFieldSchema,
     selectField,
+    selectNode,
     getSelectedField,
+    setHover,
   }
 
   // 提供给子组件
