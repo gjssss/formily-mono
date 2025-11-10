@@ -4,10 +4,11 @@ import type { Form as FormilyForm } from '@formily/core'
 import type { ISchema } from '@formily/vue'
 import { ArrayItems, Checkbox, FormItem, Input, InputNumber, Radio, Select, Space, Switch } from '@formily/element-plus'
 import { createSchemaField, FormProvider } from '@formily/vue'
-import { computed, shallowRef, watch } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 import { baseFieldConfigSchema } from '@/core/baseFieldConfig'
 import { createConfigForm } from './configForm'
 import { useDesignStore } from '@/core/useDesignStore'
+import ReactionsEditor from './ReactionsEditor.vue'
 
 const props = defineProps<{
   components: Record<string, FormilyComponent>
@@ -88,6 +89,33 @@ const activeCollapse = shallowRef(['base', 'operate', 'component'])
 
 // 用于强制重新渲染 SchemaField
 const formKey = computed(() => store.selectedFieldName.value || 'empty')
+
+// ReactionsEditor 弹窗控制
+const reactionsDialogVisible = ref(false)
+
+// 打开条件渲染编辑器
+function openReactionsEditor() {
+  reactionsDialogVisible.value = true
+}
+
+// 保存 x-reactions 配置
+function handleSaveReactions(reactions: any) {
+  const fieldName = store.selectedFieldName.value
+  if (!fieldName)
+    return
+
+  const currentField = store.getSelectedField()
+  if (!currentField)
+    return
+
+  // 更新 schema 中的 x-reactions
+  const newSchema = {
+    ...currentField,
+    'x-reactions': Object.keys(reactions).length > 0 ? reactions : undefined,
+  }
+
+  store.updateFieldSchema(fieldName, newSchema)
+}
 </script>
 
 <template>
@@ -111,7 +139,7 @@ const formKey = computed(() => store.selectedFieldName.value || 'empty')
 
           <ElCollapseItem name="operate" title="操作配置">
             <div>
-              <ElButton type="primary">
+              <ElButton type="primary" @click="openReactionsEditor">
                 条件渲染
               </ElButton>
             </div>
@@ -123,6 +151,15 @@ const formKey = computed(() => store.selectedFieldName.value || 'empty')
           </ElCollapseItem>
         </ElCollapse>
       </FormProvider>
+
+      <!-- ReactionsEditor 弹窗 -->
+      <ReactionsEditor
+        v-model="reactionsDialogVisible"
+        :schema="store.formSchema.value"
+        :current-field-name="store.selectedFieldName.value"
+        :initial-reactions="selectedField?.['x-reactions']"
+        @save="handleSaveReactions"
+      />
     </div>
   </div>
 </template>
