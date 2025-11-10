@@ -105,7 +105,7 @@ const fieldTree = computed(() => {
 
       // 如果有子字段，递归构建
       if (schema.properties) {
-        const children = buildTree(schema.properties, path, title)
+        const children = buildTree(schema.properties as Record<string, ISchema>, path, title)
         if (children.length > 0) {
           node.children = children
         }
@@ -231,12 +231,7 @@ function handleCancel() {
 </script>
 
 <template>
-  <ElDialog
-    v-model="dialogVisible"
-    title="条件渲染配置"
-    width="800px"
-    @open="handleOpen"
-  >
+  <ElDialog v-model="dialogVisible" title="条件渲染配置" width="800px" @open="handleOpen">
     <div class="reactions-editor">
       <!-- 依赖字段配置 -->
       <div class="section">
@@ -255,55 +250,30 @@ function handleCancel() {
           <div v-for="(dep, index) in dependencies" :key="index" class="dependency-item">
             <div class="dependency-header">
               <span class="dependency-index">依赖 {{ index + 1 }}</span>
-              <ElButton
-                size="small"
-                type="danger"
-                text
-                @click="removeDependency(index)"
-              >
+              <ElButton size="small" type="danger" text @click="removeDependency(index)">
                 删除
               </ElButton>
             </div>
 
             <ElForm label-width="80px">
               <ElFormItem label="字段">
-                <ElTreeSelect
-                  v-model="dep.source"
-                  :data="fieldTree"
-                  placeholder="选择依赖的字段"
-                  clearable
-                  check-strictly
-                  :render-after-expand="false"
-                  @change="handleFieldChange(dep)"
-                />
+                <ElTreeSelect v-model="dep.source" :data="fieldTree" placeholder="选择依赖的字段" clearable check-strictly
+                  :render-after-expand="false" @change="handleFieldChange(dep)" />
               </ElFormItem>
 
               <ElFormItem label="属性">
                 <ElSelect v-model="dep.property" placeholder="选择属性" @change="handleFieldChange(dep)">
-                  <ElOption
-                    v-for="opt in propertyOptions"
-                    :key="opt.value"
-                    :label="opt.label"
-                    :value="opt.value"
-                  />
+                  <ElOption v-for="opt in propertyOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </ElSelect>
               </ElFormItem>
 
               <ElFormItem label="变量名">
-                <ElInput
-                  v-model="dep.name"
-                  placeholder="在表达式中使用的变量名"
-                />
+                <ElInput v-model="dep.name" placeholder="在表达式中使用的变量名" />
               </ElFormItem>
 
               <ElFormItem label="类型">
                 <ElSelect v-model="dep.type" placeholder="选择类型">
-                  <ElOption
-                    v-for="opt in typeOptions"
-                    :key="opt.value"
-                    :label="opt.label"
-                    :value="opt.value"
-                  />
+                  <ElOption v-for="opt in typeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </ElSelect>
               </ElFormItem>
             </ElForm>
@@ -328,12 +298,7 @@ function handleCancel() {
           <div v-for="(rule, index) in stateRules" :key="index" class="state-rule-item">
             <div class="state-rule-header">
               <span class="state-rule-index">规则 {{ index + 1 }}</span>
-              <ElButton
-                size="small"
-                type="danger"
-                text
-                @click="removeStateRule(index)"
-              >
+              <ElButton size="small" type="danger" text @click="removeStateRule(index)">
                 删除
               </ElButton>
             </div>
@@ -341,22 +306,13 @@ function handleCancel() {
             <ElForm label-width="80px">
               <ElFormItem label="状态属性">
                 <ElSelect v-model="rule.state" placeholder="选择要控制的状态">
-                  <ElOption
-                    v-for="opt in stateOptions"
-                    :key="opt.value"
-                    :label="opt.label"
-                    :value="opt.value"
-                  />
+                  <ElOption v-for="opt in stateOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </ElSelect>
               </ElFormItem>
 
               <ElFormItem label="表达式">
-                <ElInput
-                  v-model="rule.expression"
-                  type="textarea"
-                  :rows="2"
-                  placeholder="输入 JS 表达式，如：$deps.username_value === '123'"
-                />
+                <ElInput v-model="rule.expression" type="textarea" :rows="2"
+                  placeholder="输入 JS 表达式，如：$deps.username_value === '123'" />
                 <div class="expression-tip">
                   使用 $deps.变量名 访问依赖字段的值
                 </div>
