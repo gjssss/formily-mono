@@ -14,7 +14,7 @@ export interface DesignStore {
   addField: (name: string, schema: ISchema) => void
   updateFieldSchema: (name: string, newSchema: ISchema) => void
   selectField: (name: string | null) => void
-  selectNode: (nodeId: string | null, fieldName?: string | null) => void
+  selectNode: (nodeId: string | null) => void
   getSelectedField: () => ISchema | null
   setHover: (nodeId: string | null) => void
 }

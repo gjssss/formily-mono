@@ -30,7 +30,10 @@ const currentNodePath = computed(() => {
 
 // 用于生成子节点路径的基础路径
 function getChildBasePath(): string {
-  return currentNodePath.value ? `${currentNodePath.value}.properties` : ''
+  if (props.schema?.type === 'array')
+    return currentNodePath.value ? `${currentNodePath.value}.items` : ''
+  else
+    return currentNodePath.value ? `${currentNodePath.value}.properties` : ''
 }
 </script>
 
@@ -38,19 +41,17 @@ function getChildBasePath(): string {
   <div v-if="props.schema" :data-node-id="currentNodePath">
     <!-- 处理外部有组件包裹的 object -->
     <component
-      :is="ComponentSettings[xComponent].component"
-      v-if="xComponent && ComponentSettings[xComponent]"
+      :is="ComponentSettings[xComponent].component" v-if="xComponent && ComponentSettings[xComponent]"
       v-bind="buildComponentProps(props.schema, ComponentSettings[xComponent].setterSchema)"
     >
       <template v-if="shouldRenderArrayComponent(props.schema)">
-        <CanvasField :schema="(props.schema.items as any)" :node-path="`${getChildBasePath()}.items`" />
+        <CanvasField :schema="(props.schema.items as any)" :node-path="`${getChildBasePath()}`" />
       </template>
       <!-- 递归类型：object/void/array -->
       <template v-if="shouldRecurse(props.schema)">
         <template v-for="key in Object.keys(props.schema?.properties || {})" :key="key">
           <CanvasField
-            :schema="(props.schema?.properties as any)?.[key]"
-            :field-name="key"
+            :schema="(props.schema?.properties as any)?.[key]" :field-name="key"
             :node-path="getChildBasePath()"
           />
         </template>
@@ -63,8 +64,7 @@ function getChildBasePath(): string {
     <template v-else>
       <template v-for="key in Object.keys(props.schema?.properties || {})" :key="key">
         <CanvasField
-          :schema="(props.schema?.properties as any)?.[key]"
-          :field-name="key"
+          :schema="(props.schema?.properties as any)?.[key]" :field-name="key"
           :node-path="getChildBasePath()"
         />
       </template>

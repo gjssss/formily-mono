@@ -1,6 +1,6 @@
 import type { ISchema } from '@formily/vue'
 import type { DesignStore } from './types'
-import { getByPath } from '@formily-djd/utils'
+import { getByPath, setByPath } from '@formily-djd/utils'
 import { provide, ref } from 'vue'
 import { DesignStoreKey } from './types'
 
@@ -42,11 +42,7 @@ export function useCreateDesignStore(): DesignStore {
    * @param newSchema 新的 Schema 定义
    */
   function updateFieldSchema(name: string, newSchema: ISchema): void {
-    if (!formSchema.value.properties?.[name])
-      return
-
-    // 更新 schema
-    formSchema.value.properties[name] = newSchema
+    setByPath(formSchema.value.properties, name, newSchema)
   }
 
   /**
@@ -63,19 +59,16 @@ export function useCreateDesignStore(): DesignStore {
   function getSelectedField(): ISchema | null {
     if (!selectedFieldName.value)
       return null
-    console.log('getSelectedField', formSchema.value.properties, selectedFieldName.value)
     return getByPath(formSchema.value.properties, selectedFieldName.value) || null
   }
 
   /**
    * 选中节点（通过节点 ID）
    * @param nodeId 节点 ID（完整路径）
-   * @param fieldName 字段名称（可选，用于配置面板）
    */
-  function selectNode(nodeId: string | null, fieldName: string | null = null): void {
-    console.log('selectNode', nodeId, fieldName)
+  function selectNode(nodeId: string | null): void {
     selectedNodeId.value = nodeId
-    selectedFieldName.value = fieldName || nodeId
+    selectedFieldName.value = nodeId
   }
 
   /**

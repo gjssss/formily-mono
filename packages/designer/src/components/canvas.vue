@@ -28,19 +28,13 @@ function handleClick(event: MouseEvent) {
   if (el) {
     const nodeId = el.getAttribute('data-node-id')
     if (nodeId) {
-      // 提取顶层字段名（取路径的第一部分）
-      // 例如："array.items.properties.input" -> "array"
-      const parts = nodeId.split('.')
-      const topLevelFieldName = parts[0]
-
-      // 同时更新 nodeId 和 fieldName
-      // nodeId 用于选中框定位，fieldName 用于配置面板
-      store.selectNode(nodeId, topLevelFieldName)
+      console.log(nodeId)
+      store.selectNode(nodeId)
     }
   }
   else {
     // 点击空白处取消选中
-    store.selectNode(null, null)
+    store.selectNode(null)
   }
 }
 
@@ -68,16 +62,8 @@ function handleMouseLeave() {
   <div class="canvas djd-design">
     <h3>画布</h3>
 
-    <div
-      class="canvas-content"
-      @click="handleClick"
-      @mousemove="handleMouseMove"
-      @mouseleave="handleMouseLeave"
-    >
-      <CanvasField
-        v-if="store.formSchema.value"
-        :schema="store.formSchema.value"
-      />
+    <div class="canvas-content" @click="handleClick" @mousemove="handleMouseMove" @mouseleave="handleMouseLeave">
+      <CanvasField v-if="store.formSchema.value" :schema="store.formSchema.value" />
 
       <!-- 辅助工具层：选中框和悬浮框 -->
       <AuxToolWidget />
@@ -91,7 +77,8 @@ function handleMouseLeave() {
 }
 
 .canvas-content {
-  position: relative; /* 为辅助工具层提供定位上下文 */
+  position: relative;
+  /* 为辅助工具层提供定位上下文 */
   padding: 16px;
   min-height: 400px;
 }
