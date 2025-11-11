@@ -44,7 +44,7 @@ export function schemaWrapper(comp: FormilyComponent): Component {
 
           // 映射 field 的状态到组件 props（支持 x-reactions 的状态控制）
           if (currentField && !isVoidField(currentField)) {
-          // 处理 pattern 模式：disabled, readOnly, readPretty
+            // 处理 pattern 模式：disabled, readOnly, readPretty
             if (currentField.pattern === 'disabled' || currentField.pattern === 'readPretty') {
               _bindProps.disabled = true
             }
@@ -82,7 +82,7 @@ export function schemaWrapper(comp: FormilyComponent): Component {
             : arrayField?.value as unknown as ArrayField
 
           if (arrayFieldValue) {
-          // 添加到末尾
+            // 添加到末尾
             _bindProps.onAdd = () => arrayFieldValue.push({})
             _bindProps.onPush = () => arrayFieldValue.push({})
 
@@ -149,11 +149,9 @@ export function schemaWrapper(comp: FormilyComponent): Component {
                 marginTop: '4px',
                 lineHeight: '1.5',
               },
-            }, errors.map(error =>
-              h('div', {
-                class: 'formily-validation-error-item',
-              }, error.messages),
-            ))
+            }, h('div', {
+              class: 'formily-validation-error-item',
+            }, errors[0].messages))
           }
 
           if (schema.value?.type === 'array') {
