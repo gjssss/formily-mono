@@ -47,6 +47,55 @@ const getSchema = () => {
 
 // 测试 Schemas
 const testSchemas = {
+  validation: {
+    type: 'object',
+    properties: {
+      email: {
+        'type': 'string',
+        'title': '邮箱',
+        'x-decorator': 'FormItem',
+        'x-component': 'Input',
+        'x-component-props': {
+          placeholder: '请输入邮箱',
+        },
+        'required': true,
+        'x-validator': [
+          {
+            required: true,
+            message: '邮箱不能为空',
+          },
+          {
+            format: 'email',
+            message: '请输入有效的邮箱地址',
+          },
+        ],
+      },
+      age: {
+        'type': 'number',
+        'title': '年龄',
+        'x-decorator': 'FormItem',
+        'x-component': 'InputNumber',
+        'x-component-props': {
+          placeholder: '请输入年龄',
+        },
+        'required': true,
+        'x-validator': [
+          {
+            required: true,
+            message: '年龄不能为空',
+          },
+          {
+            minimum: 18,
+            message: '年龄必须大于或等于18岁',
+          },
+          {
+            maximum: 100,
+            message: '年龄必须小于或等于100岁',
+          },
+        ],
+      },
+    },
+  },
   basic: {
     type: 'object',
     properties: {
@@ -251,6 +300,9 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
       </div>
       <div class="toolbar-right">
         <!-- 测试 Schema 按钮 -->
+        <ElButton @click="loadTestSchema('validation')">
+          验证测试
+        </ElButton>
         <ElButton @click="loadTestSchema('basic')">
           基础表单
         </ElButton>

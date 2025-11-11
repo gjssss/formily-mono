@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ISchema } from '@formily/vue'
-import { computed, reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 
 interface Dependency {
   source: string // 依赖的字段路径
@@ -36,7 +36,7 @@ const emit = defineEmits<{
 // 弹窗显示状态
 const dialogVisible = computed({
   get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val),
+  set: val => emit('update:modelValue', val),
 })
 
 // 依赖列表
@@ -257,8 +257,10 @@ function handleCancel() {
 
             <ElForm label-width="80px">
               <ElFormItem label="字段">
-                <ElTreeSelect v-model="dep.source" :data="fieldTree" placeholder="选择依赖的字段" clearable check-strictly
-                  :render-after-expand="false" @change="handleFieldChange(dep)" />
+                <ElTreeSelect
+                  v-model="dep.source" :data="fieldTree" placeholder="选择依赖的字段" clearable check-strictly
+                  :render-after-expand="false" @change="handleFieldChange(dep)"
+                />
               </ElFormItem>
 
               <ElFormItem label="属性">
@@ -311,8 +313,10 @@ function handleCancel() {
               </ElFormItem>
 
               <ElFormItem label="表达式">
-                <ElInput v-model="rule.expression" type="textarea" :rows="2"
-                  placeholder="输入 JS 表达式，如：$deps.username_value === '123'" />
+                <ElInput
+                  v-model="rule.expression" type="textarea" :rows="2"
+                  placeholder="输入 JS 表达式，如：$deps.username_value === '123'"
+                />
                 <div class="expression-tip">
                   使用 $deps.变量名 访问依赖字段的值
                 </div>

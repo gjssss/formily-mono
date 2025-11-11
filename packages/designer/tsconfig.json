@@ -10,10 +10,10 @@
         "src/*"
       ]
     },
+    "resolveJsonModule": true,
     "types": [
       "element-plus/global"
     ],
-    "resolveJsonModule": true,
     "strict": true,
     "strictNullChecks": true,
     "noEmit": true,
