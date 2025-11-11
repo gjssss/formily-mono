@@ -2,7 +2,7 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { Form } from '@formily/core'
 import type { ISchema } from '@formily/vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useCreateDesignStore } from '../core/useCreateDesignStore'
 import Canvas from './canvas.vue'
 import ConfigPanel from './configPanel/index.vue'
@@ -48,56 +48,6 @@ defineExpose({
   getFormValues,
   schema: computed(() => store.formSchema.value),
   store,
-})
-
-// 初始化：添加一个默认的 Input 字段用于演示
-onMounted(() => {
-  // 添加测试字段
-  store.addField('username', {
-    type: 'object',
-    properties: {
-      input: {
-        'type': 'string',
-        'title': '用户名',
-        'x-decorator': 'FormItem',
-        'x-component': 'Input',
-        'x-component-props': {
-          placeholder: '请输入用户名',
-          maxlength: 20,
-        },
-      },
-    },
-  })
-  store.addField('array', {
-    'type': 'array',
-    'x-decorator': 'FormItem',
-    'x-component': 'Array',
-    'x-component-props': {
-      title: '<Title>',
-    },
-    'title': 'Array',
-    'x-display': 'visible',
-    'x-pattern': 'editable',
-    'x-validator': [],
-    'items': {
-      'type': 'object',
-      'x-component': 'ArrayItem',
-      'properties': {
-        szcefrhl5fd: {
-          'type': 'string',
-          'title': 'Input',
-          'x-decorator': 'FormItem',
-          'x-component': 'Input',
-          'x-designable-id': 'szcefrhl5fd',
-          'x-index': 1,
-        },
-      },
-    },
-    'x-index': 0,
-    'properties': {},
-  })
-
-  console.log('设计器初始化完成')
 })
 </script>
 
