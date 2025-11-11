@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue'
 import { computed } from 'vue'
-import { useDesignStore } from '@/core'
 import { useNodeRect } from '@/composables/useNodeRect'
+import { useDesignStore } from '@/core'
 
 const store = useDesignStore()
 

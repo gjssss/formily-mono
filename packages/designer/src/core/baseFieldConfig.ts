@@ -7,21 +7,21 @@ import type { ISchema } from '@formily/vue'
 export const baseFieldConfigSchema: ISchema = {
   type: 'object',
   properties: {
-    title: {
+    'title': {
       'type': 'string',
       'title': '字段标题',
       'x-component': 'Input',
       'x-decorator': 'FormItem',
       'x-path': 'title',
     },
-    description: {
+    'description': {
       'type': 'string',
       'title': '字段描述',
       'x-component': 'Input',
       'x-decorator': 'FormItem',
       'x-path': 'description',
     },
-    required: {
+    'required': {
       'type': 'boolean',
       'title': '是否必填',
       'x-component': 'Switch',
