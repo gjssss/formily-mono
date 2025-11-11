@@ -5,4 +5,10 @@ import Component from './ui.vue'
 export default {
   component: Component,
   setterSchema: Setter,
+  config: {
+    name: '数字输入框',
+    icon: 'Histogram',
+    category: '基础',
+    description: '数字输入控件',
+  },
 } as FormilyComponent

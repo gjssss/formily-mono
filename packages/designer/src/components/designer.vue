@@ -6,6 +6,7 @@ import { computed, ref, watch } from 'vue'
 import { useCreateDesignStore } from '../core/useCreateDesignStore'
 import Canvas from './canvas.vue'
 import ConfigPanel from './configPanel/index.vue'
+import MaterialPanel from './materialPanel.vue'
 import Render from './render/index.vue'
 
 const props = withDefaults(defineProps<{
@@ -54,12 +55,17 @@ defineExpose({
 <template>
   <div class="designer">
     <div v-if="props.mode === 'edit'" class="designer-layout">
-      <!-- 画布（编辑模式） -->
+      <!-- 组件库面板（左侧） -->
+      <div class="designer-material">
+        <MaterialPanel :components="components" />
+      </div>
+
+      <!-- 画布（中间） -->
       <div class="designer-canvas">
         <Canvas :components="components" />
       </div>
 
-      <!-- 配置面板 -->
+      <!-- 配置面板（右侧） -->
       <div class="designer-config">
         <ConfigPanel :components="components" />
       </div>
@@ -81,6 +87,11 @@ defineExpose({
 .designer-layout {
   display: flex;
   height: 100%;
+}
+
+.designer-material {
+  width: 280px;
+  overflow-y: auto;
 }
 
 .designer-canvas {

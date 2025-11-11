@@ -5,4 +5,10 @@ import Component from './ui.vue'
 export default {
   component: Component,
   setterSchema: Setter,
+  config: {
+    name: '数组容器',
+    icon: 'Grid',
+    category: '容器',
+    description: '数组字段容器',
+  },
 } as FormilyComponent
