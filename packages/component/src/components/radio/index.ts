@@ -11,4 +11,15 @@ export default {
     category: '选择',
     description: '单选控件',
   },
+  defaultSchema: {
+    'type': 'string',
+    'title': '单选框',
+    'x-component': 'Radio',
+    'x-decorator': 'FormItem',
+    'enum': [
+      { label: '选项1', value: '1' },
+      { label: '选项2', value: '2' },
+      { label: '选项3', value: '3' },
+    ],
+  },
 } as FormilyComponent

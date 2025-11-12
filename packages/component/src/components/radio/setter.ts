@@ -11,18 +11,18 @@ export default {
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.options',
       'items': {
-        'type': 'object',
-        'properties': {
-          'space': {
+        type: 'object',
+        properties: {
+          space: {
             'type': 'void',
             'x-component': 'Space',
             'properties': {
-              'sort': {
+              sort: {
                 'type': 'void',
                 'x-decorator': 'FormItem',
                 'x-component': 'ArrayItems.SortHandle',
               },
-              'label': {
+              label: {
                 'type': 'string',
                 'title': '标签',
                 'x-decorator': 'FormItem',
@@ -31,7 +31,7 @@ export default {
                   placeholder: '显示文本',
                 },
               },
-              'value': {
+              value: {
                 'type': 'string',
                 'title': '值',
                 'x-decorator': 'FormItem',
@@ -40,7 +40,7 @@ export default {
                   placeholder: '选项值',
                 },
               },
-              'remove': {
+              remove: {
                 'type': 'void',
                 'x-decorator': 'FormItem',
                 'x-component': 'ArrayItems.Remove',
@@ -50,7 +50,7 @@ export default {
         },
       },
       'properties': {
-        'add': {
+        add: {
           'type': 'void',
           'title': '添加选项',
           'x-component': 'ArrayItems.Addition',

@@ -12,4 +12,5 @@ export interface FormilyComponent {
   component: Component
   setterSchema: ISchema
   config: ComponentConfig
+  defaultSchema: ISchema
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
-import { provide, watch } from 'vue'
+import { generateUniqueFieldName, getAllFieldNames } from '@formily-djd/utils'
+import { computed, provide, ref, watch } from 'vue'
 import { useDesignStore } from '@/core/useDesignStore'
 import { ComponentSettingsKey } from '@/shared'
 import AuxToolWidget from './auxTool/AuxToolWidget.vue'
@@ -18,6 +19,15 @@ const store = useDesignStore()
 watch(store.formSchema, (newSchema) => {
   console.log('formSchema changed', newSchema)
 }, { deep: true })
+
+// 是否在拖拽区域上方
+const isDragOver = ref(false)
+
+// 计算画布是否为空
+const isEmpty = computed(() => {
+  const properties = store.formSchema.value?.properties
+  return !properties || Object.keys(properties).length === 0
+})
 
 // 处理点击事件 - 深度优先选中
 function handleClick(event: MouseEvent) {
@@ -43,12 +53,18 @@ function handleMouseMove(event: MouseEvent) {
   const target = event.target as HTMLElement
   const el = target.closest('[data-node-id]')
 
-  if (el) {
-    const nodeId = el.getAttribute('data-node-id')
-    store.setHover(nodeId)
-  }
-  else {
-    store.setHover(null)
+  const nodeId = el?.getAttribute('data-node-id')
+
+  // 更新悬停状态
+  store.setHover(nodeId || null)
+
+  // 如果正在拖拽，更新拖拽位置
+  if (store.isDragging.value) {
+    const point = {
+      x: event.clientX,
+      y: event.clientY,
+    }
+    store.updateDragPosition(point, nodeId || undefined)
   }
 }
 
@@ -56,14 +72,135 @@ function handleMouseMove(event: MouseEvent) {
 function handleMouseLeave() {
   store.setHover(null)
 }
+
+/**
+ * 处理拖拽进入
+ */
+function handleDragOver(event: DragEvent) {
+  event.preventDefault()
+  event.stopPropagation()
+
+  if (!event.dataTransfer)
+    return
+
+  // 设置拖放效果
+  event.dataTransfer.dropEffect = 'copy'
+  isDragOver.value = true
+
+  // 获取鼠标位置和目标节点
+  const target = event.target as HTMLElement
+  const el = target.closest('[data-node-id]')
+  const nodeId = el?.getAttribute('data-node-id')
+
+  const point = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
+  // 更新拖拽位置
+  store.updateDragPosition(point, nodeId || undefined)
+}
+
+/**
+ * 处理拖拽离开
+ */
+function handleDragLeave(event: DragEvent) {
+  const target = event.target as HTMLElement
+  // 只在真正离开画布容器时才设置为 false
+  if (target.classList.contains('canvas-content')) {
+    isDragOver.value = false
+  }
+}
+
+/**
+ * 处理放置
+ */
+function handleDrop(event: DragEvent) {
+  event.preventDefault()
+  event.stopPropagation()
+
+  isDragOver.value = false
+
+  if (!event.dataTransfer)
+    return
+
+  try {
+    const dataStr = event.dataTransfer.getData('application/json')
+    if (!dataStr)
+      return
+
+    const dragData = JSON.parse(dataStr)
+
+    if (dragData.type === 'new-component') {
+      // 从物料库拖拽新组件
+      handleDropNewComponent(dragData)
+    }
+  }
+  catch (error) {
+    console.error('解析拖拽数据失败:', error)
+  }
+}
+
+/**
+ * 处理放置新组件
+ */
+function handleDropNewComponent(dragData: any) {
+  const { componentKey, defaultSchema } = dragData
+
+  if (!defaultSchema) {
+    console.warn('组件缺少 defaultSchema:', componentKey)
+    return
+  }
+
+  // 生成唯一的字段名
+  const existingNames = getAllFieldNames(store.formSchema.value)
+  const fieldName = generateUniqueFieldName(componentKey, existingNames)
+
+  // 获取目标位置
+  const targetPath = store.closestNode.value
+  const position = store.closestPosition.value
+
+  if (!targetPath) {
+    // 空画布，直接添加到根
+    store.addField(fieldName, defaultSchema)
+  }
+  else {
+    // 插入到指定位置
+    store.insertField(targetPath, fieldName, defaultSchema, position)
+  }
+
+  // 自动选中新添加的字段
+  store.selectNode(fieldName)
+}
 </script>
 
 <template>
   <div class="canvas djd-design">
     <h3>画布</h3>
 
-    <div class="canvas-content" @click="handleClick" @mousemove="handleMouseMove" @mouseleave="handleMouseLeave">
+    <div
+      class="canvas-content"
+      :class="{ 'drag-over': isDragOver, 'empty': isEmpty }"
+      @click="handleClick"
+      @mousemove="handleMouseMove"
+      @mouseleave="handleMouseLeave"
+      @dragover="handleDragOver"
+      @dragleave="handleDragLeave"
+      @drop="handleDrop"
+    >
       <CanvasField v-if="store.formSchema.value" :schema="store.formSchema.value" />
+
+      <!-- 空画布提示 -->
+      <div v-if="isEmpty" class="empty-canvas">
+        <div class="empty-hint">
+          <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <line x1="9" y1="9" x2="15" y2="15" />
+            <line x1="15" y1="9" x2="9" y2="15" />
+          </svg>
+          <p>从左侧拖拽组件到这里开始设计</p>
+        </div>
+      </div>
 
       <!-- 辅助工具层：选中框和悬浮框 -->
       <AuxToolWidget />
@@ -81,5 +218,50 @@ function handleMouseLeave() {
   /* 为辅助工具层提供定位上下文 */
   padding: 16px;
   min-height: 400px;
+  transition: all 0.2s;
+}
+
+/* 拖拽时的样式 */
+.canvas-content.drag-over {
+  background-color: rgba(59, 130, 246, 0.05);
+  border: 2px dashed #3b82f6;
+  border-radius: 8px;
+}
+
+/* 空画布样式 */
+.canvas-content.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+}
+
+.empty-canvas {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.empty-hint {
+  text-align: center;
+  color: #9ca3af;
+}
+
+.empty-icon {
+  color: #d1d5db;
+  margin: 0 auto 16px;
+}
+
+.empty-hint p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* 拖拽时隐藏空画布提示 */
+.canvas-content.drag-over .empty-canvas {
+  opacity: 0;
 }
 </style>

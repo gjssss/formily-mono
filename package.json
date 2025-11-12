@@ -6,6 +6,7 @@
     "build:utils": "pnpm --filter @formily-djd/utils build",
     "build:component": "pnpm --filter @formily-djd/component build",
     "build:designer": "pnpm --filter @formily-djd/designer build",
-    "build:playground": "pnpm --filter playground build"
+    "build:playground": "pnpm --filter playground build",
+    "lint:fix": "pnpm --filter @formily-djd/* lint:fix"
   }
 }

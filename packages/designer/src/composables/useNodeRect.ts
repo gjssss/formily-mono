@@ -21,7 +21,7 @@ export function useNodeRect(
   const rect = ref<NodeRect | null>(null)
 
   // 查找并计算节点矩形
-  function updateRect() {
+  function updateRect(): void {
     if (!nodeId.value) {
       rect.value = null
       return

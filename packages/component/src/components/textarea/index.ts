@@ -11,4 +11,14 @@ export default {
     category: '基础',
     description: '多行文本输入框',
   },
+  defaultSchema: {
+    'type': 'string',
+    'title': '文本域',
+    'x-component': 'Textarea',
+    'x-decorator': 'FormItem',
+    'x-component-props': {
+      placeholder: '请输入',
+      rows: 4,
+    },
+  },
 } as FormilyComponent

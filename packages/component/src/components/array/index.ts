@@ -11,4 +11,15 @@ export default {
     category: '容器',
     description: '数组字段容器',
   },
+  defaultSchema: {
+    'type': 'array',
+    'title': '数组容器',
+    'x-component': 'Array',
+    'x-decorator': 'FormItem',
+    'items': {
+      'type': 'object',
+      'x-component': 'ArrayItem',
+      'properties': {},
+    },
+  },
 } as FormilyComponent

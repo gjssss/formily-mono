@@ -11,4 +11,13 @@ export default {
     category: '基础',
     description: '日期选择控件',
   },
+  defaultSchema: {
+    'type': 'string',
+    'title': '日期选择器',
+    'x-component': 'DatePicker',
+    'x-decorator': 'FormItem',
+    'x-component-props': {
+      placeholder: '请选择日期',
+    },
+  },
 } as FormilyComponent

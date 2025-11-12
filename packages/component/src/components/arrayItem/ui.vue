@@ -22,13 +22,13 @@ const props = defineProps<{
       <ElButton size="small" @click="props.onAdd">
         添加
       </ElButton>
-      <ElButton size="small" @click="() => props.onRemove?.(props.arrayIndex!)" style="margin-left: 4px;">
+      <ElButton size="small" style="margin-left: 4px;" @click="() => props.onRemove?.(props.arrayIndex!)">
         删除
       </ElButton>
-      <ElButton size="small" @click="() => props.onMoveUp?.(props.arrayIndex!)" style="margin-left: 4px;">
+      <ElButton size="small" style="margin-left: 4px;" @click="() => props.onMoveUp?.(props.arrayIndex!)">
         上移
       </ElButton>
-      <ElButton size="small" @click="() => props.onMoveDown?.(props.arrayIndex!)" style="margin-left: 4px;">
+      <ElButton size="small" style="margin-left: 4px;" @click="() => props.onMoveDown?.(props.arrayIndex!)">
         下移
       </ElButton>
     </div>

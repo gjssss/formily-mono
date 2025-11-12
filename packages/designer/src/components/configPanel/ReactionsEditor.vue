@@ -14,13 +14,6 @@ interface StateRule {
   expression: string // JS 表达式
 }
 
-interface ReactionsConfig {
-  dependencies: Dependency[]
-  fulfill: {
-    state: Record<string, string>
-  }
-}
-
 const props = defineProps<{
   modelValue: boolean
   schema: ISchema // 整个表单的 schema
@@ -80,9 +73,7 @@ const typeOptions = [
 
 // 构建字段树（用于字段选择器）
 const fieldTree = computed(() => {
-  const tree: any[] = []
-
-  function buildTree(properties: Record<string, ISchema> | undefined, parentPath = '', parentTitle = '') {
+  function buildTree(properties: Record<string, ISchema> | undefined, parentPath = '') {
     if (!properties)
       return []
 
@@ -105,7 +96,7 @@ const fieldTree = computed(() => {
 
       // 如果有子字段，递归构建
       if (schema.properties) {
-        const children = buildTree(schema.properties as Record<string, ISchema>, path, title)
+        const children = buildTree(schema.properties as Record<string, ISchema>, path)
         if (children.length > 0) {
           node.children = children
         }

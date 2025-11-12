@@ -18,7 +18,7 @@ const props = defineProps<{
       <ElButton @click="props.onAdd">
         添加到末尾
       </ElButton>
-      <ElButton @click="props.onUnshift" style="margin-left: 8px;">
+      <ElButton style="margin-left: 8px;" @click="props.onUnshift">
         添加到开头
       </ElButton>
     </div>

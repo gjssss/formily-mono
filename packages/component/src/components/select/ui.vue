@@ -4,11 +4,6 @@ defineOptions({
   inheritAttrs: false,
 })
 
-interface Option {
-  label: string
-  value: string | number
-}
-
 const props = defineProps<{
   title?: string
   value?: string | number
@@ -20,6 +15,11 @@ const props = defineProps<{
   filterable?: boolean
   allowCreate?: boolean
 }>()
+
+interface Option {
+  label: string
+  value: string | number
+}
 </script>
 
 <template>

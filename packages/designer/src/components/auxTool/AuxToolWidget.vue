@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import HoverBox from './HoverBox.vue'
+import Insertion from './Insertion.vue'
 import SelectionBox from './SelectionBox.vue'
 
 /**
  * 辅助工具层
- * 使用绝对定位覆盖在 Canvas 上方，用于渲染选中框和悬浮框
+ * 使用绝对定位覆盖在 Canvas 上方，用于渲染选中框、悬浮框和插入指示器
  */
 </script>
 
@@ -15,6 +16,9 @@ import SelectionBox from './SelectionBox.vue'
 
     <!-- 选中实线框（zIndex: 4） -->
     <SelectionBox />
+
+    <!-- 插入指示器（zIndex: 10） -->
+    <Insertion />
   </div>
 </template>
 

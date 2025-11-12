@@ -11,4 +11,10 @@ export default {
     category: '基础',
     description: '开关控件',
   },
+  defaultSchema: {
+    'type': 'boolean',
+    'title': '开关',
+    'x-component': 'Switch',
+    'x-decorator': 'FormItem',
+  },
 } as FormilyComponent

@@ -21,10 +21,41 @@ const groupedComponents = computed(() => {
   return groups
 })
 
-// 处理组件点击（暂时只是示例，后续可以添加拖拽功能）
+/**
+ * 处理拖拽开始
+ */
+function handleDragStart(event: DragEvent, key: string, component: FormilyComponent) {
+  if (!event.dataTransfer)
+    return
+
+  // 设置拖拽数据
+  const dragData = {
+    type: 'new-component',
+    componentKey: key,
+    componentName: component.config.name,
+    defaultSchema: component.defaultSchema,
+  }
+
+  event.dataTransfer.effectAllowed = 'copy'
+  event.dataTransfer.setData('application/json', JSON.stringify(dragData))
+
+  // 设置拖拽图像（可选）
+  const dragImage = event.target as HTMLElement
+  event.dataTransfer.setDragImage(dragImage, 10, 10)
+}
+
+/**
+ * 处理拖拽结束
+ */
+function handleDragEnd(event: DragEvent) {
+  // 拖拽结束后的清理工作
+  const target = event.target as HTMLElement
+  target.style.opacity = '1'
+}
+
+// 处理组件点击
 function handleComponentClick(key: string) {
   console.log('点击组件:', key)
-  // TODO: 添加到画布的逻辑
 }
 </script>
 
@@ -47,7 +78,10 @@ function handleComponentClick(key: string) {
             v-for="{ key, component } in items"
             :key="key"
             class="component-item"
+            draggable="true"
             @click="handleComponentClick(key)"
+            @dragstart="handleDragStart($event, key, component)"
+            @dragend="handleDragEnd"
           >
             <div class="component-icon">
               {{ component.config?.icon?.slice(0, 3) }}
@@ -122,15 +156,21 @@ function handleComponentClick(key: string) {
   padding: 12px 8px;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
-  cursor: pointer;
+  cursor: move;
   transition: all 0.2s;
   background: #fff;
+  user-select: none;
 }
 
 .component-item:hover {
   border-color: #3b82f6;
   background: #eff6ff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.component-item:active {
+  opacity: 0.6;
+  transform: scale(0.95);
 }
 
 .component-icon {
