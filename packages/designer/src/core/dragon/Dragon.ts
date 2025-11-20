@@ -214,6 +214,7 @@ export class Dragon {
     point: IPoint,
     nodePath: string,
   ): ClosestPosition {
+    console.log('[Dragon] getClosestPosition', nodePath)
     const nodeRect = this.getNodeRect(nodePath)
     const nodeSchema = this.getNodeSchema(nodePath)
 
@@ -321,8 +322,8 @@ export class Dragon {
    * 判断是否可以作为兄弟节点插入
    */
   private canInsertSibling(nodePath: string): boolean {
-    // 根节点不能有兄弟节点
-    if (!nodePath.includes('.')) {
+    // 只有真正的根节点（空路径）不能有兄弟节点
+    if (nodePath === '' || nodePath == null) {
       return false
     }
 

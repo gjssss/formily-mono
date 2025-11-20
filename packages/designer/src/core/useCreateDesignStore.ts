@@ -187,7 +187,7 @@ export function useCreateDesignStore(): DesignStore {
 
   /**
    * 更新拖拽位置
-   * @param point 鼠标位置
+   * @param point 鼠标位置（视口坐标）
    * @param touch 触摸的节点路径
    */
   function updateDragPosition(point: IPoint, touch?: string): void {
@@ -198,9 +198,16 @@ export function useCreateDesignStore(): DesignStore {
       touchNode.value = touch
     }
 
+    // 将视口坐标转换为相对于 canvas 容器的坐标
+    const canvasRect = getCanvasRect()
+    const pointRelativeToCanvas: IPoint = {
+      x: point.x - canvasRect.x,
+      y: point.y - canvasRect.y,
+    }
+
     // Dragon 引擎计算位置
     dragon.calculate({
-      point,
+      point: pointRelativeToCanvas,
       touchNode: touchNode.value || undefined,
     })
 
@@ -213,6 +220,7 @@ export function useCreateDesignStore(): DesignStore {
    * 执行放置（插入或移动）
    */
   function drop(): void {
+    console.log('[DesignStore] drop')
     if (!isDragging.value)
       return
 
@@ -312,7 +320,7 @@ export function useCreateDesignStore(): DesignStore {
           : 'after'
 
       insertFieldByPath(
-        formSchema.value.properties,
+        formSchema.value, // 传入 formSchema.value 而不是 properties
         targetPath,
         fieldName,
         sourceSchema,
@@ -379,7 +387,7 @@ export function useCreateDesignStore(): DesignStore {
           : 'after'
 
       insertFieldByPath(
-        formSchema.value.properties,
+        formSchema.value, // 传入 formSchema.value 而不是 properties
         targetPath,
         fieldName,
         schema,

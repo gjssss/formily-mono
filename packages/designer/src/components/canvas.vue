@@ -16,10 +16,6 @@ provide(ComponentSettingsKey, props.components)
 // 获取设计器状态
 const store = useDesignStore()
 
-watch(store.formSchema, (newSchema) => {
-  console.log('formSchema changed', newSchema)
-}, { deep: true })
-
 // 是否在拖拽区域上方
 const isDragOver = ref(false)
 
@@ -84,8 +80,14 @@ function handleDragOver(event: DragEvent) {
     return
 
   // 设置拖放效果
-  event.dataTransfer.dropEffect = 'copy'
+  const hasDragNodes = store.dragNodes.value.length > 0
+  event.dataTransfer.dropEffect = hasDragNodes ? 'move' : 'copy'
   isDragOver.value = true
+
+  // 如果还没有启动拖拽状态，则启动（用于从物料库拖拽的情况）
+  if (!store.isDragging.value) {
+    store.startDrag([]) // 空数组表示从物料库拖拽
+  }
 
   // 获取鼠标位置和目标节点
   const target = event.target as HTMLElement
@@ -116,6 +118,7 @@ function handleDragLeave(event: DragEvent) {
  * 处理放置
  */
 function handleDrop(event: DragEvent) {
+  console.log('[Canvas] handleDrop')
   event.preventDefault()
   event.stopPropagation()
 
@@ -130,10 +133,15 @@ function handleDrop(event: DragEvent) {
       return
 
     const dragData = JSON.parse(dataStr)
+    console.log('dragData', dragData)
 
     if (dragData.type === 'new-component') {
       // 从物料库拖拽新组件
       handleDropNewComponent(dragData)
+    }
+    else if (dragData.type === 'move-component') {
+      // 画布内移动组件
+      handleDropMoveComponent()
     }
   }
   catch (error) {
@@ -171,6 +179,18 @@ function handleDropNewComponent(dragData: any) {
 
   // 自动选中新添加的字段
   store.selectNode(fieldName)
+
+  // 清理拖拽状态
+  store.cancelDrag()
+}
+
+/**
+ * 处理画布内组件移动
+ */
+function handleDropMoveComponent() {
+  // 直接调用 store 的 drop 方法执行移动
+  // Dragon 引擎已经计算好了 closestNode 和 closestPosition
+  store.drop()
 }
 </script>
 
@@ -219,13 +239,13 @@ function handleDropNewComponent(dragData: any) {
   padding: 16px;
   min-height: 400px;
   transition: all 0.2s;
+  background-color: transparent;
+
 }
 
 /* 拖拽时的样式 */
 .canvas-content.drag-over {
   background-color: rgba(59, 130, 246, 0.05);
-  border: 2px dashed #3b82f6;
-  border-radius: 8px;
 }
 
 /* 空画布样式 */

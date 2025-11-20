@@ -40,7 +40,7 @@ export function deleteByPath(obj: any, path: string): any {
 
 /**
  * 在指定位置插入字段
- * @param obj 目标对象
+ * @param obj 目标对象（应该是 schema 根对象，包含 properties）
  * @param targetPath 目标路径
  * @param fieldName 新字段名
  * @param value 新字段值
@@ -58,11 +58,17 @@ export function insertFieldByPath(
   const targetFieldName = keys.pop()!
   const parentPath = keys.join('.')
 
-  // 获取父对象的 properties
+  // 获取父对象
+  // 如果没有父路径，说明是根级别字段，parent 就是 obj 本身
   const parent = parentPath ? getByPath(obj, parentPath) : obj
 
-  if (!parent || !parent.properties) {
+  if (!parent) {
     return
+  }
+
+  // 确保 properties 存在
+  if (!parent.properties) {
+    parent.properties = {}
   }
 
   const properties = parent.properties

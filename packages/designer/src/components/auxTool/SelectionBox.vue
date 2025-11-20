@@ -23,9 +23,9 @@ const selectionBoxStyle = computed<CSSProperties>(() => {
 
   if (rect.value) {
     // 使用 translate3d 定位（GPU 加速）
-    baseStyle.transform = `perspective(1px) translate3d(${rect.value.x}px, ${rect.value.y}px, 0)`
-    baseStyle.width = `${rect.value.width}px`
-    baseStyle.height = `${rect.value.height}px`
+    baseStyle.transform = `perspective(1px) translate3d(${rect.value.x - 2}px, ${rect.value.y - 2}px, 0)`
+    baseStyle.width = `${rect.value.width + 4}px`
+    baseStyle.height = `${rect.value.height + 4}px`
     baseStyle.visibility = 'visible'
   }
 
