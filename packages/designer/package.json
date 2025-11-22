@@ -38,7 +38,8 @@
     "@formily/reactive-vue": "^2.3.7",
     "@formily/shared": "^2.3.7",
     "@formily/vue": "^2.3.7",
-    "vue": "^3.5.22"
+    "vue": "^3.5.22",
+    "@element-plus/icons-vue": "^2.3.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",

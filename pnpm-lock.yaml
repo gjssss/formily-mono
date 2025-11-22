@@ -104,6 +104,9 @@ importers:
 
   packages/designer:
     dependencies:
+      '@element-plus/icons-vue':
+        specifier: ^2.3.2
+        version: 2.3.2(vue@3.5.22(typescript@5.9.3))
       '@formily-djd/utils':
         specifier: workspace:*
         version: link:../utils

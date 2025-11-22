@@ -295,21 +295,40 @@ export function useCreateDesignStore(): DesignStore {
       if (!targetSchema)
         return
 
-      if (!targetSchema.properties) {
-        targetSchema.properties = {}
+      // 对于 array 类型，子组件放到 items.properties
+      let propertiesObj: any
+      if (targetSchema.type === 'array') {
+        if (!targetSchema.items) {
+          targetSchema.items = { type: 'object', properties: {} }
+        }
+        if (!targetSchema.items.properties) {
+          targetSchema.items.properties = {}
+        }
+        propertiesObj = targetSchema.items.properties
+      }
+      else {
+        if (!targetSchema.properties) {
+          targetSchema.properties = {}
+        }
+        propertiesObj = targetSchema.properties
       }
 
       if (position === ClosestPosition.InnerBefore) {
         // 插入到第一个位置
         const newProperties = {
           [fieldName]: sourceSchema,
-          ...targetSchema.properties,
+          ...propertiesObj,
         }
-        targetSchema.properties = newProperties
+        if (targetSchema.type === 'array') {
+          targetSchema.items.properties = newProperties
+        }
+        else {
+          targetSchema.properties = newProperties
+        }
       }
       else {
         // Inner 或 InnerAfter：插入到末尾
-        targetSchema.properties[fieldName] = sourceSchema
+        propertiesObj[fieldName] = sourceSchema
       }
     }
     else {
@@ -362,21 +381,40 @@ export function useCreateDesignStore(): DesignStore {
       if (!targetSchema)
         return
 
-      if (!targetSchema.properties) {
-        targetSchema.properties = {}
+      // 对于 array 类型，子组件放到 items.properties
+      let propertiesObj: any
+      if (targetSchema.type === 'array') {
+        if (!targetSchema.items) {
+          targetSchema.items = { type: 'object', properties: {} }
+        }
+        if (!targetSchema.items.properties) {
+          targetSchema.items.properties = {}
+        }
+        propertiesObj = targetSchema.items.properties
+      }
+      else {
+        if (!targetSchema.properties) {
+          targetSchema.properties = {}
+        }
+        propertiesObj = targetSchema.properties
       }
 
       if (position === ClosestPosition.InnerBefore) {
         // 插入到第一个位置
         const newProperties = {
           [fieldName]: schema,
-          ...targetSchema.properties,
+          ...propertiesObj,
         }
-        targetSchema.properties = newProperties
+        if (targetSchema.type === 'array') {
+          targetSchema.items.properties = newProperties
+        }
+        else {
+          targetSchema.properties = newProperties
+        }
       }
       else {
         // Inner 或 InnerAfter：插入到末尾
-        targetSchema.properties[fieldName] = schema
+        propertiesObj[fieldName] = schema
       }
     }
     else {
