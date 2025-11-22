@@ -305,6 +305,11 @@ export class Dragon {
     if (!schema)
       return false
 
+    // 检查 x-droppable 标记
+    if (schema['x-droppable'] === false) {
+      return false
+    }
+
     // Object/Void 类型是容器
     if (schema.type === 'object' || schema.type === 'void') {
       return true
@@ -336,6 +341,13 @@ export class Dragon {
    * 验证拖拽节点是否可以成为目标节点的子节点
    */
   private canDropInside(targetPath: string): boolean {
+    const targetSchema = this.getNodeSchema(targetPath)
+
+    // 检查 x-droppable 标记
+    if (targetSchema?.['x-droppable'] === false) {
+      return false
+    }
+
     const dragNodes = this.dragNodes.value
 
     if (dragNodes.length === 0) {

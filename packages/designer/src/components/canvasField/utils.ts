@@ -43,6 +43,11 @@ export function buildComponentProps(schema: ISchema, setterSchema: ISchema): Rec
  * 判断是否需要递归渲染
  */
 export function shouldRecurse(schema: ISchema): boolean {
+  // 检查 x-droppable 标记
+  if (schema?.['x-droppable'] === false) {
+    return false
+  }
+
   const type = schema.type
   return (type === 'object' || type === 'void' || type === 'array') && !!schema.properties
 }

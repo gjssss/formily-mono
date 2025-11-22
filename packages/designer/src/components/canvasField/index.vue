@@ -52,6 +52,23 @@ function getChildBasePath(): string {
     return currentNodePath.value ? `${currentNodePath.value}.properties` : ''
 }
 
+// 判断是否为空容器（需要显示占位符）
+const isEmptyContainer = computed(() => {
+  const schema = props.schema
+  if (!schema)
+    return false
+
+  // 检查 x-droppable 标记
+  if (schema['x-droppable'] === false) {
+    return false
+  }
+
+  const isContainerType = schema.type === 'object' || schema.type === 'void'
+  const hasNoChildren = !schema.properties || Object.keys(schema.properties).length === 0
+
+  return isContainerType && hasNoChildren
+})
+
 /**
  * 处理拖拽开始
  */
@@ -105,6 +122,15 @@ function handleDragEnd() {
       :is="ComponentSettings[xComponent].component" v-if="xComponent && ComponentSettings[xComponent]"
       v-bind="buildComponentProps(props.schema, ComponentSettings[xComponent].setterSchema)"
     >
+      <!-- 空容器占位符 -->
+      <div v-if="isEmptyContainer" class="empty-container-placeholder">
+        <svg class="placeholder-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" />
+          <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <span class="placeholder-text">拖拽组件到这里</span>
+      </div>
+
       <template v-if="shouldRenderArrayComponent(props.schema)">
         <CanvasField :schema="(props.schema.items as any)" :node-path="`${getChildBasePath()}`" />
       </template>
@@ -123,6 +149,15 @@ function handleDragEnd() {
 
     <!-- 没有组件包裹的只能是 void/object 类型 -->
     <template v-else>
+      <!-- 空容器占位符 -->
+      <div v-if="isEmptyContainer" class="empty-container-placeholder">
+        <svg class="placeholder-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" />
+          <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <span class="placeholder-text">拖拽组件到这里</span>
+      </div>
+
       <template v-for="key in Object.keys(props.schema?.properties || {})" :key="key">
         <CanvasField
           :schema="(props.schema?.properties as any)?.[key]" :field-name="key"
@@ -144,5 +179,29 @@ function handleDragEnd() {
 /* 拖拽时的样式 */
 .is-draggable:active {
   opacity: 0.5;
+}
+
+/* 空容器占位符 */
+.empty-container-placeholder {
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 4px;
+  color: #999;
+  pointer-events: none;
+  padding: 8px;
+}
+
+.placeholder-icon {
+  color: #d9d9d9;
+}
+
+.placeholder-text {
+  font-size: 12px;
+  user-select: none;
 }
 </style>
