@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
-import { generateUniqueFieldName, getAllFieldNames } from '@formily-djd/utils'
+import { uid } from '@formily/shared'
 import { computed, provide, ref, watch } from 'vue'
 import { useDesignStore } from '@/core/useDesignStore'
 import { ComponentSettingsKey } from '@/shared'
@@ -170,9 +170,8 @@ function handleDropNewComponent(dragData: any) {
     return
   }
 
-  // 生成唯一的字段名
-  const existingNames = getAllFieldNames(store.formSchema.value)
-  const fieldName = generateUniqueFieldName(componentKey, existingNames)
+  // 使用 uid 生成唯一的字段名
+  const fieldName = uid()
 
   // 获取目标位置
   const targetPath = store.closestNode.value

@@ -2,7 +2,7 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { ElTree } from 'element-plus'
 import { Bottom, CirclePlus, CopyDocument, Delete, FolderAdd, Search, Top } from '@element-plus/icons-vue'
-import { generateUniqueFieldName, getAllFieldNames } from '@formily-djd/utils'
+import { uid } from '@formily/shared'
 import { computed, inject, nextTick, ref } from 'vue'
 import { ClosestPosition } from '../../core/dragon'
 import { useDesignStore } from '../../core/useDesignStore'
@@ -466,8 +466,8 @@ function handleCopyNode() {
   if (!propertiesObj)
     return
 
-  // 生成新的字段名（添加 _copy 后缀）
-  const newFieldName = `${fieldName}_copy`
+  // 使用 uid 生成唯一的字段名
+  const newFieldName = uid()
 
   // 深拷贝 schema
   const newSchema = JSON.parse(JSON.stringify(schema))
@@ -720,8 +720,8 @@ function calculateDropPosition(event: DragEvent, nodeElement: Element): 'before'
  */
 function insertNewComponent(dragData: any, targetNode: TreeNode, position: 'before' | 'after' | 'inner') {
   const { componentKey, defaultSchema } = dragData
-  const existingNames = getAllFieldNames(store.formSchema.value)
-  const fieldName = generateUniqueFieldName(componentKey, existingNames)
+  // 使用 uid 生成唯一的字段名
+  const fieldName = uid()
 
   // 映射位置到 ClosestPosition
   let closestPosition: any
@@ -772,8 +772,8 @@ function insertNewComponent(dragData: any, targetNode: TreeNode, position: 'befo
  */
 function insertNewComponentToRoot(dragData: any) {
   const { componentKey, defaultSchema } = dragData
-  const existingNames = getAllFieldNames(store.formSchema.value)
-  const fieldName = generateUniqueFieldName(componentKey, existingNames)
+  // 使用 uid 生成唯一的字段名
+  const fieldName = uid()
 
   store.addField(fieldName, defaultSchema)
   store.selectNode(fieldName)
