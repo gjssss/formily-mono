@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
+import { LeftPanelKey } from '../shared'
 
 const props = defineProps<{
   components: Record<string, FormilyComponent>
 }>()
+
+// 注入 LeftPanel 方法
+const leftPanel = inject<{ switchToTreeTab: () => void }>(LeftPanelKey, null as any)
 
 // 按分类分组组件
 const groupedComponents = computed(() => {
@@ -42,6 +46,10 @@ function handleDragStart(event: DragEvent, key: string, component: FormilyCompon
   // 设置拖拽图像（可选）
   const dragImage = event.target as HTMLElement
   event.dataTransfer.setDragImage(dragImage, 10, 10)
+
+  setTimeout(() => {
+    leftPanel?.switchToTreeTab()
+  }, 100)
 }
 
 /**
@@ -65,24 +73,14 @@ function handleComponentClick(key: string) {
       <h3>组件库</h3>
     </div>
     <div class="panel-content">
-      <div
-        v-for="(items, category) in groupedComponents"
-        :key="category"
-        class="category-group"
-      >
+      <div v-for="(items, category) in groupedComponents" :key="category" class="category-group">
         <div class="category-title">
           {{ category }}
         </div>
         <div class="component-grid">
-          <div
-            v-for="{ key, component } in items"
-            :key="key"
-            class="component-item"
-            draggable="true"
-            @click="handleComponentClick(key)"
-            @dragstart="handleDragStart($event, key, component)"
-            @dragend="handleDragEnd"
-          >
+          <div v-for="{ key, component } in items" :key="key" class="component-item" draggable="true"
+            @click="handleComponentClick(key)" @dragstart="handleDragStart($event, key, component)"
+            @dragend="handleDragEnd">
             <div class="component-icon">
               {{ component.config?.icon?.slice(0, 3) }}
             </div>

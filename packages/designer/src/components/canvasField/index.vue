@@ -37,6 +37,10 @@ const isSelected = computed(() => {
 
 // 判断是否可以拖拽
 const isDraggable = computed(() => {
+  // 如果全局 draggable = false，禁用拖拽
+  if (!store.draggable) {
+    return false
+  }
   // 根节点不可拖拽
   if (!props.fieldName)
     return false

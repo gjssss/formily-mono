@@ -2,7 +2,7 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { Form } from '@formily/core'
 import type { ISchema } from '@formily/vue'
-import { computed, ref, watch } from 'vue'
+import { computed, provide, ref, watch } from 'vue'
 import { useCreateDesignStore } from '../core/useCreateDesignStore'
 import Canvas from './canvas.vue'
 import ConfigPanel from './configPanel/index.vue'
@@ -13,8 +13,10 @@ const props = withDefaults(defineProps<{
   components: Record<string, FormilyComponent>
   mode?: 'edit' | 'preview'
   modelValue?: ISchema
+  draggable?: boolean
 }>(), {
   mode: 'edit',
+  draggable: false,
 })
 
 const emit = defineEmits<{
@@ -22,7 +24,10 @@ const emit = defineEmits<{
 }>()
 
 // 创建设计器状态（会自动 provide 给子组件）
-const store = useCreateDesignStore()
+const store = useCreateDesignStore(props.draggable)
+
+// Provide components 给子组件使用（用于组件选择弹窗）
+provide('designerComponents', props.components)
 
 // 表单实例引用
 const renderRef = ref<{ form: Form } | null>(null)
@@ -57,7 +62,7 @@ defineExpose({
     <div v-if="props.mode === 'edit'" class="designer-layout">
       <!-- 左侧面板（组件库 + 组件树） -->
       <div class="designer-material">
-        <LeftPanel :components="components" />
+        <LeftPanel :components="components" :draggable="draggable" />
       </div>
 
       <!-- 画布（中间） -->

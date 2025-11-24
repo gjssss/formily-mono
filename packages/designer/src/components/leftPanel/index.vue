@@ -1,20 +1,39 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
-import { ref } from 'vue'
+import { provide, ref } from 'vue'
+import { LeftPanelKey } from '../../shared'
 import MaterialPanel from '../materialPanel.vue'
 import SchemaTree from './SchemaTree.vue'
 
-defineProps<{
+const props = withDefaults(defineProps<{
   components: Record<string, FormilyComponent>
-}>()
+  draggable?: boolean
+}>(), {
+  draggable: false,
+})
 
 // Tab 激活状态
 const activeTab = ref('materials')
+
+/**
+ * 切换到组件树 tab
+ */
+function switchToTreeTab() {
+  if (activeTab.value !== 'tree') {
+    activeTab.value = 'tree'
+  }
+}
+
+// 提供给子组件使用
+provide(LeftPanelKey, {
+  switchToTreeTab,
+})
 </script>
 
 <template>
   <div class="left-panel">
-    <ElTabs v-model="activeTab" class="panel-tabs">
+    <!-- draggable = true：显示 tabs -->
+    <ElTabs v-if="props.draggable" v-model="activeTab" class="panel-tabs">
       <ElTabPane label="组件库" name="materials">
         <MaterialPanel :components="components" />
       </ElTabPane>
@@ -22,6 +41,9 @@ const activeTab = ref('materials')
         <SchemaTree />
       </ElTabPane>
     </ElTabs>
+
+    <!-- draggable = false：直接显示组件树 -->
+    <SchemaTree v-else />
   </div>
 </template>
 

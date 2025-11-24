@@ -106,7 +106,7 @@ const insertionStyle = computed(() => {
 </script>
 
 <template>
-  <div class="insertion-indicator" :style="insertionStyle" />
+  <div v-if="store.draggable" class="insertion-indicator" :style="insertionStyle" />
 </template>
 
 <style scoped>

@@ -22,7 +22,7 @@ import { DesignStoreKey } from './types'
  * </script>
  * ```
  */
-export function useCreateDesignStore(): DesignStore {
+export function useCreateDesignStore(draggable = false): DesignStore {
   // ========== 基础响应式状态 ==========
   const formSchema = ref<any>({
     type: 'object',
@@ -481,6 +481,7 @@ export function useCreateDesignStore(): DesignStore {
     selectedFieldName,
     selectedNodeId,
     hoveredNodeId,
+    draggable,
     // 拖拽状态
     dragon,
     isDragging,

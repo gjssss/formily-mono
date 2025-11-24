@@ -13,6 +13,8 @@ export interface DesignStore {
   selectedNodeId: Ref<string | null>
   // 当前悬浮的节点 ID（字段路径）
   hoveredNodeId: Ref<string | null>
+  // 是否允许拖拽（配置项，非响应式）
+  draggable: boolean
 
   // ========== 拖拽状态 ==========
   // Dragon 拖拽引擎实例

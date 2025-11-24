@@ -73,6 +73,11 @@ function handleMouseLeave() {
  * 处理拖拽进入
  */
 function handleDragOver(event: DragEvent) {
+  // 如果 draggable = false，禁止 Canvas 拖拽
+  if (!store.draggable) {
+    return
+  }
+
   event.preventDefault()
   event.stopPropagation()
 
@@ -118,6 +123,11 @@ function handleDragLeave(event: DragEvent) {
  * 处理放置
  */
 function handleDrop(event: DragEvent) {
+  // 如果 draggable = false，禁止 Canvas 放置
+  if (!store.draggable) {
+    return
+  }
+
   console.log('[Canvas] handleDrop')
   event.preventDefault()
   event.stopPropagation()
