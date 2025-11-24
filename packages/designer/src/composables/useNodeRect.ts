@@ -63,23 +63,23 @@ export function useNodeRect(
   // 监听窗口滚动和大小变化，更新矩形位置
   if (typeof window !== 'undefined') {
     // 监听全局滚动和大小变化
-    window.addEventListener('scroll', updateRect, true) // 使用捕获阶段监听所有滚动
-    window.addEventListener('resize', updateRect)
+    // window.addEventListener('scroll', updateRect, true) // 使用捕获阶段监听所有滚动
+    // window.addEventListener('resize', updateRect)
 
-    // 监听 canvas 容器的滚动事件（如果容器可滚动）
-    const canvasElement = document.querySelector(canvasSelector)
-    if (canvasElement) {
-      canvasElement.addEventListener('scroll', updateRect)
-    }
+    // // 监听 canvas 容器的滚动事件（如果容器可滚动）
+    // const canvasElement = document.querySelector(canvasSelector)
+    // if (canvasElement) {
+    //   canvasElement.addEventListener('scroll', updateRect)
+    // }
 
-    // 组件卸载时清理事件监听，避免内存泄漏
-    onUnmounted(() => {
-      window.removeEventListener('scroll', updateRect, true)
-      window.removeEventListener('resize', updateRect)
-      if (canvasElement) {
-        canvasElement.removeEventListener('scroll', updateRect)
-      }
-    })
+    // // 组件卸载时清理事件监听，避免内存泄漏
+    // onUnmounted(() => {
+    //   window.removeEventListener('scroll', updateRect, true)
+    //   window.removeEventListener('resize', updateRect)
+    //   if (canvasElement) {
+    //     canvasElement.removeEventListener('scroll', updateRect)
+    //   }
+    // })
   }
 
   return computed(() => rect.value)
