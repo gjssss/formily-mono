@@ -14,9 +14,11 @@ const props = withDefaults(defineProps<{
   mode?: 'edit' | 'preview'
   modelValue?: ISchema
   draggable?: boolean
+  height?: string
 }>(), {
   mode: 'edit',
   draggable: false,
+  height: '100vh',
 })
 
 const emit = defineEmits<{
@@ -58,7 +60,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="designer">
+  <div class="designer" :style="{ height: props.height }">
     <div v-if="props.mode === 'edit'" class="designer-layout">
       <!-- 左侧面板（组件库 + 组件树） -->
       <div class="designer-material">
@@ -86,31 +88,36 @@ defineExpose({
 <style scoped>
 .designer {
   width: 100%;
-  height: 100vh;
+  /* height 通过 style 绑定设置 */
 }
 
 .designer-layout {
   display: flex;
   height: 100%;
+  overflow: hidden;
 }
 
 .designer-material {
   width: 280px;
+  height: 100%;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .designer-canvas {
   flex: 1;
-  padding: 16px;
+  height: 100%;
+  border-left: 1px solid #dcdfe6;
   border-right: 1px solid #dcdfe6;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .designer-config {
   width: 520px;
-  padding: 16px;
+  height: 100%;
   background-color: #f5f7fa;
-  overflow-y: auto;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .designer-preview {

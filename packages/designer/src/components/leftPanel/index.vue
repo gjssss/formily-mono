@@ -70,9 +70,14 @@ provide(LeftPanelKey, {
 :deep(.el-tabs__content) {
   flex: 1;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 :deep(.el-tab-pane) {
   height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 </style>

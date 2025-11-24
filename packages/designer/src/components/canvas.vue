@@ -241,16 +241,25 @@ function handleDropMoveComponent() {
 <style scoped>
 .canvas {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas h3 {
+  margin: 0 0 16px 0;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 .canvas-content {
   position: relative;
   /* 为辅助工具层提供定位上下文 */
+  flex: 1;
   padding: 16px;
   min-height: 400px;
   transition: all 0.2s;
   background-color: transparent;
-
+  overflow-y: auto;
 }
 
 /* 拖拽时的样式 */

@@ -167,6 +167,8 @@ function handleSaveReactions(reactions: any) {
 <style scoped>
 .config-panel {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .config-empty {
@@ -179,6 +181,7 @@ function handleSaveReactions(reactions: any) {
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .config-title {
@@ -188,12 +191,14 @@ function handleSaveReactions(reactions: any) {
   font-weight: 600;
   border-bottom: 1px solid #ebeef5;
   background-color: #fff;
+  flex-shrink: 0;
 }
 
 .config-section {
   flex: 1;
   overflow-y: auto;
   border: none;
+  padding: 0 16px;
 }
 
 .config-section :deep(.el-collapse-item__header) {

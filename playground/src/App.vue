@@ -334,7 +334,7 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
 
     <!-- Designer 组件 -->
     <div class="designer-wrapper">
-      <Designer ref="designerRef" v-model="schema" :mode="mode" :components="{
+      <Designer ref="designerRef" v-model="schema" :mode="mode" height="600px" :components="{
         Input,
         Array,
         ArrayItem,
@@ -355,10 +355,14 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
 </template>
 
 <style scoped>
+* {
+  padding: 0;
+  margin: 0;
+}
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 90vh;
 }
 
 .toolbar {
