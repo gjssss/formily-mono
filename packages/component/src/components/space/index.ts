@@ -15,11 +15,11 @@ export default {
     type: 'void',
     title: 'Space 间距',
     'x-component': 'Space',
+    'x-droppable': false,
     'x-component-props': {
       direction: 'horizontal',
       size: 8,
       align: 'center',
     },
-    properties: {},
   },
 } as FormilyComponent

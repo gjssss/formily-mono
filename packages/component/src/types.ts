@@ -6,6 +6,7 @@ export interface ComponentConfig {
   icon?: string
   category?: string
   description?: string
+  hidden?: boolean
 }
 
 export interface FormilyComponent {

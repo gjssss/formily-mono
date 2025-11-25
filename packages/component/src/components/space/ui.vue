@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 defineOptions({
   name: 'Space',
   inheritAttrs: false,
@@ -7,26 +9,23 @@ defineOptions({
 const props = defineProps<{
   direction?: 'horizontal' | 'vertical'
   size?: number
-  align?: string
 }>()
+
+const style = computed(() => {
+  const { direction, size } = props
+  if (direction === 'vertical') {
+    return {
+      width: '100%',
+      height: `${size || 8}px`,
+    }
+  }
+  return {
+    width: `${size || 8}px`,
+    height: '100%',
+  }
+})
 </script>
 
 <template>
-  <div
-    class="formily-space"
-    :style="{
-      display: 'flex',
-      flexDirection: props.direction === 'vertical' ? 'column' : 'row',
-      alignItems: props.align || 'center',
-      gap: `${props.size || 8}px`,
-    }"
-  >
-    <slot />
-  </div>
+  <div :style />
 </template>
-
-<style scoped>
-.formily-space {
-  width: 100%;
-}
-</style>

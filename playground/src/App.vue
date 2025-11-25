@@ -14,7 +14,6 @@ import {
   TextArea,
   Grid,
   Divider,
-  Flex,
   Space
 } from '@formily-djd/component'
 import { ref } from 'vue'
@@ -347,7 +346,6 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
         InputNumber,
         Grid,
         Divider,
-        Flex,
         Space,
       }" />
     </div>
