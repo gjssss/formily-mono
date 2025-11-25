@@ -16,7 +16,12 @@ import {
   Divider,
   Space
 } from '@formily-djd/component'
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
+// localStorage keys
+const STORAGE_KEY_SCHEMA = 'formily-designer-schema'
+const STORAGE_KEY_FAVORITES = 'formily-designer-favorites'
 
 // 模式切换
 const mode = ref<'edit' | 'preview'>('edit')
@@ -24,11 +29,63 @@ const mode = ref<'edit' | 'preview'>('edit')
 // Designer 实例引用
 const designerRef = ref<any>(null)
 
-// Schema (v-model)
-const schema = ref<ISchema>({
+// 默认空 Schema
+const getEmptySchema = (): ISchema => ({
   type: 'object',
   properties: {},
 })
+
+// Schema (v-model)
+const schema = ref<ISchema>(getEmptySchema())
+
+// 弹窗控制
+const schemaDialogVisible = ref(false)
+const schemaEditorText = ref('')
+const isEditingSchema = ref(false)
+
+// 收藏相关
+const favoritesDialogVisible = ref(false)
+interface Favorite {
+  id: string
+  name: string
+  schema: ISchema
+  createdAt: string
+}
+const favorites = ref<Favorite[]>([])
+
+// 初始化：从 localStorage 加载 schema 和收藏列表
+onMounted(() => {
+  try {
+    const savedSchema = localStorage.getItem(STORAGE_KEY_SCHEMA)
+    if (savedSchema) {
+      schema.value = JSON.parse(savedSchema)
+    }
+  } catch (error) {
+    console.error('加载 schema 失败:', error)
+  }
+
+  try {
+    const savedFavorites = localStorage.getItem(STORAGE_KEY_FAVORITES)
+    if (savedFavorites) {
+      favorites.value = JSON.parse(savedFavorites)
+    }
+  } catch (error) {
+    console.error('加载收藏列表失败:', error)
+  }
+})
+
+// 监听 schema 变化，自动保存到 localStorage
+watch(
+  () => schema.value,
+  (newSchema) => {
+    try {
+      localStorage.setItem(STORAGE_KEY_SCHEMA, JSON.stringify(newSchema))
+    } catch (error) {
+      console.error('保存 schema 失败:', error)
+    }
+  },
+  { deep: true }
+)
 
 // 切换模式
 const toggleMode = () => {
@@ -39,258 +96,155 @@ const toggleMode = () => {
 const getValues = () => {
   const values = designerRef.value?.getFormValues()
   console.log('表单值:', values)
-  alert(JSON.stringify(values, null, 2))
+  ElMessage({
+    message: '表单值已输出到控制台',
+    type: 'success',
+  })
+  console.log('表单值:', JSON.stringify(values, null, 2))
 }
 
-// 获取 Schema
-const getSchema = () => {
-  console.log('Schema:', schema.value)
-  alert(JSON.stringify(schema.value, null, 2))
+// 打开 Schema 弹窗（查看模式）
+const openSchemaDialog = () => {
+  schemaEditorText.value = JSON.stringify(schema.value, null, 2)
+  isEditingSchema.value = false
+  schemaDialogVisible.value = true
 }
 
-// 测试 Schemas
-const testSchemas = {
-  validation: {
-    type: 'object',
-    properties: {
-      email: {
-        'type': 'string',
-        'title': '邮箱',
-        'x-decorator': 'FormItem',
-        'x-component': 'Input',
-        'x-component-props': {
-          placeholder: '请输入邮箱',
-        },
-        'required': true,
-        'x-validator': [
-          {
-            required: true,
-            message: '邮箱不能为空',
-          },
-          {
-            format: 'email',
-            message: '请输入有效的邮箱地址',
-          },
-        ],
-      },
-      age: {
-        'type': 'number',
-        'title': '年龄',
-        'x-decorator': 'FormItem',
-        'x-component': 'InputNumber',
-        'x-component-props': {
-          placeholder: '请输入年龄',
-        },
-        'required': true,
-        'x-validator': [
-          {
-            required: true,
-            message: '年龄不能为空',
-          },
-          {
-            minimum: 18,
-            message: '年龄必须大于或等于18岁',
-          },
-          {
-            maximum: 100,
-            message: '年龄必须小于或等于100岁',
-          },
-        ],
-      },
-    },
-  },
-  basic: {
-    type: 'object',
-    properties: {
-      username: {
-        'type': 'string',
-        'title': '用户名',
-        'x-decorator': 'FormItem',
-        'x-component': 'Input',
-        'x-component-props': {
-          placeholder: '请输入用户名',
-          maxlength: 20,
-        },
-      },
-      password: {
-        'type': 'string',
-        'title': '密码',
-        'x-decorator': 'FormItem',
-        'x-component': 'Input',
-        'x-component-props': {
-          placeholder: '请输入密码',
-          maxlength: 50,
-        },
-        "x-reactions": {
-          "dependencies": [
-            {
-              "property": "value",
-              "type": "any",
-              "source": "username",
-              "name": "username_value"
-            }
-          ],
-          "fulfill": {
-            "state": {
-              "visible": "{{$deps.username_value === '123123'}}"
-            }
-          }
-        }
-      },
-    },
-  },
-  comprehensive: {
-    type: 'object',
-    properties: {
-      // Input
-      username: {
-        'type': 'string',
-        'title': '用户名',
-        'x-decorator': 'FormItem',
-        'x-component': 'Input',
-        'x-component-props': {
-          placeholder: '请输入用户名',
-          maxlength: 20,
-        },
-      },
-      // TextArea
-      description: {
-        'type': 'string',
-        'title': '描述',
-        'x-decorator': 'FormItem',
-        'x-component': 'TextArea',
-        'x-component-props': {
-          placeholder: '请输入描述',
-          rows: 4,
-          maxlength: 200,
-          showWordLimit: true,
-        },
-      },
-      // Select (可以通过设计器配置 options)
-      city: {
-        'type': 'string',
-        'title': '城市',
-        'x-decorator': 'FormItem',
-        'x-component': 'Select',
-        "enum": [
-          { label: '北京', value: 'beijing' },
-          { label: '上海', value: 'shanghai' },
-          { label: '广州', value: 'guangzhou' },
-          { label: '深圳', value: 'shenzhen' },
-        ],
-        'x-component-props': {
-          placeholder: '请选择城市',
-          clearable: true,
-          filterable: true,
-        },
-      },
-      // Radio
-      gender: {
-        'type': 'string',
-        'title': '性别',
-        'x-decorator': 'FormItem',
-        'x-component': 'Radio',
-        "enum": [
-          { label: '男', value: 'male' },
-          { label: '女', value: 'female' },
-        ],
-        'x-component-props': {
-        },
-      },
-      // Checkbox
-      hobbies: {
-        'type': 'array',
-        'title': '爱好',
-        'x-decorator': 'FormItem',
-        'x-component': 'Checkbox',
-        "enum": [
-          { label: '读书', value: 'reading' },
-          { label: '运动', value: 'sports' },
-          { label: '音乐', value: 'music' },
-        ],
-        'x-component-props': {
-        },
-      },
-      // InputNumber
-      age: {
-        'type': 'number',
-        'title': '年龄',
-        'x-decorator': 'FormItem',
-        'x-component': 'InputNumber',
-        'x-component-props': {
-          min: 0,
-          max: 150,
-          placeholder: '请输入年龄',
-        },
-      },
-      // Switch
-      active: {
-        'type': 'boolean',
-        'title': '是否激活',
-        'x-decorator': 'FormItem',
-        'x-component': 'Switch',
-        'x-component-props': {
-          activeText: '是',
-          inactiveText: '否',
-        },
-      },
-      // DatePicker
-      birthday: {
-        'type': 'string',
-        'title': '生日',
-        'x-decorator': 'FormItem',
-        'x-component': 'DatePicker',
-        'x-component-props': {
-          placeholder: '请选择日期',
-          format: 'YYYY-MM-DD',
-          type: 'date',
-        },
-      },
-    },
-  },
-  arrayTest: {
-    type: 'object',
-    properties: {
-      users: {
-        'type': 'array',
-        'title': '用户列表',
-        'x-decorator': 'FormItem',
-        'x-component': 'Array',
-        'x-component-props': {
-          title: '用户数组',
-        },
-        'items': {
-          'type': 'object',
-          'x-component': 'ArrayItem',
-          'properties': {
-            name: {
-              'type': 'string',
-              'title': '姓名',
-              'x-decorator': 'FormItem',
-              'x-component': 'Input',
-              'x-component-props': {
-                placeholder: '请输入姓名',
-              },
-            },
-            email: {
-              'type': 'string',
-              'title': '邮箱',
-              'x-decorator': 'FormItem',
-              'x-component': 'Input',
-              'x-component-props': {
-                placeholder: '请输入邮箱',
-              },
-            },
-          },
-        },
-      },
-    },
-  },
+// 复制 Schema
+const copySchema = async () => {
+  try {
+    await navigator.clipboard.writeText(schemaEditorText.value)
+    ElMessage({
+      message: 'Schema 已复制到剪贴板',
+      type: 'success',
+    })
+  } catch (error) {
+    ElMessage({
+      message: '复制失败，请手动复制',
+      type: 'error',
+    })
+  }
 }
 
-// 加载测试 Schema
-const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
-  schema.value = testSchemas[schemaName] as ISchema
+// 进入编辑模式
+const enterEditMode = () => {
+  isEditingSchema.value = true
+}
+
+// 保存编辑后的 Schema
+const saveSchema = () => {
+  try {
+    const newSchema = JSON.parse(schemaEditorText.value)
+    schema.value = newSchema
+    isEditingSchema.value = false
+    ElMessage({
+      message: 'Schema 已更新',
+      type: 'success',
+    })
+  } catch (error) {
+    ElMessage({
+      message: 'Schema 格式错误，请检查 JSON 格式',
+      type: 'error',
+    })
+  }
+}
+
+// 取消编辑
+const cancelEdit = () => {
+  schemaEditorText.value = JSON.stringify(schema.value, null, 2)
+  isEditingSchema.value = false
+}
+
+// 清空 Schema
+const clearSchema = () => {
+  ElMessageBox.confirm('确定要清空当前 Schema 吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(() => {
+    schema.value = getEmptySchema()
+    ElMessage({
+      message: 'Schema 已清空',
+      type: 'success',
+    })
+  }).catch(() => {
+    // 取消操作
+  })
+}
+
+// 添加收藏
+const addToFavorites = () => {
+  ElMessageBox.prompt('请输入收藏名称', '添加收藏', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputPattern: /\S+/,
+    inputErrorMessage: '收藏名称不能为空',
+  }).then(({ value }) => {
+    const newFavorite: Favorite = {
+      id: Date.now().toString(),
+      name: value,
+      schema: JSON.parse(JSON.stringify(schema.value)), // 深拷贝
+      createdAt: new Date().toLocaleString(),
+    }
+    favorites.value.push(newFavorite)
+    saveFavoritesToStorage()
+    ElMessage({
+      message: '收藏成功',
+      type: 'success',
+    })
+  }).catch(() => {
+    // 取消操作
+  })
+}
+
+// 打开收藏列表
+const openFavorites = () => {
+  favoritesDialogVisible.value = true
+}
+
+// 应用收藏的 Schema
+const applyFavorite = (favorite: Favorite) => {
+  ElMessageBox.confirm('确定要应用此收藏吗？当前 Schema 将被替换。', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(() => {
+    schema.value = JSON.parse(JSON.stringify(favorite.schema))
+    favoritesDialogVisible.value = false
+    ElMessage({
+      message: '已应用收藏',
+      type: 'success',
+    })
+  }).catch(() => {
+    // 取消操作
+  })
+}
+
+// 删除收藏
+const deleteFavorite = (id: string) => {
+  ElMessageBox.confirm('确定要删除此收藏吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(() => {
+    favorites.value = favorites.value.filter(f => f.id !== id)
+    saveFavoritesToStorage()
+    ElMessage({
+      message: '删除成功',
+      type: 'success',
+    })
+  }).catch(() => {
+    // 取消操作
+  })
+}
+
+// 保存收藏列表到 localStorage
+const saveFavoritesToStorage = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY_FAVORITES, JSON.stringify(favorites.value))
+  } catch (error) {
+    console.error('保存收藏列表失败:', error)
+  }
 }
 </script>
 
@@ -302,18 +256,20 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
         <h2>Formily Designer Playground</h2>
       </div>
       <div class="toolbar-right">
-        <!-- 测试 Schema 按钮 -->
-        <ElButton @click="loadTestSchema('validation')">
-          验证测试
+        <!-- Schema 管理 -->
+        <ElButton type="primary" @click="openSchemaDialog">
+          查看 Schema
         </ElButton>
-        <ElButton @click="loadTestSchema('basic')">
-          基础表单
+        <ElButton @click="clearSchema">
+          清空
         </ElButton>
-        <ElButton @click="loadTestSchema('comprehensive')">
-          综合示例
+
+        <!-- 收藏管理 -->
+        <ElButton @click="addToFavorites">
+          收藏当前 Schema
         </ElButton>
-        <ElButton @click="loadTestSchema('arrayTest')">
-          数组测试
+        <ElButton @click="openFavorites">
+          我的收藏
         </ElButton>
 
         <!-- 模式切换 -->
@@ -321,12 +277,9 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
           {{ mode === 'edit' ? '编辑模式' : '预览模式' }}
         </ElButton>
 
-        <!-- 获取数据 -->
+        <!-- 获取表单值 -->
         <ElButton v-if="mode === 'preview'" @click="getValues">
           获取表单值
-        </ElButton>
-        <ElButton @click="getSchema">
-          获取 Schema
         </ElButton>
       </div>
     </div>
@@ -349,6 +302,69 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
         Space,
       }" />
     </div>
+
+    <!-- Schema 弹窗 -->
+    <ElDialog
+      v-model="schemaDialogVisible"
+      title="Schema 编辑器"
+      width="60%"
+      :close-on-click-modal="false"
+    >
+      <div class="schema-editor">
+        <ElInput
+          v-model="schemaEditorText"
+          type="textarea"
+          :rows="20"
+          :readonly="!isEditingSchema"
+          placeholder="Schema JSON"
+          style="font-family: 'Courier New', monospace; font-size: 13px;"
+        />
+      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <div v-if="!isEditingSchema">
+            <ElButton @click="copySchema">复制</ElButton>
+            <ElButton type="primary" @click="enterEditMode">编辑</ElButton>
+            <ElButton @click="schemaDialogVisible = false">关闭</ElButton>
+          </div>
+          <div v-else>
+            <ElButton @click="cancelEdit">取消</ElButton>
+            <ElButton type="primary" @click="saveSchema">保存</ElButton>
+          </div>
+        </div>
+      </template>
+    </ElDialog>
+
+    <!-- 收藏列表弹窗 -->
+    <ElDialog
+      v-model="favoritesDialogVisible"
+      title="我的收藏"
+      width="50%"
+    >
+      <div v-if="favorites.length === 0" class="empty-favorites">
+        <p>暂无收藏</p>
+      </div>
+      <div v-else class="favorites-list">
+        <div
+          v-for="favorite in favorites"
+          :key="favorite.id"
+          class="favorite-item"
+        >
+          <div class="favorite-info">
+            <div class="favorite-name">{{ favorite.name }}</div>
+            <div class="favorite-time">{{ favorite.createdAt }}</div>
+          </div>
+          <div class="favorite-actions">
+            <ElButton size="small" type="primary" @click="applyFavorite(favorite)">
+              应用
+            </ElButton>
+            <ElButton size="small" type="danger" @click="deleteFavorite(favorite.id)">
+              删除
+            </ElButton>
+          </div>
+        </div>
+      </div>
+    </ElDialog>
   </div>
 </template>
 
@@ -388,5 +404,65 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
 .designer-wrapper {
   flex: 1;
   overflow: hidden;
+}
+
+/* Schema 编辑器样式 */
+.schema-editor {
+  margin-bottom: 16px;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 收藏列表样式 */
+.empty-favorites {
+  text-align: center;
+  padding: 40px 0;
+  color: #909399;
+}
+
+.favorites-list {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.favorite-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #ebeef5;
+  transition: background-color 0.3s;
+}
+
+.favorite-item:hover {
+  background-color: #f5f7fa;
+}
+
+.favorite-item:last-child {
+  border-bottom: none;
+}
+
+.favorite-info {
+  flex: 1;
+}
+
+.favorite-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #303133;
+  margin-bottom: 4px;
+}
+
+.favorite-time {
+  font-size: 12px;
+  color: #909399;
+}
+
+.favorite-actions {
+  display: flex;
+  gap: 8px;
 }
 </style>

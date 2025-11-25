@@ -6,7 +6,7 @@ export default {
     orientation: {
       type: 'string',
       title: '方向',
-      'x-component': 'Radio',
+      'x-component': 'Radio.Group',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.orientation',
       'enum': [

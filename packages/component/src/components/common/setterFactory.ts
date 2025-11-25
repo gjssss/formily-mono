@@ -46,7 +46,7 @@ export function createTitleSetters(): Record<string, ISchema> {
     layout: {
       'type': 'string',
       'title': '布局方式',
-      'x-component': 'Radio',
+      'x-component': 'Radio.Group',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.layout',
       'enum': [
@@ -57,7 +57,7 @@ export function createTitleSetters(): Record<string, ISchema> {
     labelAlign: {
       'type': 'string',
       'title': '标签对齐',
-      'x-component': 'Radio',
+      'x-component': 'Radio.Group',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.labelAlign',
       'enum': [
@@ -137,7 +137,7 @@ export function createSizeSetters(): Record<string, ISchema> {
     size: {
       'type': 'string',
       'title': '尺寸',
-      'x-component': 'Radio',
+      'x-component': 'Radio.Group',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.size',
       'enum': [
@@ -188,4 +188,3 @@ export function createSetterSchema(
     properties,
   } as ISchema
 }
-

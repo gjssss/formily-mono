@@ -20,15 +20,9 @@ const props = defineProps<{
       </div>
       <div class="array-actions">
         <ElButton type="primary" size="small" @click="props.onAdd">
-          <ElIcon style="margin-right: 4px;">
-            <Plus />
-          </ElIcon>
           添加到末尾
         </ElButton>
         <ElButton size="small" @click="props.onUnshift">
-          <ElIcon style="margin-right: 4px;">
-            <Top />
-          </ElIcon>
           添加到开头
         </ElButton>
       </div>
@@ -41,6 +35,7 @@ const props = defineProps<{
 
 <style scoped>
 .formily-array {
+  box-sizing: border-box;
   width: 100%;
   border: 1px solid #dcdfe6;
   border-radius: 4px;

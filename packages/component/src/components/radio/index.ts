@@ -14,7 +14,7 @@ export default {
   defaultSchema: {
     'type': 'string',
     'title': '单选框',
-    'x-component': 'Radio',
+    'x-component': 'Radio.Group',
     'x-decorator': 'FormItem',
     'enum': [
       { label: '选项1', value: '1' },

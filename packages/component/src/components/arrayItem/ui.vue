@@ -21,24 +21,16 @@ const props = defineProps<{
       </div>
       <div class="array-item-actions">
         <ElButton text type="primary" size="small" @click="props.onAdd">
-          <ElIcon>
-            <Plus />
-          </ElIcon>
+          添加
         </ElButton>
         <ElButton text size="small" @click="() => props.onMoveUp?.(props.arrayIndex!)">
-          <ElIcon>
-            <Top />
-          </ElIcon>
+          上移
         </ElButton>
         <ElButton text size="small" @click="() => props.onMoveDown?.(props.arrayIndex!)">
-          <ElIcon>
-            <Bottom />
-          </ElIcon>
+          下移
         </ElButton>
         <ElButton text type="danger" size="small" @click="() => props.onRemove?.(props.arrayIndex!)">
-          <ElIcon>
-            <Delete />
-          </ElIcon>
+          删除
         </ElButton>
       </div>
     </div>
