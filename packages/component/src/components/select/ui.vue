@@ -1,11 +1,25 @@
 <script setup lang="ts">
+import FormItemLayout from '../common/FormItemLayout.vue'
+
 defineOptions({
   name: 'SelectComponent',
   inheritAttrs: false,
 })
 
+interface Option {
+  label: string
+  value: string | number
+}
+
 const props = defineProps<{
+  // FormItemLayout props
   title?: string
+  required?: boolean
+  tooltip?: string
+  labelWidth?: string
+  layout?: 'inline' | 'vertical'
+  labelAlign?: 'left' | 'right'
+  // Select specific props
   value?: string | number
   onChange?: (value: string | number) => void
   placeholder?: string
@@ -14,19 +28,19 @@ const props = defineProps<{
   clearable?: boolean
   filterable?: boolean
   allowCreate?: boolean
+  disabled?: boolean
 }>()
-
-interface Option {
-  label: string
-  value: string | number
-}
 </script>
 
 <template>
-  <div>
-    <div v-if="props.title">
-      select title: {{ props.title }}
-    </div>
+  <FormItemLayout
+    :title="props.title"
+    :required="props.required"
+    :tooltip="props.tooltip"
+    :label-width="props.labelWidth"
+    :layout="props.layout"
+    :label-align="props.labelAlign"
+  >
     <ElSelect
       :placeholder="props.placeholder"
       :model-value="props.value"
@@ -34,6 +48,7 @@ interface Option {
       :clearable="props.clearable"
       :filterable="props.filterable"
       :allow-create="props.allowCreate"
+      :disabled="props.disabled"
       @update:model-value="props.onChange"
     >
       <ElOption
@@ -43,5 +58,5 @@ interface Option {
         :value="option.value"
       />
     </ElSelect>
-  </div>
+  </FormItemLayout>
 </template>

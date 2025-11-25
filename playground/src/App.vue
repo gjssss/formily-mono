@@ -173,16 +173,16 @@ const testSchemas = {
         'title': '城市',
         'x-decorator': 'FormItem',
         'x-component': 'Select',
+        "enum": [
+          { label: '北京', value: 'beijing' },
+          { label: '上海', value: 'shanghai' },
+          { label: '广州', value: 'guangzhou' },
+          { label: '深圳', value: 'shenzhen' },
+        ],
         'x-component-props': {
           placeholder: '请选择城市',
           clearable: true,
           filterable: true,
-          options: [
-            { label: '北京', value: 'beijing' },
-            { label: '上海', value: 'shanghai' },
-            { label: '广州', value: 'guangzhou' },
-            { label: '深圳', value: 'shenzhen' },
-          ],
         },
       },
       // Radio
@@ -191,11 +191,11 @@ const testSchemas = {
         'title': '性别',
         'x-decorator': 'FormItem',
         'x-component': 'Radio',
+        "enum": [
+          { label: '男', value: 'male' },
+          { label: '女', value: 'female' },
+        ],
         'x-component-props': {
-          options: [
-            { label: '男', value: 'male' },
-            { label: '女', value: 'female' },
-          ],
         },
       },
       // Checkbox
@@ -204,12 +204,12 @@ const testSchemas = {
         'title': '爱好',
         'x-decorator': 'FormItem',
         'x-component': 'Checkbox',
+        "enum": [
+          { label: '读书', value: 'reading' },
+          { label: '运动', value: 'sports' },
+          { label: '音乐', value: 'music' },
+        ],
         'x-component-props': {
-          options: [
-            { label: '读书', value: 'reading' },
-            { label: '运动', value: 'sports' },
-            { label: '音乐', value: 'music' },
-          ],
         },
       },
       // InputNumber
@@ -359,6 +359,7 @@ const loadTestSchema = (schemaName: keyof typeof testSchemas) => {
   padding: 0;
   margin: 0;
 }
+
 .app-container {
   display: flex;
   flex-direction: column;

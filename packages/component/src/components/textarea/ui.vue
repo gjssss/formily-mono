@@ -1,11 +1,20 @@
 <script setup lang="ts">
+import FormItemLayout from '../common/FormItemLayout.vue'
+
 defineOptions({
   name: 'TextAreaComponent',
   inheritAttrs: false,
 })
 
 const props = defineProps<{
+  // FormItemLayout props
   title?: string
+  required?: boolean
+  tooltip?: string
+  labelWidth?: string
+  layout?: 'inline' | 'vertical'
+  labelAlign?: 'left' | 'right'
+  // TextArea specific props
   value?: string
   onChange?: (value: string) => void
   placeholder?: string
@@ -14,14 +23,20 @@ const props = defineProps<{
   showWordLimit?: boolean
   autosize?: boolean | { minRows?: number, maxRows?: number }
   resize?: 'none' | 'vertical' | 'horizontal' | 'both'
+  disabled?: boolean
+  readonly?: boolean
 }>()
 </script>
 
 <template>
-  <div>
-    <div v-if="props.title">
-      textarea title: {{ props.title }}
-    </div>
+  <FormItemLayout
+    :title="props.title"
+    :required="props.required"
+    :tooltip="props.tooltip"
+    :label-width="props.labelWidth"
+    :layout="props.layout"
+    :label-align="props.labelAlign"
+  >
     <ElInput
       type="textarea"
       :placeholder="props.placeholder"
@@ -30,8 +45,10 @@ const props = defineProps<{
       :show-word-limit="props.showWordLimit"
       :autosize="props.autosize"
       :resize="props.resize"
+      :disabled="props.disabled"
+      :readonly="props.readonly"
       :model-value="props.value"
       @update:model-value="props.onChange"
     />
-  </div>
+  </FormItemLayout>
 </template>

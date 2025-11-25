@@ -31,11 +31,12 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "@formily-djd/utils": "workspace:*",
     "@formily/core": "^2.3.7",
     "@formily/vue": "^2.3.7",
+    "element-plus": "^2.11.7",
     "vue": "^3.5.22"
-
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
@@ -46,7 +47,6 @@
     "ansis": "^4.2.0",
     "bumpp": "^10.2.3",
     "chokidar": "^4.0.3",
-    "element-plus": "^2.11.7",
     "eslint": "^9.36.0",
     "exsolve": "^1.0.7",
     "lightningcss": "^1.30.1",

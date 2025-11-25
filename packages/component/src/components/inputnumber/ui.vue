@@ -1,11 +1,20 @@
 <script setup lang="ts">
+import FormItemLayout from '../common/FormItemLayout.vue'
+
 defineOptions({
   name: 'InputNumberComponent',
   inheritAttrs: false,
 })
 
 const props = defineProps<{
+  // FormItemLayout props
   title?: string
+  required?: boolean
+  tooltip?: string
+  labelWidth?: string
+  layout?: 'inline' | 'vertical'
+  labelAlign?: 'left' | 'right'
+  // InputNumber specific props
   value?: number
   onChange?: (value: number) => void
   min?: number
@@ -15,14 +24,20 @@ const props = defineProps<{
   placeholder?: string
   controls?: boolean
   controlsPosition?: '' | 'right'
+  disabled?: boolean
+  readonly?: boolean
 }>()
 </script>
 
 <template>
-  <div>
-    <div v-if="props.title">
-      inputnumber title: {{ props.title }}
-    </div>
+  <FormItemLayout
+    :title="props.title"
+    :required="props.required"
+    :tooltip="props.tooltip"
+    :label-width="props.labelWidth"
+    :layout="props.layout"
+    :label-align="props.labelAlign"
+  >
     <ElInputNumber
       :placeholder="props.placeholder"
       :model-value="props.value"
@@ -32,7 +47,9 @@ const props = defineProps<{
       :precision="props.precision"
       :controls="props.controls"
       :controls-position="props.controlsPosition || undefined"
+      :disabled="props.disabled"
+      :readonly="props.readonly"
       @update:model-value="props.onChange"
     />
-  </div>
+  </FormItemLayout>
 </template>
