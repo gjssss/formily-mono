@@ -83,9 +83,11 @@ function handleComponentClick(key: string) {
           {{ category }}
         </div>
         <div class="component-grid">
-          <div v-for="{ key, component } in items" :key="key" class="component-item" draggable="true"
+          <div
+            v-for="{ key, component } in items" :key="key" class="component-item" draggable="true"
             @click="handleComponentClick(key)" @dragstart="handleDragStart($event, key, component)"
-            @dragend="handleDragEnd">
+            @dragend="handleDragEnd"
+          >
             <div class="component-icon">
               {{ component.config?.icon?.slice(0, 3) }}
             </div>

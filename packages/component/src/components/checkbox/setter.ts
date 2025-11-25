@@ -1,22 +1,28 @@
 import type { ISchema } from '@formily/vue'
-import { createSetterSchema, createSetterItem } from '../common/setterFactory'
+import { createSetterSchema } from '../common/setterFactory'
 
 export default createSetterSchema({
   // Checkbox 特定属性
-  min: createSetterItem(
-    'number',
-    '最少选择数',
-    'InputNumber',
-    'x-component-props.min',
-    { min: 0 },
-  ),
-  max: createSetterItem(
-    'number',
-    '最多选择数',
-    'InputNumber',
-    'x-component-props.max',
-    { min: 0 },
-  ),
+  min: {
+    'type': 'number',
+    'title': '最少选择数',
+    'x-component': 'InputNumber',
+    'x-decorator': 'FormItem',
+    'x-path': 'x-component-props.min',
+    'x-component-props': {
+      min: 0,
+    },
+  },
+  max: {
+    'type': 'number',
+    'title': '最多选择数',
+    'x-component': 'InputNumber',
+    'x-decorator': 'FormItem',
+    'x-path': 'x-component-props.max',
+    'x-component-props': {
+      min: 0,
+    },
+  },
   // 选项配置
   options: {
     'type': 'array',

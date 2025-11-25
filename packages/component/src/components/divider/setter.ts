@@ -9,12 +9,10 @@ export default {
       'x-component': 'Radio',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.orientation',
-      'x-component-props': {
-        options: [
-          { label: '水平', value: 'horizontal' },
-          { label: '垂直', value: 'vertical' },
-        ],
-      },
+      'enum': [
+        { label: '水平', value: 'horizontal' },
+        { label: '垂直', value: 'vertical' },
+      ],
     },
     dashed: {
       type: 'boolean',

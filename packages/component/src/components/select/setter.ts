@@ -1,26 +1,29 @@
 import type { ISchema } from '@formily/vue'
-import { createSetterSchema, createSetterItem } from '../common/setterFactory'
+import { createSetterSchema } from '../common/setterFactory'
 
 export default createSetterSchema({
   // Select 特定属性
-  multiple: createSetterItem(
-    'boolean',
-    '多选',
-    'Switch',
-    'x-component-props.multiple',
-  ),
-  filterable: createSetterItem(
-    'boolean',
-    '可搜索',
-    'Switch',
-    'x-component-props.filterable',
-  ),
-  allowCreate: createSetterItem(
-    'boolean',
-    '允许创建',
-    'Switch',
-    'x-component-props.allowCreate',
-  ),
+  multiple: {
+    'title': '多选',
+    'type': 'boolean',
+    'x-component': 'Switch',
+    'x-decorator': 'FormItem',
+    'x-path': 'x-component-props.multiple',
+  },
+  filterable: {
+    'title': '可搜索',
+    'type': 'boolean',
+    'x-component': 'Switch',
+    'x-decorator': 'FormItem',
+    'x-path': 'x-component-props.filterable',
+  },
+  allowCreate: {
+    'title': '允许创建',
+    'type': 'boolean',
+    'x-component': 'Switch',
+    'x-decorator': 'FormItem',
+    'x-path': 'x-component-props.allowCreate',
+  },
   // 选项配置
   options: {
     'type': 'array',

@@ -122,6 +122,11 @@ const groupedComponents = computed(() => {
   const groups: Record<string, Array<{ key: string, component: FormilyComponent }>> = {}
 
   Object.entries(components).forEach(([key, component]) => {
+    // 过滤隐藏的组件
+    if (component.config?.hidden === true) {
+      return
+    }
+
     const category = component.config?.category || '其他'
     if (!groups[category]) {
       groups[category] = []

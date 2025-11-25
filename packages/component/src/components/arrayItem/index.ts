@@ -10,5 +10,12 @@ export default {
     icon: 'List',
     category: '容器',
     description: '数组项容器',
+    hidden: true,
+  },
+  defaultSchema: {
+    'type': 'object',
+    'x-component': 'ArrayItem',
+    'x-decorator': 'FormItem',
+    'properties': {},
   },
 } as FormilyComponent

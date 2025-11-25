@@ -189,22 +189,3 @@ export function createSetterSchema(
   } as ISchema
 }
 
-/**
- * 快速创建单个 Setter 项
- */
-export function createSetterItem(
-  type: 'string' | 'number' | 'boolean',
-  title: string,
-  component: string,
-  path: string,
-  componentProps?: Record<string, any>,
-): ISchema {
-  return {
-    'type': type,
-    'title': title,
-    'x-component': component,
-    'x-decorator': 'FormItem',
-    'x-path': path,
-    ...(componentProps ? { 'x-component-props': componentProps } : {}),
-  } as ISchema
-}
