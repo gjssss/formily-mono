@@ -2,10 +2,11 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { Form as FormilyForm } from '@formily/core'
 import type { ISchema } from '@formily/vue'
-import { ArrayItems, Checkbox, FormItem, Input, InputNumber, Radio, Select, Space, Switch } from '@formily/element-plus'
+import { ArrayItems, Checkbox, FormItem, Input, InputNumber, Radio, Space, Switch } from '@formily/element-plus'
 import { createSchemaField, FormProvider } from '@formily/vue'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useDesignStore } from '@/core/useDesignStore'
+import { CompatSelect } from './CompatSelect'
 import { createConfigForm } from './configForm'
 import ReactionsEditor from './ReactionsEditor.vue'
 
@@ -25,7 +26,7 @@ const { SchemaField } = createSchemaField({
     Checkbox,
     Radio,
     Switch,
-    Select,
+    Select: CompatSelect,
     Space,
     ArrayItems,
   },

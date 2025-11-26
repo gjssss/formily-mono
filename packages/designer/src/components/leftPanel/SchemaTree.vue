@@ -391,7 +391,7 @@ function handleSelectComponent(componentKey: string, component: FormilyComponent
   const { targetNode, position } = insertContext.value
   const dragData = {
     componentKey,
-    defaultSchema: component.defaultSchema,
+    defaultSchema: JSON.parse(JSON.stringify(component.defaultSchema)),
   }
 
   // 复用现有插入逻辑
