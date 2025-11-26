@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    dependencies:
+      bumpp:
+        specifier: ^10.3.1
+        version: 10.3.1
 
   packages/component:
     dependencies:

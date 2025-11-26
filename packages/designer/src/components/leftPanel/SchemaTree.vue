@@ -3,6 +3,7 @@ import type { FormilyComponent } from '@formily-djd/component'
 import type { ElTree } from 'element-plus'
 import { Bottom, CirclePlus, CopyDocument, Delete, FolderAdd, Search, Top } from '@element-plus/icons-vue'
 import { uid } from '@formily/shared'
+import { deleteByPath, setByPath } from '@formily-djd/utils'
 import { computed, inject, nextTick, ref } from 'vue'
 import { ClosestPosition } from '../../core/dragon'
 import { useDesignStore } from '../../core/useDesignStore'
@@ -427,7 +428,9 @@ function getNodePropertiesContext(nodePath: string) {
     // 普通 properties，去掉 .properties.fieldName
     const propertiesIndex = pathParts.lastIndexOf('properties')
     if (propertiesIndex > 0) {
-      parentPath = pathParts.slice(0, propertiesIndex - 1).join('.')
+      // 修复：应该是 propertiesIndex 而不是 propertiesIndex - 1
+      // 例如：f_grid.properties.f_input -> parentPath 应该是 'f_grid'
+      parentPath = pathParts.slice(0, propertiesIndex).join('.')
     }
   }
 
@@ -466,19 +469,19 @@ function handleCopyNode() {
   if (!schema)
     return
 
-  // 获取父节点信息
-  const { propertiesObj, fieldName } = getNodePropertiesContext(nodePath)
-  if (!propertiesObj)
-    return
-
-  // 使用 uid 生成唯一的字段名
-  const newFieldName = uid()
+  // 使用 uid 生成唯一的字段名，添加前缀确保不以数字开头
+  const newFieldName = `f_${uid()}`
 
   // 深拷贝 schema
   const newSchema = JSON.parse(JSON.stringify(schema))
 
-  // 添加到同级
-  propertiesObj[newFieldName] = newSchema
+  // 计算新节点的完整路径
+  const pathParts = nodePath.split('.')
+  const parentParts = pathParts.slice(0, -1)
+  const newNodePath = [...parentParts, newFieldName].join('.')
+
+  // 使用 setByPath 添加到 formSchema，触发响应式更新
+  setByPath(store.formSchema.value.properties, newNodePath, newSchema)
 
   contextMenuVisible.value = false
 }
@@ -492,13 +495,8 @@ function handleDeleteNode() {
 
   const nodePath = contextMenuNode.value.path
 
-  // 获取父节点信息
-  const { propertiesObj, fieldName } = getNodePropertiesContext(nodePath)
-  if (!propertiesObj)
-    return
-
-  // 删除节点
-  delete propertiesObj[fieldName]
+  // 使用 deleteByPath 从 formSchema.value.properties 中删除，触发响应式更新
+  deleteByPath(store.formSchema.value.properties, nodePath)
 
   contextMenuVisible.value = false
 }
@@ -535,19 +533,32 @@ function handleMoveUp() {
     newProperties[key] = value
   })
 
-  // 更新 properties（考虑 array 类型）
-  if (parentSchema.type === 'array') {
-    parentSchema.items.properties = newProperties
+  // 计算父节点路径并使用 setByPath 更新，触发响应式更新
+  const pathParts = nodePath.split('.')
+
+  // 检查是否为根节点
+  if (pathParts.length === 1) {
+    store.formSchema.value.properties = newProperties
   }
   else {
-    // 检查是否为根节点
-    const pathParts = nodePath.split('.')
-    if (pathParts.length === 1) {
-      store.formSchema.value.properties = newProperties
+    // 计算父节点的 properties 路径
+    const isInArrayItems = pathParts.includes('items')
+    let parentPropertiesPath: string
+
+    if (isInArrayItems) {
+      // 在 array 的 items.properties 中
+      const itemsIndex = pathParts.lastIndexOf('items')
+      const parentPath = pathParts.slice(0, itemsIndex).join('.')
+      parentPropertiesPath = `${parentPath}.items.properties`
     }
     else {
-      parentSchema.properties = newProperties
+      // 在普通 properties 中
+      const propertiesIndex = pathParts.lastIndexOf('properties')
+      parentPropertiesPath = pathParts.slice(0, propertiesIndex + 1).join('.')
     }
+
+    // 使用 setByPath 更新父节点的 properties，触发响应式
+    setByPath(store.formSchema.value.properties, parentPropertiesPath, newProperties)
   }
 
   contextMenuVisible.value = false
@@ -585,19 +596,32 @@ function handleMoveDown() {
     newProperties[key] = value
   })
 
-  // 更新 properties（考虑 array 类型）
-  if (parentSchema.type === 'array') {
-    parentSchema.items.properties = newProperties
+  // 计算父节点路径并使用 setByPath 更新，触发响应式更新
+  const pathParts = nodePath.split('.')
+
+  // 检查是否为根节点
+  if (pathParts.length === 1) {
+    store.formSchema.value.properties = newProperties
   }
   else {
-    // 检查是否为根节点
-    const pathParts = nodePath.split('.')
-    if (pathParts.length === 1) {
-      store.formSchema.value.properties = newProperties
+    // 计算父节点的 properties 路径
+    const isInArrayItems = pathParts.includes('items')
+    let parentPropertiesPath: string
+
+    if (isInArrayItems) {
+      // 在 array 的 items.properties 中
+      const itemsIndex = pathParts.lastIndexOf('items')
+      const parentPath = pathParts.slice(0, itemsIndex).join('.')
+      parentPropertiesPath = `${parentPath}.items.properties`
     }
     else {
-      parentSchema.properties = newProperties
+      // 在普通 properties 中
+      const propertiesIndex = pathParts.lastIndexOf('properties')
+      parentPropertiesPath = pathParts.slice(0, propertiesIndex + 1).join('.')
     }
+
+    // 使用 setByPath 更新父节点的 properties，触发响应式
+    setByPath(store.formSchema.value.properties, parentPropertiesPath, newProperties)
   }
 
   contextMenuVisible.value = false
@@ -725,8 +749,8 @@ function calculateDropPosition(event: DragEvent, nodeElement: Element): 'before'
  */
 function insertNewComponent(dragData: any, targetNode: TreeNode, position: 'before' | 'after' | 'inner') {
   const { componentKey, defaultSchema } = dragData
-  // 使用 uid 生成唯一的字段名
-  const fieldName = uid()
+  // 使用 uid 生成唯一的字段名，添加前缀确保不以数字开头
+  const fieldName = `f_${uid()}`
 
   // 映射位置到 ClosestPosition
   let closestPosition: any
@@ -777,8 +801,8 @@ function insertNewComponent(dragData: any, targetNode: TreeNode, position: 'befo
  */
 function insertNewComponentToRoot(dragData: any) {
   const { componentKey, defaultSchema } = dragData
-  // 使用 uid 生成唯一的字段名
-  const fieldName = uid()
+  // 使用 uid 生成唯一的字段名，添加前缀确保不以数字开头
+  const fieldName = `f_${uid()}`
 
   store.addField(fieldName, defaultSchema)
   store.selectNode(fieldName)

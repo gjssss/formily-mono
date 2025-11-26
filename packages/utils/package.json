@@ -32,5 +32,9 @@
     "tsdown": "^0.15.9",
     "typescript": "^5.9.3",
     "vitest": "^4.0.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }

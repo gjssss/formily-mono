@@ -170,8 +170,8 @@ function handleDropNewComponent(dragData: any) {
     return
   }
 
-  // 使用 uid 生成唯一的字段名
-  const fieldName = uid()
+  // 使用 uid 生成唯一的字段名，添加前缀确保不以数字开头
+  const fieldName = `f_${uid()}`
 
   // 获取目标位置
   const targetPath = store.closestNode.value

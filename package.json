@@ -2,11 +2,14 @@
   "name": "@formily-djd/root",
   "version": "1.0.0",
   "scripts": {
-    "build": "pnpm build:utils && pnpm build:component && pnpm build:designer && pnpm build:playground",
+    "build": "pnpm build:utils && pnpm build:component && pnpm build:designer",
     "build:utils": "pnpm --filter @formily-djd/utils build",
     "build:component": "pnpm --filter @formily-djd/component build",
     "build:designer": "pnpm --filter @formily-djd/designer build",
     "build:playground": "pnpm --filter playground build",
     "lint:fix": "pnpm --filter @formily-djd/* lint:fix"
+  },
+  "dependencies": {
+    "bumpp": "^10.3.1"
   }
 }

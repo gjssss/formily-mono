@@ -31,6 +31,7 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "@formily-djd/utils": "workspace:*",
     "@formily/core": "^2.3.7",
     "@formily/element-plus": "^1.1.0",
@@ -38,8 +39,7 @@
     "@formily/reactive-vue": "^2.3.7",
     "@formily/shared": "^2.3.7",
     "@formily/vue": "^2.3.7",
-    "vue": "^3.5.22",
-    "@element-plus/icons-vue": "^2.3.2"
+    "vue": "^3.5.22"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
@@ -69,6 +69,10 @@
     "vitest": "^3.2.4",
     "vitest-package-exports": "^0.1.1",
     "yaml": "^2.8.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx lint-staged"

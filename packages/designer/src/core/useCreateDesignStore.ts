@@ -297,6 +297,8 @@ export function useCreateDesignStore(draggable = false): DesignStore {
 
       // 对于 array 类型，子组件放到 items.properties
       let propertiesObj: any
+      let propertiesPath: string
+
       if (targetSchema.type === 'array') {
         if (!targetSchema.items) {
           targetSchema.items = { type: 'object', properties: {} }
@@ -305,12 +307,14 @@ export function useCreateDesignStore(draggable = false): DesignStore {
           targetSchema.items.properties = {}
         }
         propertiesObj = targetSchema.items.properties
+        propertiesPath = `${targetPath}.items.properties`
       }
       else {
         if (!targetSchema.properties) {
           targetSchema.properties = {}
         }
         propertiesObj = targetSchema.properties
+        propertiesPath = `${targetPath}.properties`
       }
 
       if (position === ClosestPosition.InnerBefore) {
@@ -319,32 +323,86 @@ export function useCreateDesignStore(draggable = false): DesignStore {
           [fieldName]: sourceSchema,
           ...propertiesObj,
         }
-        if (targetSchema.type === 'array') {
-          targetSchema.items.properties = newProperties
-        }
-        else {
-          targetSchema.properties = newProperties
-        }
+        // 使用 setByPath 更新，触发响应式
+        setByPath(formSchema.value.properties, propertiesPath, newProperties)
       }
       else {
         // Inner 或 InnerAfter：插入到末尾
-        propertiesObj[fieldName] = sourceSchema
+        // 使用 setByPath 更新，触发响应式
+        setByPath(formSchema.value.properties, `${propertiesPath}.${fieldName}`, sourceSchema)
       }
     }
     else {
-      // 作为兄弟节点插入
+      // 作为兄弟节点插入（Before/After）
       const insertPosition
         = position === ClosestPosition.Before || position === ClosestPosition.Upper
           ? 'before'
           : 'after'
 
-      insertFieldByPath(
-        formSchema.value, // 传入 formSchema.value 而不是 properties
-        targetPath,
-        fieldName,
-        sourceSchema,
-        insertPosition,
-      )
+      // 解析目标路径，获取父节点的 properties 路径
+      const pathParts = targetPath.split('.')
+      const targetFieldName = pathParts[pathParts.length - 1]
+
+      // 计算父节点的 properties 路径
+      let parentPropertiesPath: string
+      const isInArrayItems = pathParts.includes('items')
+
+      if (pathParts.length === 1) {
+        // 根级别兄弟节点
+        parentPropertiesPath = ''
+      }
+      else if (isInArrayItems) {
+        // 在 array 的 items.properties 中
+        const itemsIndex = pathParts.lastIndexOf('items')
+        const parentPath = pathParts.slice(0, itemsIndex).join('.')
+        parentPropertiesPath = `${parentPath}.items.properties`
+      }
+      else {
+        // 在普通 properties 中
+        const propertiesIndex = pathParts.lastIndexOf('properties')
+        parentPropertiesPath = pathParts.slice(0, propertiesIndex + 1).join('.')
+      }
+
+      // 获取父节点的 properties 对象
+      const parentProperties = parentPropertiesPath
+        ? getByPath(formSchema.value.properties, parentPropertiesPath)
+        : formSchema.value.properties
+
+      if (!parentProperties) {
+        console.warn('父节点的 properties 不存在:', parentPropertiesPath)
+        return
+      }
+
+      // 将 properties 转换为数组，找到目标字段的索引
+      const entries = Object.entries(parentProperties)
+      const targetIndex = entries.findIndex(([key]) => key === targetFieldName)
+
+      if (targetIndex === -1) {
+        console.warn('目标字段不存在:', targetFieldName)
+        return
+      }
+
+      // 重新构建 properties 对象，在指定位置插入新字段
+      const insertIndex = insertPosition === 'after' ? targetIndex + 1 : targetIndex
+      const newEntries = [
+        ...entries.slice(0, insertIndex),
+        [fieldName, sourceSchema],
+        ...entries.slice(insertIndex),
+      ]
+
+      const newProperties: any = {}
+      newEntries.forEach(([key, val]) => {
+        newProperties[key] = val
+      })
+
+      // 使用 setByPath 更新父节点的 properties，触发响应式
+      if (parentPropertiesPath) {
+        setByPath(formSchema.value.properties, parentPropertiesPath, newProperties)
+      }
+      else {
+        // 根级别，直接更新
+        formSchema.value.properties = newProperties
+      }
     }
   }
 
@@ -383,6 +441,8 @@ export function useCreateDesignStore(draggable = false): DesignStore {
 
       // 对于 array 类型，子组件放到 items.properties
       let propertiesObj: any
+      let propertiesPath: string
+
       if (targetSchema.type === 'array') {
         if (!targetSchema.items) {
           targetSchema.items = { type: 'object', properties: {} }
@@ -391,12 +451,14 @@ export function useCreateDesignStore(draggable = false): DesignStore {
           targetSchema.items.properties = {}
         }
         propertiesObj = targetSchema.items.properties
+        propertiesPath = `${targetPath}.items.properties`
       }
       else {
         if (!targetSchema.properties) {
           targetSchema.properties = {}
         }
         propertiesObj = targetSchema.properties
+        propertiesPath = `${targetPath}.properties`
       }
 
       if (position === ClosestPosition.InnerBefore) {
@@ -405,32 +467,86 @@ export function useCreateDesignStore(draggable = false): DesignStore {
           [fieldName]: schema,
           ...propertiesObj,
         }
-        if (targetSchema.type === 'array') {
-          targetSchema.items.properties = newProperties
-        }
-        else {
-          targetSchema.properties = newProperties
-        }
+        // 使用 setByPath 更新，触发响应式
+        setByPath(formSchema.value.properties, propertiesPath, newProperties)
       }
       else {
         // Inner 或 InnerAfter：插入到末尾
-        propertiesObj[fieldName] = schema
+        // 使用 setByPath 更新，触发响应式
+        setByPath(formSchema.value.properties, `${propertiesPath}.${fieldName}`, schema)
       }
     }
     else {
-      // 作为兄弟节点插入
+      // 作为兄弟节点插入（Before/After）
       const insertPosition
         = position === ClosestPosition.Before || position === ClosestPosition.Upper
           ? 'before'
           : 'after'
 
-      insertFieldByPath(
-        formSchema.value, // 传入 formSchema.value 而不是 properties
-        targetPath,
-        fieldName,
-        schema,
-        insertPosition,
-      )
+      // 解析目标路径，获取父节点的 properties 路径
+      const pathParts = targetPath.split('.')
+      const targetFieldName = pathParts[pathParts.length - 1]
+
+      // 计算父节点的 properties 路径
+      let parentPropertiesPath: string
+      const isInArrayItems = pathParts.includes('items')
+
+      if (pathParts.length === 1) {
+        // 根级别兄弟节点
+        parentPropertiesPath = ''
+      }
+      else if (isInArrayItems) {
+        // 在 array 的 items.properties 中
+        const itemsIndex = pathParts.lastIndexOf('items')
+        const parentPath = pathParts.slice(0, itemsIndex).join('.')
+        parentPropertiesPath = `${parentPath}.items.properties`
+      }
+      else {
+        // 在普通 properties 中
+        const propertiesIndex = pathParts.lastIndexOf('properties')
+        parentPropertiesPath = pathParts.slice(0, propertiesIndex + 1).join('.')
+      }
+
+      // 获取父节点的 properties 对象
+      const parentProperties = parentPropertiesPath
+        ? getByPath(formSchema.value.properties, parentPropertiesPath)
+        : formSchema.value.properties
+
+      if (!parentProperties) {
+        console.warn('父节点的 properties 不存在:', parentPropertiesPath)
+        return
+      }
+
+      // 将 properties 转换为数组，找到目标字段的索引
+      const entries = Object.entries(parentProperties)
+      const targetIndex = entries.findIndex(([key]) => key === targetFieldName)
+
+      if (targetIndex === -1) {
+        console.warn('目标字段不存在:', targetFieldName)
+        return
+      }
+
+      // 重新构建 properties 对象，在指定位置插入新字段
+      const insertIndex = insertPosition === 'after' ? targetIndex + 1 : targetIndex
+      const newEntries = [
+        ...entries.slice(0, insertIndex),
+        [fieldName, schema],
+        ...entries.slice(insertIndex),
+      ]
+
+      const newProperties: any = {}
+      newEntries.forEach(([key, val]) => {
+        newProperties[key] = val
+      })
+
+      // 使用 setByPath 更新父节点的 properties，触发响应式
+      if (parentPropertiesPath) {
+        setByPath(formSchema.value.properties, parentPropertiesPath, newProperties)
+      }
+      else {
+        // 根级别，直接更新
+        formSchema.value.properties = newProperties
+      }
     }
   }
 
