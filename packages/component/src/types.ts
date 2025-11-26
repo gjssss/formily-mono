@@ -1,5 +1,6 @@
 import type { ISchema } from '@formily/vue'
 import type { Component } from 'vue'
+import type { SetterConfig } from './components/common/setterPresets'
 
 export interface ComponentConfig {
   name: string
@@ -11,7 +12,7 @@ export interface ComponentConfig {
 
 export interface FormilyComponent {
   component: Component
-  setterSchema: ISchema
+  setterSchema: ISchema | SetterConfig
   config: ComponentConfig
   defaultSchema: ISchema
 }

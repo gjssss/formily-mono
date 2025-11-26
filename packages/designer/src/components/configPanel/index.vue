@@ -5,7 +5,6 @@ import type { ISchema } from '@formily/vue'
 import { ArrayItems, Checkbox, FormItem, Input, InputNumber, Radio, Select, Space, Switch } from '@formily/element-plus'
 import { createSchemaField, FormProvider } from '@formily/vue'
 import { computed, ref, shallowRef, watch } from 'vue'
-import { baseFieldConfigSchema } from '@/core/baseFieldConfig'
 import { useDesignStore } from '@/core/useDesignStore'
 import { createConfigForm } from './configForm'
 import ReactionsEditor from './ReactionsEditor.vue'
@@ -55,17 +54,46 @@ const componentSetterSchema = computed(() => {
   return componentDef?.setterSchema
 })
 
+// 获取 basicSetter Schema
+const basicSetterSchema = computed(() => {
+  if (!componentSetterSchema.value)
+    return null
+
+  const basicSetter = componentSetterSchema.value.basicSetter
+  if (!basicSetter || Object.keys(basicSetter).length === 0)
+    return null
+
+  return {
+    type: 'object',
+    properties: basicSetter,
+  } as ISchema
+})
+
+// 获取组件特定配置 Schema
+const componentConfigSchema = computed(() => {
+  if (!componentSetterSchema.value)
+    return null
+
+  const componentSetter = componentSetterSchema.value.componentSetter
+  if (!componentSetter || !componentSetter.properties || Object.keys(componentSetter.properties).length === 0)
+    return null
+
+  return componentSetter
+})
+
 // 合并后的完整 Setter Schema（基础配置 + 组件配置）
 const fullSetterSchema = computed(() => {
   if (!componentSetterSchema.value)
     return null
 
+  const basic = componentSetterSchema.value.basicSetter || {}
+  const component = componentSetterSchema.value.componentSetter?.properties || {}
+
   return {
     type: 'object',
     properties: {
-      // 包含基础配置和组件配置的所有属性
-      ...baseFieldConfigSchema.properties as Record<string, ISchema>,
-      ...(componentSetterSchema.value.properties as Record<string, ISchema> || {}),
+      ...basic,
+      ...component,
     },
   } as ISchema
 })
@@ -133,8 +161,8 @@ function handleSaveReactions(reactions: any) {
         <!-- 折叠面板 -->
         <ElCollapse v-model="activeCollapse" class="config-section">
           <!-- 基础配置区域 -->
-          <ElCollapseItem name="base" title="基础配置">
-            <SchemaField :schema="baseFieldConfigSchema" />
+          <ElCollapseItem v-if="basicSetterSchema" name="base" title="基本配置">
+            <SchemaField :schema="basicSetterSchema" />
           </ElCollapseItem>
 
           <ElCollapseItem name="operate" title="操作配置">
@@ -146,8 +174,8 @@ function handleSaveReactions(reactions: any) {
           </ElCollapseItem>
 
           <!-- 组件配置区域 -->
-          <ElCollapseItem v-if="componentSetterSchema" name="component" title="组件配置">
-            <SchemaField :schema="componentSetterSchema" />
+          <ElCollapseItem v-if="componentConfigSchema" name="component" title="组件配置">
+            <SchemaField :schema="componentConfigSchema" />
           </ElCollapseItem>
         </ElCollapse>
       </FormProvider>

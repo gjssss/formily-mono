@@ -6,7 +6,6 @@ import { isVoidField } from '@formily/core'
 import { observer } from '@formily/reactive-vue'
 import { RecursionField, useField, useFieldSchema } from '@formily/vue'
 import { computed, defineComponent, h, inject } from 'vue'
-import { baseFieldConfigSchema } from '@/core/baseFieldConfig'
 import { ArrayFieldKey, ArrayItemKey } from '@/shared'
 import ArrayInner from './arrayInner.vue'
 import ArrayItemInner from './arrayItemInner.vue'
@@ -61,19 +60,23 @@ export function schemaWrapper(comp: FormilyComponent): Component {
             }
           }
 
-          // 映射基础配置的属性
-          for (const [key, value] of Object.entries(baseFieldConfigSchema.properties || {})) {
-            const path = value['x-path']
-            if (path) {
-              _bindProps[key] = getByPath(schema.value, path)
+          // 映射 setterSchema 中的属性（包含 basicSetter 和组件特定配置）
+          // 遍历 basicSetter
+          if (setterSchema.basicSetter) {
+            for (const [key, value] of Object.entries(setterSchema.basicSetter)) {
+              const path = value['x-path']
+              if (path) {
+                _bindProps[key] = getByPath(schema.value, path)
+              }
             }
           }
-
-          // 映射组件特定的属性
-          for (const [key, value] of Object.entries(setterSchema.properties || {})) {
-            const path = value['x-path']
-            if (path) {
-              _bindProps[key] = getByPath(schema.value, path)
+          // 遍历 componentSetter
+          if (setterSchema.componentSetter?.properties) {
+            for (const [key, value] of Object.entries(setterSchema.componentSetter.properties)) {
+              const path = value['x-path']
+              if (path) {
+                _bindProps[key] = getByPath(schema.value, path)
+              }
             }
           }
 

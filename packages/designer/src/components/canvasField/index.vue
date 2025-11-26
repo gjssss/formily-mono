@@ -132,7 +132,7 @@ function handleDragEnd() {
           <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" />
           <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
-        <span class="placeholder-text">拖拽组件到这里</span>
+        <span class="placeholder-text">添加组件到这里</span>
       </div>
 
       <template v-if="shouldRenderArrayComponent(props.schema)">
@@ -159,7 +159,7 @@ function handleDragEnd() {
           <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" />
           <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
-        <span class="placeholder-text">拖拽组件到这里</span>
+        <span class="placeholder-text">添加组件到这里</span>
       </div>
 
       <template v-for="key in Object.keys(props.schema?.properties || {})" :key="key">

@@ -274,7 +274,7 @@ const saveFavoritesToStorage = () => {
 
     <!-- Designer 组件 -->
     <div class="designer-wrapper">
-      <Designer ref="designerRef" v-model="schema" gap="16px" :mode="mode" height="600px" :components="{
+      <Designer ref="designerRef" v-model="schema" gap="16px" :mode="mode" height="calc(100vh - 57px)" :components="{
         ...components
       }" />
     </div>
@@ -326,15 +326,10 @@ const saveFavoritesToStorage = () => {
 </template>
 
 <style scoped>
-* {
-  padding: 0;
-  margin: 0;
-}
-
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 90vh;
+  height: 100vh;
 }
 
 .toolbar {

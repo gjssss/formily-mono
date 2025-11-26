@@ -217,18 +217,6 @@ function handleDropMoveComponent() {
     >
       <CanvasField v-if="store.formSchema.value" :schema="store.formSchema.value" />
 
-      <!-- 空画布提示 -->
-      <div v-if="isEmpty" class="empty-canvas">
-        <div class="empty-hint">
-          <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-            <line x1="9" y1="9" x2="15" y2="15" />
-            <line x1="15" y1="9" x2="9" y2="15" />
-          </svg>
-          <p>从左侧拖拽组件到这里开始设计</p>
-        </div>
-      </div>
-
       <!-- 辅助工具层：选中框和悬浮框 -->
       <AuxToolWidget />
     </div>

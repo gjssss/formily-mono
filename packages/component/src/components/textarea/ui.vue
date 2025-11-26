@@ -22,6 +22,7 @@ const props = defineProps<{
   rows?: number
   maxlength?: string | number
   showWordLimit?: boolean
+  clearable?: boolean
   autosize?: boolean | { minRows?: number, maxRows?: number }
   resize?: 'none' | 'vertical' | 'horizontal' | 'both'
   disabled?: boolean | 'inherit'
@@ -48,6 +49,7 @@ const inheritedProps = useFormContainerInherit(props)
       :rows="props.rows"
       :maxlength="props.maxlength"
       :show-word-limit="props.showWordLimit"
+      :clearable="props.clearable"
       :autosize="props.autosize"
       :resize="props.resize"
       :disabled="inheritedProps.disabled"

@@ -1,18 +1,18 @@
 import type { ISchema } from '@formily/json-schema'
+import type { SetterConfig } from '@formily-djd/component'
 import { getByPath } from '@formily-djd/utils'
-import { baseFieldConfigSchema } from '@/core/baseFieldConfig'
 
 /**
  * 根据 setterSchema 中的 x-path 从 schema 中提取组件属性
  */
-export function buildComponentProps(schema: ISchema, setterSchema: ISchema): Record<string, any> {
+export function buildComponentProps(schema: ISchema, setterSchema: SetterConfig): Record<string, any> {
   const componentProps: Record<string, any> = {
     ...(schema?.['x-component-props'] || {}),
   }
 
-  // 处理基础配置的属性映射
-  if (baseFieldConfigSchema.properties) {
-    Object.entries(baseFieldConfigSchema.properties).forEach(([key, fieldSchema]) => {
+  // 处理 basicSetter 中的属性映射
+  if (setterSchema.basicSetter) {
+    Object.entries(setterSchema.basicSetter).forEach(([key, fieldSchema]) => {
       const xPath = (fieldSchema as ISchema)['x-path']
       if (xPath) {
         const value = getByPath(schema, xPath)
@@ -23,9 +23,9 @@ export function buildComponentProps(schema: ISchema, setterSchema: ISchema): Rec
     })
   }
 
-  // 处理组件特定的属性映射
-  if (setterSchema.properties) {
-    Object.entries(setterSchema.properties).forEach(([key, fieldSchema]) => {
+  // 处理 componentSetter 中的属性映射
+  if (setterSchema.componentSetter?.properties) {
+    Object.entries(setterSchema.componentSetter.properties).forEach(([key, fieldSchema]) => {
       const xPath = (fieldSchema as ISchema)['x-path']
       if (xPath) {
         const value = getByPath(schema, xPath)
