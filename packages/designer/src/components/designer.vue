@@ -15,7 +15,6 @@ const props = withDefaults(defineProps<{
   modelValue?: ISchema
   draggable?: boolean
   height?: string
-  gap?: string
 }>(), {
   mode: 'edit',
   draggable: false,
