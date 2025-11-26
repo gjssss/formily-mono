@@ -1,9 +1,10 @@
 import type { SetterConfig } from '../common/setterPresets'
-import { basicSetter } from '../common/setterPresets'
+import { basicSetter, patternSetter } from '../common/setterPresets'
 
 export default {
   basicSetter: {
     ...basicSetter,
+    ...patternSetter,
   },
   componentSetter: {
     type: 'object',
@@ -14,17 +15,6 @@ export default {
         'x-component': 'InputNumber',
         'x-decorator': 'FormItem',
         'x-path': 'x-component-props.form-gap',
-      },
-      disabled: {
-        'type': 'boolean',
-        'title': '全局禁用',
-        'x-component': 'Switch',
-        'x-decorator': 'FormItem',
-        'x-path': 'x-component-props.disabled',
-        'x-component-props': {
-          activeText: '是',
-          inactiveText: '否',
-        },
       },
       layout: {
         'type': 'string',

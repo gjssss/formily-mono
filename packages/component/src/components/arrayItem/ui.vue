@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import type { FormilyPattern } from '@/types'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
+
 defineOptions({
   name: 'ArrayItem',
   inheritAttrs: false,
@@ -6,12 +10,18 @@ defineOptions({
 
 const props = defineProps<{
   arrayIndex?: number
-  disabled?: boolean
+  pattern?: FormilyPattern
   onAdd?: () => void
   onRemove?: (index: number) => void
   onMoveUp?: (index: number) => void
   onMoveDown?: (index: number) => void
 }>()
+
+const inheritedProps = useFormContainerInherit(props)
+const isDisabled = computed(() => {
+  const pattern = inheritedProps.value.pattern
+  return pattern === 'disabled' || pattern === 'readOnly'
+})
 </script>
 
 <template>
@@ -25,7 +35,7 @@ const props = defineProps<{
           text
           type="primary"
           size="small"
-          :disabled="props.disabled"
+          :disabled="isDisabled"
           @click="props.onAdd"
         >
           添加
@@ -33,7 +43,7 @@ const props = defineProps<{
         <ElButton
           text
           size="small"
-          :disabled="props.disabled"
+          :disabled="isDisabled"
           @click="() => props.onMoveUp?.(props.arrayIndex!)"
         >
           上移
@@ -41,7 +51,7 @@ const props = defineProps<{
         <ElButton
           text
           size="small"
-          :disabled="props.disabled"
+          :disabled="isDisabled"
           @click="() => props.onMoveDown?.(props.arrayIndex!)"
         >
           下移
@@ -50,7 +60,7 @@ const props = defineProps<{
           text
           type="danger"
           size="small"
-          :disabled="props.disabled"
+          :disabled="isDisabled"
           @click="() => props.onRemove?.(props.arrayIndex!)"
         >
           删除

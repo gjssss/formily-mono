@@ -16,6 +16,7 @@ export default {
     'type': 'object',
     'x-component': 'ArrayItem',
     'x-decorator': 'FormItem',
+    'x-pattern': 'inherit',
     'properties': {},
   },
 } as FormilyComponent

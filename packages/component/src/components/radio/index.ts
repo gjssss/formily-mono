@@ -16,6 +16,7 @@ export default {
     'title': '单选框',
     'x-component': 'Radio',
     'x-decorator': 'FormItem',
+    'x-pattern': 'inherit',
     'enum': [
       { label: '选项1', value: '1' },
       { label: '选项2', value: '2' },

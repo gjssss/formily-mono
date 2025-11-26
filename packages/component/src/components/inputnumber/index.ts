@@ -16,6 +16,7 @@ export default {
     'title': '数字输入框',
     'x-component': 'InputNumber',
     'x-decorator': 'FormItem',
+    'x-pattern': 'inherit',
     'x-component-props': {
       placeholder: '请输入数字',
     },

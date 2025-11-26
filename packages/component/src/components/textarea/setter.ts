@@ -1,10 +1,11 @@
 import type { SetterConfig } from '../common/setterPresets'
-import { basicSetter, inputSetter, sizeSetter } from '../common/setterPresets'
+import { basicSetter, inputSetter, patternSetter, sizeSetter } from '../common/setterPresets'
 
 export default {
   basicSetter: {
     ...basicSetter,
     ...inputSetter,
+    ...patternSetter,
     ...sizeSetter,
   },
   componentSetter: {

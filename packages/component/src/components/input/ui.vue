@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { FormilyPattern } from '@/types'
+import { computed } from 'vue'
 import FormItemLayout from '../common/FormItemLayout.vue'
 import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
@@ -15,6 +17,7 @@ const props = defineProps<{
   labelWidth?: string
   layout?: 'inline' | 'vertical' | 'inherit'
   labelAlign?: 'left' | 'right' | 'inherit'
+  pattern?: FormilyPattern
   // Input specific props
   value?: string
   onChange?: (value: string) => void
@@ -24,13 +27,18 @@ const props = defineProps<{
   clearable?: boolean
   prefixIcon?: string
   suffixIcon?: string
-  disabled?: boolean | 'inherit'
-  readonly?: boolean
   size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
 
 // 处理继承逻辑
 const inheritedProps = useFormContainerInherit(props)
+const patternState = computed(() => {
+  const pattern = inheritedProps.value.pattern
+  return {
+    disabled: pattern === 'disabled',
+    readonly: pattern === 'readOnly',
+  }
+})
 </script>
 
 <template>
@@ -49,8 +57,8 @@ const inheritedProps = useFormContainerInherit(props)
       :clearable="props.clearable"
       :prefix-icon="props.prefixIcon"
       :suffix-icon="props.suffixIcon"
-      :disabled="inheritedProps.disabled"
-      :readonly="props.readonly"
+      :disabled="patternState.disabled"
+      :readonly="patternState.readonly"
       :size="inheritedProps.size"
       :model-value="props.value"
       @update:model-value="props.onChange"

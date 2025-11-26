@@ -16,6 +16,7 @@ export default {
     'title': '日期选择器',
     'x-component': 'DatePicker',
     'x-decorator': 'FormItem',
+    'x-pattern': 'inherit',
     'x-component-props': {
       placeholder: '请选择日期',
     },

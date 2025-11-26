@@ -16,6 +16,7 @@ export default {
     'title': '下拉选择',
     'x-component': 'Select',
     'x-decorator': 'FormItem',
+    'x-pattern': 'inherit',
     'x-component-props': {
       placeholder: '请选择',
     },

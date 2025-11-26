@@ -15,12 +15,12 @@ export default {
     'type': 'void',
     'title': '表单容器',
     'x-component': 'FormContainer',
+    'x-pattern': 'editable',
     'x-component-props': {
       'layout': 'vertical',
       'labelWidth': 'auto',
       'labelAlign': 'left',
       'size': 'default',
-      'disabled': false,
       'form-gap': 8,
     },
     'properties': {},

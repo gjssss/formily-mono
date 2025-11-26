@@ -16,5 +16,6 @@ export default {
     'title': '开关',
     'x-component': 'Switch',
     'x-decorator': 'FormItem',
+    'x-pattern': 'inherit',
   },
 } as FormilyComponent

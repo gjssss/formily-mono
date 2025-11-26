@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import type { FormilyPattern } from '@/types'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
+
 defineOptions({
   name: 'Array',
   inheritAttrs: false,
@@ -6,11 +10,20 @@ defineOptions({
 
 const props = defineProps<{
   title?: string
-  disabled?: boolean
+  pattern?: FormilyPattern
   onAdd?: () => void
   onPush?: () => void
   onUnshift?: () => void
 }>()
+
+const inheritedProps = useFormContainerInherit(props)
+
+const isDisabled = computed(() => {
+  const pattern = inheritedProps.value.pattern
+  const patternDisabled = pattern === 'disabled'
+  const patternReadonly = pattern === 'readOnly'
+  return Boolean(patternDisabled || patternReadonly)
+})
 </script>
 
 <template>
@@ -23,14 +36,14 @@ const props = defineProps<{
         <ElButton
           type="primary"
           size="small"
-          :disabled="props.disabled"
+          :disabled="isDisabled"
           @click="props.onAdd"
         >
           添加到末尾
         </ElButton>
         <ElButton
           size="small"
-          :disabled="props.disabled"
+          :disabled="isDisabled"
           @click="props.onUnshift"
         >
           添加到开头

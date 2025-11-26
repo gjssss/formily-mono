@@ -43,21 +43,7 @@ export function schemaWrapper(comp: FormilyComponent): Component {
 
           // 映射 field 的状态到组件 props（支持 x-reactions 的状态控制）
           if (currentField && !isVoidField(currentField)) {
-            // 处理 pattern 模式：disabled, readOnly, readPretty
-            if (currentField.pattern === 'disabled' || currentField.pattern === 'readPretty') {
-              _bindProps.disabled = true
-            }
-            if (currentField.pattern === 'readOnly') {
-              _bindProps.readOnly = true
-            }
-
-            // 直接映射状态属性
-            if (currentField.disabled !== undefined) {
-              _bindProps.disabled = currentField.disabled
-            }
-            if (currentField.readOnly !== undefined) {
-              _bindProps.readOnly = currentField.readOnly
-            }
+            _bindProps.pattern = currentField.pattern
           }
 
           // 映射 setterSchema 中的属性（包含 basicSetter 和组件特定配置）
@@ -78,6 +64,10 @@ export function schemaWrapper(comp: FormilyComponent): Component {
                 _bindProps[key] = getByPath(schema.value, path)
               }
             }
+          }
+
+          if (currentField && !isVoidField(currentField)) {
+            _bindProps.pattern = currentField.pattern
           }
 
           const arrayFieldValue = schema.value?.type === 'array'
@@ -111,10 +101,8 @@ export function schemaWrapper(comp: FormilyComponent): Component {
                 arrayFieldValue.move(index, index + 1)
               }
             }
-
-            // ArrayItem 继承父 Array 的 disabled 状态
-            if (arrayItemIndex?.index !== undefined && arrayFieldValue.disabled) {
-              _bindProps.disabled = arrayFieldValue.disabled
+            if (arrayItemIndex?.index !== undefined) {
+              _bindProps.pattern = arrayFieldValue.pattern
             }
           }
 

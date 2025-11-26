@@ -1,10 +1,10 @@
 import type { SetterConfig } from '../common/setterPresets'
-import { basicSetter, sizeSetter } from '../common/setterPresets'
+import { basicSetter, patternSetter, sizeSetter } from '../common/setterPresets'
 
 export default {
   basicSetter: {
     ...basicSetter,
-    // InputNumber 只需要 placeholder, disabled, readonly，不需要 clearable
+    // InputNumber 只需要占位符和 pattern 设置，不需要 clearable
     placeholder: {
       'type': 'string',
       'title': '占位符',
@@ -12,25 +12,7 @@ export default {
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.placeholder',
     },
-    disabled: {
-      'type': 'string',
-      'title': '禁用',
-      'x-component': 'Select',
-      'x-decorator': 'FormItem',
-      'x-path': 'x-component-props.disabled',
-      'enum': [
-        { label: '继承', value: 'inherit' },
-        { label: '是', value: true },
-        { label: '否', value: false },
-      ],
-    },
-    readonly: {
-      'type': 'boolean',
-      'title': '只读',
-      'x-component': 'Switch',
-      'x-decorator': 'FormItem',
-      'x-path': 'x-component-props.readonly',
-    },
+    ...patternSetter,
     ...sizeSetter,
   },
   componentSetter: {

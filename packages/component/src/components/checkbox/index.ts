@@ -16,6 +16,7 @@ export default {
     'title': '复选框',
     'x-component': 'Checkbox',
     'x-decorator': 'FormItem',
+    'x-pattern': 'inherit',
     'enum': [
       { label: '选项1', value: '1' },
       { label: '选项2', value: '2' },

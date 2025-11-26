@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { QuestionFilled } from '@element-plus/icons-vue'
 import { ElTooltip } from 'element-plus'
-import { computed, inject } from 'vue'
-import { formContainerKey } from '@/shared/symbol'
+import { computed } from 'vue'
 
 defineOptions({
   name: 'FormItemLayout',
@@ -18,35 +17,14 @@ const props = defineProps<{
   labelAlign?: 'left' | 'right' | 'inherit'
 }>()
 
-const formContainer = inject(formContainerKey, computed(() => ({
-  layout: 'vertical',
-  labelWidth: 'auto',
-  labelAlign: 'left',
-})))
-
 const layoutClass = computed(() => {
-  // 如果 props.layout 为 'inherit' 或 undefined，使用容器配置
-  const layout = (props.layout === 'inherit' || !props.layout)
-    ? formContainer.value.layout
-    : props.layout
-  return `formily-form-item--${layout}`
+  return `formily-form-item--${props.layout}`
 })
 
 const labelStyle = computed(() => {
-  // labelWidth: 如果为 '0' 或 'inherit' 或 undefined，使用容器配置
-  const propsLableWidth = (props.labelWidth === '0' || props.labelWidth === 'inherit' || !props.labelWidth)
-    ? undefined
-    : props.labelWidth
-  const labelWidth = propsLableWidth || formContainer.value.labelWidth
-
-  // labelAlign: 如果为 'inherit' 或 undefined，使用容器配置
-  const labelAlign = (props.labelAlign === 'inherit' || !props.labelAlign)
-    ? formContainer.value.labelAlign
-    : props.labelAlign
-
   return {
-    width: labelWidth,
-    textAlign: labelAlign as any,
+    width: props.labelWidth,
+    textAlign: props.labelAlign,
   }
 })
 </script>

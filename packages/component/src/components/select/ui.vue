@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { FormilyPattern } from '@/types'
+import { computed } from 'vue'
 import FormItemLayout from '../common/FormItemLayout.vue'
 import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
@@ -15,6 +17,7 @@ const props = defineProps<{
   labelWidth?: string
   layout?: 'inline' | 'vertical' | 'inherit'
   labelAlign?: 'left' | 'right' | 'inherit'
+  pattern?: FormilyPattern
   // Select specific props
   value?: string | number
   onChange?: (value: string | number) => void
@@ -24,7 +27,6 @@ const props = defineProps<{
   clearable?: boolean
   filterable?: boolean
   allowCreate?: boolean
-  disabled?: boolean | 'inherit'
   size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
 
@@ -35,6 +37,13 @@ interface Option {
 
 // 处理继承逻辑
 const inheritedProps = useFormContainerInherit(props)
+const patternState = computed(() => {
+  const pattern = inheritedProps.value.pattern
+  return {
+    disabled: pattern === 'disabled',
+    readonly: pattern === 'readOnly',
+  }
+})
 </script>
 
 <template>
@@ -42,9 +51,9 @@ const inheritedProps = useFormContainerInherit(props)
     :title="props.title"
     :required="props.required"
     :tooltip="props.tooltip"
-    :label-width="props.labelWidth"
-    :layout="props.layout"
-    :label-align="props.labelAlign"
+    :label-width="inheritedProps.labelWidth"
+    :layout="inheritedProps.layout"
+    :label-align="inheritedProps.labelAlign"
   >
     <ElSelect
       :placeholder="props.placeholder"
@@ -53,7 +62,7 @@ const inheritedProps = useFormContainerInherit(props)
       :clearable="props.clearable"
       :filterable="props.filterable"
       :allow-create="props.allowCreate"
-      :disabled="inheritedProps.disabled"
+      :disabled="patternState.disabled || patternState.readonly"
       :size="inheritedProps.size"
       @update:model-value="props.onChange"
     >

@@ -94,24 +94,21 @@ export const inputSetter: Record<string, ISchema> = {
     'x-decorator': 'FormItem',
     'x-path': 'x-component-props.clearable',
   },
-  disabled: {
+}
+
+export const patternSetter: Record<string, ISchema> = {
+  pattern: {
     'type': 'string',
-    'title': '禁用',
+    'title': 'UI 形态',
     'x-component': 'Select',
     'x-decorator': 'FormItem',
-    'x-path': 'x-component-props.disabled',
+    'x-path': 'x-pattern',
     'enum': [
       { label: '继承', value: 'inherit' },
-      { label: '是', value: true },
-      { label: '否', value: false },
+      { label: '禁用', value: 'disabled' },
+      { label: '只读', value: 'readOnly' },
+      { label: '可编辑', value: 'editable' },
     ],
-  },
-  readonly: {
-    'type': 'boolean',
-    'title': '只读',
-    'x-component': 'Switch',
-    'x-decorator': 'FormItem',
-    'x-path': 'x-component-props.readonly',
   },
 }
 
@@ -130,24 +127,6 @@ export const sizeSetter: Record<string, ISchema> = {
       { label: '大', value: 'large' },
       { label: '默认', value: 'default' },
       { label: '小', value: 'small' },
-    ],
-  },
-}
-
-/**
- * 仅包含 disabled 的配置（用于不需要其他输入配置的组件）
- */
-export const disabledOnlySetter: Record<string, ISchema> = {
-  disabled: {
-    'type': 'string',
-    'title': '禁用',
-    'x-component': 'Select',
-    'x-decorator': 'FormItem',
-    'x-path': 'x-component-props.disabled',
-    'enum': [
-      { label: '继承', value: 'inherit' },
-      { label: '是', value: true },
-      { label: '否', value: false },
     ],
   },
 }

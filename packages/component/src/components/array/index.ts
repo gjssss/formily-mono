@@ -16,6 +16,7 @@ export default {
     'title': '数组容器',
     'x-component': 'Array',
     'x-decorator': 'FormItem',
+    'x-pattern': 'inherit',
     'items': {
       'type': 'object',
       'x-component': 'ArrayItem',
