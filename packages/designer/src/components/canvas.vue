@@ -205,8 +205,6 @@ function handleDropMoveComponent() {
 
 <template>
   <div class="canvas djd-design">
-    <h3>画布</h3>
-
     <div
       class="canvas-content"
       :class="{ 'drag-over': isDragOver, 'empty': isEmpty }"

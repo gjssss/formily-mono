@@ -3,6 +3,7 @@ import ArrayItemComponent from './arrayItem'
 import CheckboxComponent from './checkbox'
 import DatePickerComponent from './datepicker'
 import DividerComponent from './divider'
+import FormContainerComponent from './formContainer'
 import GridComponent from './grid'
 import InputComponent from './input'
 import InputNumberComponent from './inputnumber'
@@ -27,3 +28,21 @@ export const InputNumber = InputNumberComponent
 export const Grid = GridComponent
 export const Space = SpaceComponent
 export const Divider = DividerComponent
+export const FormContainer = FormContainerComponent
+
+export const components = {
+  Input,
+  Array,
+  ArrayItem,
+  Select,
+  Checkbox,
+  Radio,
+  DatePicker,
+  TextArea,
+  Switch,
+  InputNumber,
+  Grid,
+  Space,
+  Divider,
+  FormContainer,
+}

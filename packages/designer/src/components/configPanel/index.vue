@@ -204,11 +204,6 @@ function handleSaveReactions(reactions: any) {
 .config-section :deep(.el-collapse-item__header) {
   font-weight: 600;
   background-color: #f5f7fa;
-  padding: 0 16px;
-}
-
-.config-section :deep(.el-collapse-item__content) {
-  padding: 16px;
 }
 
 .config-section :deep(.el-form-item) {

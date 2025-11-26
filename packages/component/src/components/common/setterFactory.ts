@@ -46,10 +46,11 @@ export function createTitleSetters(): Record<string, ISchema> {
     layout: {
       'type': 'string',
       'title': '布局方式',
-      'x-component': 'Radio.Group',
+      'x-component': 'Select',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.layout',
       'enum': [
+        { label: '继承', value: 'inherit' },
         { label: '行内', value: 'inline' },
         { label: '垂直', value: 'vertical' },
       ],
@@ -57,10 +58,11 @@ export function createTitleSetters(): Record<string, ISchema> {
     labelAlign: {
       'type': 'string',
       'title': '标签对齐',
-      'x-component': 'Radio.Group',
+      'x-component': 'Select',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.labelAlign',
       'enum': [
+        { label: '继承', value: 'inherit' },
         { label: '左对齐', value: 'left' },
         { label: '右对齐', value: 'right' },
       ],
@@ -108,11 +110,16 @@ export function createInputSetters(options?: {
 
   if (disabled) {
     setters.disabled = {
-      'type': 'boolean',
+      'type': 'string',
       'title': '禁用',
-      'x-component': 'Switch',
+      'x-component': 'Select',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.disabled',
+      'enum': [
+        { label: '继承', value: 'inherit' },
+        { label: '是', value: true },
+        { label: '否', value: false },
+      ],
     }
   }
 
@@ -137,10 +144,11 @@ export function createSizeSetters(): Record<string, ISchema> {
     size: {
       'type': 'string',
       'title': '尺寸',
-      'x-component': 'Radio.Group',
+      'x-component': 'Select',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.size',
       'enum': [
+        { label: '继承', value: 'inherit' },
         { label: '大', value: 'large' },
         { label: '默认', value: 'default' },
         { label: '小', value: 'small' },

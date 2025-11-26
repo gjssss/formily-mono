@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<{
   modelValue?: ISchema
   draggable?: boolean
   height?: string
+  gap?: string
 }>(), {
   mode: 'edit',
   draggable: false,
@@ -113,7 +114,7 @@ defineExpose({
 }
 
 .designer-config {
-  width: 520px;
+  width: 300px;
   height: 100%;
   background-color: #f5f7fa;
   overflow: hidden;

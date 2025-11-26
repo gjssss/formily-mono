@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FormItemLayout from '../common/FormItemLayout.vue'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
 defineOptions({
   name: 'InputComponent',
@@ -12,8 +13,8 @@ const props = defineProps<{
   required?: boolean
   tooltip?: string
   labelWidth?: string
-  layout?: 'inline' | 'vertical'
-  labelAlign?: 'left' | 'right'
+  layout?: 'inline' | 'vertical' | 'inherit'
+  labelAlign?: 'left' | 'right' | 'inherit'
   // Input specific props
   value?: string
   onChange?: (value: string) => void
@@ -23,9 +24,13 @@ const props = defineProps<{
   clearable?: boolean
   prefixIcon?: string
   suffixIcon?: string
-  disabled?: boolean
+  disabled?: boolean | 'inherit'
   readonly?: boolean
+  size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
+
+// 处理继承逻辑
+const inheritedProps = useFormContainerInherit(props)
 </script>
 
 <template>
@@ -33,9 +38,9 @@ const props = defineProps<{
     :title="props.title"
     :required="props.required"
     :tooltip="props.tooltip"
-    :label-width="props.labelWidth"
-    :layout="props.layout"
-    :label-align="props.labelAlign"
+    :label-width="inheritedProps.labelWidth"
+    :layout="inheritedProps.layout"
+    :label-align="inheritedProps.labelAlign"
   >
     <ElInput
       :placeholder="props.placeholder"
@@ -44,8 +49,9 @@ const props = defineProps<{
       :clearable="props.clearable"
       :prefix-icon="props.prefixIcon"
       :suffix-icon="props.suffixIcon"
-      :disabled="props.disabled"
+      :disabled="inheritedProps.disabled"
       :readonly="props.readonly"
+      :size="inheritedProps.size"
       :model-value="props.value"
       @update:model-value="props.onChange"
     />

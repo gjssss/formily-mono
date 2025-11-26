@@ -31,6 +31,15 @@ export default createSetterSchema({
     'x-component': 'ArrayItems',
     'x-decorator': 'FormItem',
     'x-path': 'enum',
+    'x-decorator-props': {
+      inset: false,
+      bordered: false,
+      wrapperWrap: false,
+      labelWrap: false,
+      fullness: false,
+      layout: 'vertical',
+      labelAlign: 'left',
+    },
     'items': {
       type: 'object',
       properties: {
@@ -38,27 +47,33 @@ export default createSetterSchema({
           'type': 'void',
           'x-component': 'Space',
           'properties': {
-            sort: {
-              'type': 'void',
-              'x-decorator': 'FormItem',
-              'x-component': 'ArrayItems.SortHandle',
-            },
-            label: {
-              'type': 'string',
-              'title': '标签',
-              'x-decorator': 'FormItem',
-              'x-component': 'Input',
-              'x-component-props': {
-                placeholder: '显示文本',
-              },
-            },
-            value: {
-              'type': 'string',
-              'title': '值',
-              'x-decorator': 'FormItem',
-              'x-component': 'Input',
-              'x-component-props': {
-                placeholder: '选项值',
+            kv: {
+              type: 'void',
+              properties: {
+                label: {
+                  'type': 'string',
+                  'title': '标签',
+                  'x-decorator': 'FormItem',
+                  'x-component': 'Input',
+                  'x-component-props': {
+                    placeholder: '显示文本',
+                  },
+                  'x-decorator-props': {
+                    labelWidth: '42px',
+                  },
+                },
+                value: {
+                  'type': 'string',
+                  'title': '值',
+                  'x-decorator': 'FormItem',
+                  'x-component': 'Input',
+                  'x-component-props': {
+                    placeholder: '选项值',
+                  },
+                  'x-decorator-props': {
+                    labelWidth: '42px',
+                  },
+                },
               },
             },
             remove: {

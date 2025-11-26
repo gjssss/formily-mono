@@ -1,34 +1,53 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { ElTooltip } from 'element-plus'
+import type { ComputedRef } from 'vue'
 import { QuestionFilled } from '@element-plus/icons-vue'
+import { ElTooltip } from 'element-plus'
+import { computed, inject } from 'vue'
+import { formContainerKey } from '@/shared/symbol'
 
 defineOptions({
   name: 'FormItemLayout',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   title?: string
   required?: boolean
   tooltip?: string
-  labelWidth?: string
-  layout?: 'inline' | 'vertical'
-  labelAlign?: 'left' | 'right'
-}>(), {
-  layout: 'inline',
-  labelAlign: 'right',
+  labelWidth?: string | 'inherit'
+  layout?: 'inline' | 'vertical' | 'inherit'
+  labelAlign?: 'left' | 'right' | 'inherit'
+}>()
+
+const formContainer = inject(formContainerKey, computed(() => ({
+  layout: 'vertical',
   labelWidth: 'auto',
-})
+  labelAlign: 'left',
+})))
 
 const layoutClass = computed(() => {
-  return `formily-form-item--${props.layout}`
+  // 如果 props.layout 为 'inherit' 或 undefined，使用容器配置
+  const layout = (props.layout === 'inherit' || !props.layout)
+    ? formContainer.value.layout
+    : props.layout
+  return `formily-form-item--${layout}`
 })
 
 const labelStyle = computed(() => {
+  // labelWidth: 如果为 '0' 或 'inherit' 或 undefined，使用容器配置
+  const propsLableWidth = (props.labelWidth === '0' || props.labelWidth === 'inherit' || !props.labelWidth)
+    ? undefined
+    : props.labelWidth
+  const labelWidth = propsLableWidth || formContainer.value.labelWidth
+
+  // labelAlign: 如果为 'inherit' 或 undefined，使用容器配置
+  const labelAlign = (props.labelAlign === 'inherit' || !props.labelAlign)
+    ? formContainer.value.labelAlign
+    : props.labelAlign
+
   return {
-    width: props.labelWidth,
-    textAlign: props.labelAlign,
+    width: labelWidth,
+    textAlign: labelAlign as any,
   }
 })
 </script>
@@ -38,12 +57,7 @@ const labelStyle = computed(() => {
     <div v-if="props.title" class="formily-form-item__label" :style="labelStyle">
       <span v-if="props.required" class="formily-form-item__required">*</span>
       <span class="formily-form-item__label-text">{{ props.title }}</span>
-      <ElTooltip
-        v-if="props.tooltip"
-        :content="props.tooltip"
-        placement="top"
-        effect="dark"
-      >
+      <ElTooltip v-if="props.tooltip" :content="props.tooltip" placement="top" effect="dark">
         <el-icon class="formily-form-item__tooltip">
           <QuestionFilled />
         </el-icon>
@@ -78,9 +92,6 @@ const labelStyle = computed(() => {
 
 /* Label 样式 */
 .formily-form-item__label {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
   color: var(--el-text-color-regular);
   font-size: 14px;
   line-height: 32px;

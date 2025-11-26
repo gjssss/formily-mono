@@ -2,19 +2,7 @@
 import type { ISchema } from '@formily/vue'
 import { Designer } from '@formily-djd/designer'
 import {
-  Array,
-  ArrayItem,
-  Checkbox,
-  DatePicker,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Switch,
-  TextArea,
-  Grid,
-  Divider,
-  Space
+  components
 } from '@formily-djd/component'
 import { ref, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -286,39 +274,16 @@ const saveFavoritesToStorage = () => {
 
     <!-- Designer 组件 -->
     <div class="designer-wrapper">
-      <Designer ref="designerRef" v-model="schema" :mode="mode" height="600px" :components="{
-        Input,
-        Array,
-        ArrayItem,
-        Select,
-        Checkbox,
-        Radio,
-        DatePicker,
-        TextArea,
-        Switch,
-        InputNumber,
-        Grid,
-        Divider,
-        Space,
+      <Designer ref="designerRef" v-model="schema" gap="16px" :mode="mode" height="600px" :components="{
+        ...components
       }" />
     </div>
 
     <!-- Schema 弹窗 -->
-    <ElDialog
-      v-model="schemaDialogVisible"
-      title="Schema 编辑器"
-      width="60%"
-      :close-on-click-modal="false"
-    >
+    <ElDialog v-model="schemaDialogVisible" title="Schema 编辑器" width="60%" :close-on-click-modal="false">
       <div class="schema-editor">
-        <ElInput
-          v-model="schemaEditorText"
-          type="textarea"
-          :rows="20"
-          :readonly="!isEditingSchema"
-          placeholder="Schema JSON"
-          style="font-family: 'Courier New', monospace; font-size: 13px;"
-        />
+        <ElInput v-model="schemaEditorText" type="textarea" :rows="20" :readonly="!isEditingSchema"
+          placeholder="Schema JSON" style="font-family: 'Courier New', monospace; font-size: 13px;" />
       </div>
       <template #footer>
         <div class="dialog-footer">
@@ -336,20 +301,12 @@ const saveFavoritesToStorage = () => {
     </ElDialog>
 
     <!-- 收藏列表弹窗 -->
-    <ElDialog
-      v-model="favoritesDialogVisible"
-      title="我的收藏"
-      width="50%"
-    >
+    <ElDialog v-model="favoritesDialogVisible" title="我的收藏" width="50%">
       <div v-if="favorites.length === 0" class="empty-favorites">
         <p>暂无收藏</p>
       </div>
       <div v-else class="favorites-list">
-        <div
-          v-for="favorite in favorites"
-          :key="favorite.id"
-          class="favorite-item"
-        >
+        <div v-for="favorite in favorites" :key="favorite.id" class="favorite-item">
           <div class="favorite-info">
             <div class="favorite-name">{{ favorite.name }}</div>
             <div class="favorite-time">{{ favorite.createdAt }}</div>

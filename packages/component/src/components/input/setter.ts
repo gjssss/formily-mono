@@ -20,22 +20,8 @@ export default createSetterSchema({
     'x-decorator': 'FormItem',
     'x-path': 'x-component-props.showWordLimit',
   },
-  prefixIcon: {
-    'type': 'string',
-    'title': '前缀图标',
-    'x-component': 'Input',
-    'x-decorator': 'FormItem',
-    'x-path': 'x-component-props.prefixIcon',
-  },
-  suffixIcon: {
-    'type': 'string',
-    'title': '后缀图标',
-    'x-component': 'Input',
-    'x-decorator': 'FormItem',
-    'x-path': 'x-component-props.suffixIcon',
-  },
 }, {
   includeTitle: true,
   includeInput: true,
-  includeSize: false,
+  includeSize: true,
 }) as ISchema
