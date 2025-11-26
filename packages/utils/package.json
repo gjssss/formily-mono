@@ -1,7 +1,7 @@
 {
   "name": "@formily-djd/utils",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "utils for formily-djd",
   "author": "gaojinsong2010@gmail.com",
   "license": "MIT",
@@ -21,7 +21,8 @@
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "release": "bumpp"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
