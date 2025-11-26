@@ -13,6 +13,7 @@ const props = defineProps<{
   labelWidth?: string
   labelAlign?: 'left' | 'right' | 'top'
   size?: 'large' | 'default' | 'small'
+  gap?: number
 }>()
 
 // 提供容器级别的配置给子组件
@@ -26,5 +27,14 @@ provide(formContainerKey, computed(() => ({
 </script>
 
 <template>
-  <slot />
+  <div class="formily-form-container" :style="{ gap: `${props.gap ?? 8}px` }">
+    <slot />
+  </div>
 </template>
+
+<style scoped>
+.formily-form-container {
+  display: flex;
+  flex-direction: column;
+}
+</style>

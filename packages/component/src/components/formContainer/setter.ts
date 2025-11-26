@@ -8,6 +8,13 @@ export default {
   componentSetter: {
     type: 'object',
     properties: {
+      gap: {
+        'type': 'number',
+        'title': '全局间距 (px)',
+        'x-component': 'InputNumber',
+        'x-decorator': 'FormItem',
+        'x-path': 'x-component-props.form-gap',
+      },
       disabled: {
         'type': 'boolean',
         'title': '全局禁用',
