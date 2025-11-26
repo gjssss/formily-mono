@@ -873,7 +873,7 @@ nextTick(() => {
           </div>
         </template>
         <template #empty>
-          <ElEmpty description="暂无组件，请从左侧拖入" />
+          <ElEmpty description="暂无组件，请点击右键插入" />
         </template>
       </ElTree>
     </div>
