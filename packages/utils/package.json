@@ -1,7 +1,7 @@
 {
   "name": "@formily-djd/utils",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "utils for formily-djd",
   "author": "gaojinsong2010@gmail.com",
   "license": "MIT",
