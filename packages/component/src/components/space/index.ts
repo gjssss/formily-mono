@@ -1,6 +1,6 @@
 import type { FormilyComponent } from '../../types'
-import Component from './ui.vue'
 import Setter from './setter'
+import Component from './ui.vue'
 
 export default {
   component: Component,
@@ -12,8 +12,8 @@ export default {
     description: '快捷间距容器',
   },
   defaultSchema: {
-    type: 'void',
-    title: 'Space 间距',
+    'type': 'void',
+    'title': 'Space 间距',
     'x-component': 'Space',
     'x-droppable': false,
     'x-component-props': {

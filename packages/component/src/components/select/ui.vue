@@ -6,11 +6,6 @@ defineOptions({
   inheritAttrs: false,
 })
 
-interface Option {
-  label: string
-  value: string | number
-}
-
 const props = defineProps<{
   // FormItemLayout props
   title?: string
@@ -30,6 +25,11 @@ const props = defineProps<{
   allowCreate?: boolean
   disabled?: boolean
 }>()
+
+interface Option {
+  label: string
+  value: string | number
+}
 </script>
 
 <template>

@@ -2,8 +2,8 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { ElTree } from 'element-plus'
 import { Bottom, CirclePlus, CopyDocument, Delete, FolderAdd, Search, Top } from '@element-plus/icons-vue'
-import { uid } from '@formily/shared'
 import { deleteByPath, setByPath } from '@formily-djd/utils'
+import { uid } from '@formily/shared'
 import { computed, inject, nextTick, ref } from 'vue'
 import { ClosestPosition } from '../../core/dragon'
 import { useDesignStore } from '../../core/useDesignStore'
@@ -211,7 +211,7 @@ function handleNodeClick(data: TreeNode) {
 /**
  * 判断是否允许拖拽
  */
-function handleAllowDrag(draggingNode: any) {
+function handleAllowDrag(_draggingNode: any) {
   // 不允许拖拽根节点（这里可以根据实际需求调整）
   return true
 }
@@ -235,7 +235,7 @@ function handleAllowDrop(draggingNode: any, dropNode: any, type: 'prev' | 'inner
 /**
  * 节点拖拽成功后的处理
  */
-function handleNodeDrop(draggingNode: any, dropNode: any, dropType: 'before' | 'after' | 'inner', event: any) {
+function handleNodeDrop(draggingNode: any, dropNode: any, dropType: 'before' | 'after' | 'inner', _event: any) {
   const sourceData: TreeNode = draggingNode.data
   const targetData: TreeNode = dropNode.data
 
@@ -318,7 +318,7 @@ function handleEmptyContextMenu(event: MouseEvent) {
 /**
  * 右键菜单 - 打开
  */
-function handleNodeContextMenu(event: MouseEvent, data: TreeNode, node: any, element: any) {
+function handleNodeContextMenu(event: MouseEvent, data: TreeNode, _node: any, _element: any) {
   event.preventDefault()
   event.stopPropagation()
 
@@ -686,7 +686,7 @@ function getTreeNodeAtPosition(x: number, y: number): { element: Element, data: 
     const nodeContentElement = nodeElement.querySelector('.el-tree-node__content')
     if (nodeContentElement) {
       // 从节点内容中提取路径信息
-      const treeNodeData = (nodeElement as any).__vnode?.props?.['node-key']
+      const _treeNodeData = (nodeElement as any).__vnode?.props?.['node-key']
 
       // 通过路径在 treeData 中查找节点
       const findNodeByPath = (nodes: TreeNode[], path: string): TreeNode | null => {
@@ -748,7 +748,7 @@ function calculateDropPosition(event: DragEvent, nodeElement: Element): 'before'
  * 插入新组件到指定位置
  */
 function insertNewComponent(dragData: any, targetNode: TreeNode, position: 'before' | 'after' | 'inner') {
-  const { componentKey, defaultSchema } = dragData
+  const { defaultSchema } = dragData
   // 使用 uid 生成唯一的字段名，添加前缀确保不以数字开头
   const fieldName = `f_${uid()}`
 
@@ -800,7 +800,7 @@ function insertNewComponent(dragData: any, targetNode: TreeNode, position: 'befo
  * 插入到根级别
  */
 function insertNewComponentToRoot(dragData: any) {
-  const { componentKey, defaultSchema } = dragData
+  const { defaultSchema } = dragData
   // 使用 uid 生成唯一的字段名，添加前缀确保不以数字开头
   const fieldName = `f_${uid()}`
 
@@ -866,7 +866,7 @@ nextTick(() => {
         @node-drop="handleNodeDrop"
         @node-contextmenu="handleNodeContextMenu"
       >
-        <template #default="{ node, data }">
+        <template #default="{ data }">
           <div class="tree-node" :class="{ 'is-container': data.isContainer }">
             <span class="node-label">{{ data.label }}</span>
             <span class="node-component">({{ data.component }})</span>

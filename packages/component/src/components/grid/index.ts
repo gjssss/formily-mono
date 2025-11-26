@@ -1,6 +1,6 @@
 import type { FormilyComponent } from '../../types'
-import Component from './ui.vue'
 import Setter from './setter'
+import Component from './ui.vue'
 
 export default {
   component: Component,
@@ -12,8 +12,8 @@ export default {
     description: 'Grid 网格布局容器',
   },
   defaultSchema: {
-    type: 'void',
-    title: 'Grid 容器',
+    'type': 'void',
+    'title': 'Grid 容器',
     'x-component': 'Grid',
     'x-component-props': {
       columns: 3,
@@ -21,6 +21,6 @@ export default {
       columnGap: 16,
       rowGap: 16,
     },
-    properties: {},
+    'properties': {},
   },
 } as FormilyComponent

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { ComputedRef } from 'vue'
 import { QuestionFilled } from '@element-plus/icons-vue'
 import { ElTooltip } from 'element-plus'
 import { computed, inject } from 'vue'

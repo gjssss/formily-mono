@@ -5,7 +5,6 @@ import {
   deleteByPath,
   getByPath,
   getFieldNameFromPath,
-  insertFieldByPath,
   setByPath,
 } from '@formily-djd/utils'
 import { provide, ref } from 'vue'

@@ -1,6 +1,6 @@
 import type { FormilyComponent } from '../../types'
-import Component from './ui.vue'
 import Setter from './setter'
+import Component from './ui.vue'
 
 export default {
   component: Component,
@@ -12,8 +12,8 @@ export default {
     description: '内容分割线',
   },
   defaultSchema: {
-    type: 'void',
-    title: '分割线',
+    'type': 'void',
+    'title': '分割线',
     'x-component': 'Divider',
     'x-droppable': false, // 关键标记：不可放置子组件
     'x-component-props': {

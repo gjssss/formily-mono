@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
 import { uid } from '@formily/shared'
-import { computed, provide, ref, watch } from 'vue'
+import { computed, provide, ref } from 'vue'
 import { useDesignStore } from '@/core/useDesignStore'
 import { ComponentSettingsKey } from '@/shared'
 import AuxToolWidget from './auxTool/AuxToolWidget.vue'

@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 export interface NodeRect {
   x: number

@@ -4,8 +4,8 @@ export default {
   type: 'object',
   properties: {
     columns: {
-      type: 'number',
-      title: '列数',
+      'type': 'number',
+      'title': '列数',
       'x-component': 'InputNumber',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.columns',
@@ -15,8 +15,8 @@ export default {
       },
     },
     columnGap: {
-      type: 'number',
-      title: '列间距 (px)',
+      'type': 'number',
+      'title': '列间距 (px)',
       'x-component': 'InputNumber',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.columnGap',
@@ -26,8 +26,8 @@ export default {
       },
     },
     rowGap: {
-      type: 'number',
-      title: '行间距 (px)',
+      'type': 'number',
+      'title': '行间距 (px)',
       'x-component': 'InputNumber',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.rowGap',

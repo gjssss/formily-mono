@@ -4,8 +4,8 @@ export default {
   type: 'object',
   properties: {
     orientation: {
-      type: 'string',
-      title: '方向',
+      'type': 'string',
+      'title': '方向',
       'x-component': 'Radio.Group',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.orientation',
@@ -15,8 +15,8 @@ export default {
       ],
     },
     dashed: {
-      type: 'boolean',
-      title: '虚线',
+      'type': 'boolean',
+      'title': '虚线',
       'x-component': 'Switch',
       'x-decorator': 'FormItem',
       'x-path': 'x-component-props.dashed',
