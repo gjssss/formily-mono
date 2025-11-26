@@ -195,6 +195,7 @@ function handleSaveReactions(reactions: any) {
 }
 
 .config-section {
+  background-color: #fff;
   flex: 1;
   overflow-y: auto;
   border: none;
@@ -203,7 +204,6 @@ function handleSaveReactions(reactions: any) {
 
 .config-section :deep(.el-collapse-item__header) {
   font-weight: 600;
-  background-color: #f5f7fa;
 }
 
 .config-section :deep(.el-form-item) {
