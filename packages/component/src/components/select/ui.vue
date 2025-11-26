@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FormItemLayout from '../common/FormItemLayout.vue'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
 defineOptions({
   name: 'SelectComponent',
@@ -12,8 +13,8 @@ const props = defineProps<{
   required?: boolean
   tooltip?: string
   labelWidth?: string
-  layout?: 'inline' | 'vertical'
-  labelAlign?: 'left' | 'right'
+  layout?: 'inline' | 'vertical' | 'inherit'
+  labelAlign?: 'left' | 'right' | 'inherit'
   // Select specific props
   value?: string | number
   onChange?: (value: string | number) => void
@@ -23,13 +24,17 @@ const props = defineProps<{
   clearable?: boolean
   filterable?: boolean
   allowCreate?: boolean
-  disabled?: boolean
+  disabled?: boolean | 'inherit'
+  size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
 
 interface Option {
   label: string
   value: string | number
 }
+
+// 处理继承逻辑
+const inheritedProps = useFormContainerInherit(props)
 </script>
 
 <template>
@@ -48,7 +53,8 @@ interface Option {
       :clearable="props.clearable"
       :filterable="props.filterable"
       :allow-create="props.allowCreate"
-      :disabled="props.disabled"
+      :disabled="inheritedProps.disabled"
+      :size="inheritedProps.size"
       @update:model-value="props.onChange"
     >
       <ElOption

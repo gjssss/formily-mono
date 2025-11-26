@@ -14,7 +14,7 @@ export default {
   defaultSchema: {
     'type': 'string',
     'title': '文本域',
-    'x-component': 'Textarea',
+    'x-component': 'TextArea',
     'x-decorator': 'FormItem',
     'x-component-props': {
       placeholder: '请输入',

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FormItemLayout from '../common/FormItemLayout.vue'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
 defineOptions({
   name: 'DatePickerComponent',
@@ -12,8 +13,8 @@ const props = defineProps<{
   required?: boolean
   tooltip?: string
   labelWidth?: string
-  layout?: 'inline' | 'vertical'
-  labelAlign?: 'left' | 'right'
+  layout?: 'inline' | 'vertical' | 'inherit'
+  labelAlign?: 'left' | 'right' | 'inherit'
   // DatePicker specific props
   value?: string | Date
   onChange?: (value: string | Date) => void
@@ -23,9 +24,13 @@ const props = defineProps<{
   type?: 'date' | 'datetime' | 'daterange' | 'datetimerange' | 'year' | 'month' | 'week'
   clearable?: boolean
   editable?: boolean
-  disabled?: boolean
+  disabled?: boolean | 'inherit'
   readonly?: boolean
+  size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
+
+// 处理继承逻辑
+const inheritedProps = useFormContainerInherit(props)
 </script>
 
 <template>
@@ -45,8 +50,9 @@ const props = defineProps<{
       :type="props.type || 'date'"
       :clearable="props.clearable"
       :editable="props.editable"
-      :disabled="props.disabled"
+      :disabled="inheritedProps.disabled"
       :readonly="props.readonly"
+      :size="inheritedProps.size"
       @update:model-value="props.onChange"
     />
   </FormItemLayout>

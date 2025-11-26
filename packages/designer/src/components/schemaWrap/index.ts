@@ -108,6 +108,11 @@ export function schemaWrapper(comp: FormilyComponent): Component {
                 arrayFieldValue.move(index, index + 1)
               }
             }
+
+            // ArrayItem 继承父 Array 的 disabled 状态
+            if (arrayItemIndex?.index !== undefined && arrayFieldValue.disabled) {
+              _bindProps.disabled = arrayFieldValue.disabled
+            }
           }
 
           if (arrayItemIndex?.index !== undefined) {

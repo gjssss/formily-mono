@@ -6,6 +6,7 @@ defineOptions({
 
 const props = defineProps<{
   arrayIndex?: number
+  disabled?: boolean
   onAdd?: () => void
   onRemove?: (index: number) => void
   onMoveUp?: (index: number) => void
@@ -20,16 +21,38 @@ const props = defineProps<{
         # {{ (props.arrayIndex ?? 0) + 1 }}
       </div>
       <div class="array-item-actions">
-        <ElButton text type="primary" size="small" @click="props.onAdd">
+        <ElButton
+          text
+          type="primary"
+          size="small"
+          :disabled="props.disabled"
+          @click="props.onAdd"
+        >
           添加
         </ElButton>
-        <ElButton text size="small" @click="() => props.onMoveUp?.(props.arrayIndex!)">
+        <ElButton
+          text
+          size="small"
+          :disabled="props.disabled"
+          @click="() => props.onMoveUp?.(props.arrayIndex!)"
+        >
           上移
         </ElButton>
-        <ElButton text size="small" @click="() => props.onMoveDown?.(props.arrayIndex!)">
+        <ElButton
+          text
+          size="small"
+          :disabled="props.disabled"
+          @click="() => props.onMoveDown?.(props.arrayIndex!)"
+        >
           下移
         </ElButton>
-        <ElButton text type="danger" size="small" @click="() => props.onRemove?.(props.arrayIndex!)">
+        <ElButton
+          text
+          type="danger"
+          size="small"
+          :disabled="props.disabled"
+          @click="() => props.onRemove?.(props.arrayIndex!)"
+        >
           删除
         </ElButton>
       </div>

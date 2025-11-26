@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FormItemLayout from '../common/FormItemLayout.vue'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
 defineOptions({
   name: 'SwitchComponent',
@@ -12,8 +13,8 @@ const props = defineProps<{
   required?: boolean
   tooltip?: string
   labelWidth?: string
-  layout?: 'inline' | 'vertical'
-  labelAlign?: 'left' | 'right'
+  layout?: 'inline' | 'vertical' | 'inherit'
+  labelAlign?: 'left' | 'right' | 'inherit'
   // Switch specific props
   value?: boolean
   onChange?: (value: boolean) => void
@@ -22,8 +23,12 @@ const props = defineProps<{
   activeValue?: any
   inactiveValue?: any
   inlinePrompt?: boolean
-  disabled?: boolean
+  disabled?: boolean | 'inherit'
+  size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
+
+// 处理继承逻辑
+const inheritedProps = useFormContainerInherit(props)
 </script>
 
 <template>
@@ -42,7 +47,8 @@ const props = defineProps<{
       :active-value="props.activeValue"
       :inactive-value="props.inactiveValue"
       :inline-prompt="props.inlinePrompt"
-      :disabled="props.disabled"
+      :disabled="inheritedProps.disabled"
+      :size="inheritedProps.size"
       @update:model-value="props.onChange"
     />
   </FormItemLayout>

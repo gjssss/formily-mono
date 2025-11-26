@@ -12,7 +12,7 @@ export default {
     description: '多选控件',
   },
   defaultSchema: {
-    'type': 'array',
+    'type': 'string',
     'title': '复选框',
     'x-component': 'Checkbox',
     'x-decorator': 'FormItem',

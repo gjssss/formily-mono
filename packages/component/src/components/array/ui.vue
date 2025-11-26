@@ -6,6 +6,7 @@ defineOptions({
 
 const props = defineProps<{
   title?: string
+  disabled?: boolean
   onAdd?: () => void
   onPush?: () => void
   onUnshift?: () => void
@@ -19,10 +20,19 @@ const props = defineProps<{
         {{ props.title }}
       </div>
       <div class="array-actions">
-        <ElButton type="primary" size="small" @click="props.onAdd">
+        <ElButton
+          type="primary"
+          size="small"
+          :disabled="props.disabled"
+          @click="props.onAdd"
+        >
           添加到末尾
         </ElButton>
-        <ElButton size="small" @click="props.onUnshift">
+        <ElButton
+          size="small"
+          :disabled="props.disabled"
+          @click="props.onUnshift"
+        >
           添加到开头
         </ElButton>
       </div>

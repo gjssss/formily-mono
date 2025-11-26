@@ -8,7 +8,7 @@ import { formContainerKey } from '@/shared/symbol'
  */
 export function useFormContainerInherit<T extends Record<string, any>>(
   props: T,
-): ComputedRef<T> {
+): ComputedRef<T & { disabled: boolean, layout: 'inline' | 'vertical', labelWidth: string, labelAlign: 'left' | 'right', size: 'large' | 'default' | 'small' }> {
   const formContainer = inject(formContainerKey, computed(() => ({
     disabled: false,
     layout: 'vertical',

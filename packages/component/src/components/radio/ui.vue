@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FormItemLayout from '../common/FormItemLayout.vue'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
 defineOptions({
   name: 'RadioComponent',
@@ -12,19 +13,23 @@ const props = defineProps<{
   required?: boolean
   tooltip?: string
   labelWidth?: string
-  layout?: 'inline' | 'vertical'
-  labelAlign?: 'left' | 'right'
+  layout?: 'inline' | 'vertical' | 'inherit'
+  labelAlign?: 'left' | 'right' | 'inherit'
   // Radio specific props
   value?: string | number
   onChange?: (value: string | number | boolean | undefined) => void
   options?: Option[]
-  disabled?: boolean
+  disabled?: boolean | 'inherit'
+  size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
 
 interface Option {
   label: string
   value: string | number
 }
+
+// 处理继承逻辑
+const inheritedProps = useFormContainerInherit(props)
 </script>
 
 <template>
@@ -38,7 +43,8 @@ interface Option {
   >
     <ElRadioGroup
       :model-value="props.value"
-      :disabled="props.disabled"
+      :disabled="inheritedProps.disabled"
+      :size="inheritedProps.size"
       @update:model-value="(value) => props.onChange?.(value)"
     >
       <ElRadio

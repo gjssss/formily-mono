@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FormItemLayout from '../common/FormItemLayout.vue'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
 defineOptions({
   name: 'CheckboxComponent',
@@ -12,21 +13,25 @@ const props = defineProps<{
   required?: boolean
   tooltip?: string
   labelWidth?: string
-  layout?: 'inline' | 'vertical'
-  labelAlign?: 'left' | 'right'
+  layout?: 'inline' | 'vertical' | 'inherit'
+  labelAlign?: 'left' | 'right' | 'inherit'
   // Checkbox specific props
   value?: (string | number)[]
   onChange?: (value: (string | number)[]) => void
   options?: Option[]
   min?: number
   max?: number
-  disabled?: boolean
+  disabled?: boolean | 'inherit'
+  size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
 
 interface Option {
   label: string
   value: string | number
 }
+
+// 处理继承逻辑
+const inheritedProps = useFormContainerInherit(props)
 </script>
 
 <template>
@@ -43,7 +48,8 @@ interface Option {
       :options="props.options"
       :min="props.min"
       :max="props.max"
-      :disabled="props.disabled"
+      :disabled="inheritedProps.disabled"
+      :size="inheritedProps.size"
       @update:model-value="props.onChange"
     />
   </FormItemLayout>

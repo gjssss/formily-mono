@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FormItemLayout from '../common/FormItemLayout.vue'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
 defineOptions({
   name: 'InputNumberComponent',
@@ -12,8 +13,8 @@ const props = defineProps<{
   required?: boolean
   tooltip?: string
   labelWidth?: string
-  layout?: 'inline' | 'vertical'
-  labelAlign?: 'left' | 'right'
+  layout?: 'inline' | 'vertical' | 'inherit'
+  labelAlign?: 'left' | 'right' | 'inherit'
   // InputNumber specific props
   value?: number
   onChange?: (value: number) => void
@@ -24,9 +25,13 @@ const props = defineProps<{
   placeholder?: string
   controls?: boolean
   controlsPosition?: '' | 'right'
-  disabled?: boolean
+  disabled?: boolean | 'inherit'
   readonly?: boolean
+  size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
+
+// 处理继承逻辑
+const inheritedProps = useFormContainerInherit(props)
 </script>
 
 <template>
@@ -47,8 +52,9 @@ const props = defineProps<{
       :precision="props.precision"
       :controls="props.controls"
       :controls-position="props.controlsPosition || undefined"
-      :disabled="props.disabled"
+      :disabled="inheritedProps.disabled"
       :readonly="props.readonly"
+      :size="inheritedProps.size"
       @update:model-value="props.onChange"
     />
   </FormItemLayout>

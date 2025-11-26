@@ -59,5 +59,5 @@ export default createSetterSchema({
 }, {
   includeTitle: true,
   includeInput: { placeholder: true, clearable: false, disabled: true, readonly: true },
-  includeSize: false,
+  includeSize: true,
 }) as ISchema

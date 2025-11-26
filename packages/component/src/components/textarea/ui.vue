@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FormItemLayout from '../common/FormItemLayout.vue'
+import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
 defineOptions({
   name: 'TextAreaComponent',
@@ -12,8 +13,8 @@ const props = defineProps<{
   required?: boolean
   tooltip?: string
   labelWidth?: string
-  layout?: 'inline' | 'vertical'
-  labelAlign?: 'left' | 'right'
+  layout?: 'inline' | 'vertical' | 'inherit'
+  labelAlign?: 'left' | 'right' | 'inherit'
   // TextArea specific props
   value?: string
   onChange?: (value: string) => void
@@ -23,9 +24,13 @@ const props = defineProps<{
   showWordLimit?: boolean
   autosize?: boolean | { minRows?: number, maxRows?: number }
   resize?: 'none' | 'vertical' | 'horizontal' | 'both'
-  disabled?: boolean
+  disabled?: boolean | 'inherit'
   readonly?: boolean
+  size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
+
+// 处理继承逻辑
+const inheritedProps = useFormContainerInherit(props)
 </script>
 
 <template>
@@ -45,8 +50,9 @@ const props = defineProps<{
       :show-word-limit="props.showWordLimit"
       :autosize="props.autosize"
       :resize="props.resize"
-      :disabled="props.disabled"
+      :disabled="inheritedProps.disabled"
       :readonly="props.readonly"
+      :size="inheritedProps.size"
       :model-value="props.value"
       @update:model-value="props.onChange"
     />

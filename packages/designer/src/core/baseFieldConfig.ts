@@ -50,6 +50,7 @@ export const baseFieldConfigSchema: ISchema = {
       'x-path': 'x-pattern',
       'x-component-props': {
         options: [
+          { label: '继承', value: 'inherit' },
           { label: '可编辑', value: 'editable' },
           { label: '禁用', value: 'disabled' },
           { label: '只读', value: 'readOnly' },
