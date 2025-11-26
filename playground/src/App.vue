@@ -191,7 +191,7 @@ const openFavorites = () => {
 }
 
 // 应用收藏的 Schema
-const applyFavorite = (favorite: Favorite) => {
+const applyFavorite = (favorite: any) => {
   ElMessageBox.confirm('确定要应用此收藏吗？当前 Schema 将被替换。', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
