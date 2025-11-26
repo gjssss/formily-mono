@@ -8,7 +8,8 @@
     "build:designer": "pnpm --filter @formily-djd/designer build",
     "build:playground": "pnpm --filter playground build",
     "lint:fix": "pnpm --filter @formily-djd/* lint:fix",
-    "release": "bumpp -r"
+    "release": "bumpp -r",
+    "upload": "pnpm build && pnpm -r --filter @formily-djd/utils --filter @formily-djd/component --filter @formily-djd/designer publish --access public --registry https: //registry.npmjs.org"
   },
   "dependencies": {
     "bumpp": "^10.3.1"
