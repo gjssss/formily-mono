@@ -31,6 +31,5 @@ import SelectionBox from './SelectionBox.vue'
   bottom: 0;
   pointer-events: none; /* 整个层不拦截鼠标事件 */
   z-index: 1000;
-  overflow: hidden;
 }
 </style>

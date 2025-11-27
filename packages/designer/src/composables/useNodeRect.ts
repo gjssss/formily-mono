@@ -1,5 +1,5 @@
-import type { Ref } from 'vue'
-import { computed, ref, watch } from 'vue'
+import type { ComputedRef, Ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export interface NodeRect {
   x: number
@@ -17,49 +17,7 @@ export interface NodeRect {
 export function useNodeRect(
   nodeId: Ref<string | null>,
   canvasSelector = '.canvas-content',
-): Ref<NodeRect | null> {
-  const rect = ref<NodeRect | null>(null)
-
-  // 查找并计算节点矩形
-  function updateRect(): void {
-    if (!nodeId.value) {
-      rect.value = null
-      return
-    }
-
-    // 通过 data-node-id 属性查找元素
-    const element = document.querySelector(`[data-node-id="${nodeId.value}"]`)
-    if (!element) {
-      rect.value = null
-      return
-    }
-
-    // 查找 canvas 容器
-    const canvasElement = document.querySelector(canvasSelector)
-    if (!canvasElement) {
-      rect.value = null
-      return
-    }
-
-    // 获取元素相对于视口的位置
-    const elementRect = element.getBoundingClientRect()
-    // 获取 canvas 容器相对于视口的位置
-    const canvasRect = canvasElement.getBoundingClientRect()
-
-    // 计算元素相对于 canvas 容器的位置
-    rect.value = {
-      x: elementRect.x - canvasRect.x,
-      y: elementRect.y - canvasRect.y,
-      width: elementRect.width,
-      height: elementRect.height,
-    }
-  }
-
-  // 监听 nodeId 变化，重新计算矩形
-  watch(nodeId, () => {
-    updateRect()
-  }, { immediate: true })
-
+): ComputedRef<NodeRect | null> {
   // 监听窗口滚动和大小变化，更新矩形位置
   if (typeof window !== 'undefined') {
     // 监听全局滚动和大小变化
@@ -82,5 +40,34 @@ export function useNodeRect(
     // })
   }
 
-  return computed(() => rect.value)
+  return computed(() => {
+    if (!nodeId.value) {
+      return null
+    }
+
+    // 通过 data-node-id 属性查找元素
+    const element = document.querySelector(`[data-node-id="${nodeId.value}"]`)
+    if (!element) {
+      return null
+    }
+
+    // 查找 canvas 容器
+    const canvasElement = document.querySelector(canvasSelector)
+    if (!canvasElement) {
+      return null
+    }
+
+    // 获取元素相对于视口的位置
+    const elementRect = element.getBoundingClientRect()
+    // 获取 canvas 容器相对于视口的位置
+    const canvasRect = canvasElement.getBoundingClientRect()
+
+    // 计算元素相对于 canvas 容器的位置
+    return {
+      x: elementRect.x - canvasRect.x + canvasElement.scrollLeft,
+      y: elementRect.y - canvasRect.y + canvasElement.scrollTop,
+      width: elementRect.width,
+      height: elementRect.height,
+    }
+  })
 }
