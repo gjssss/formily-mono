@@ -46,6 +46,100 @@ interface TreeNode {
   children?: TreeNode[]
 }
 
+// 辅助：深拷贝 Schema，避免共用引用
+function cloneSchema<T>(schema: T): T {
+  return JSON.parse(JSON.stringify(schema))
+}
+
+// 辅助：将树节点路径（包含 properties/items）转换为数据路径片段数组
+// 例如：'root.properties.child' -> ['root', 'child']
+function normalizePathSegments(nodePath: string): string[] {
+  return nodePath.split('.').filter(segment => segment !== 'properties' && segment !== 'items')
+}
+
+/**
+ * 复制节点时，递归生成新的字段 key，并同步更新 x-reactions 的依赖路径
+ * @param schema 原节点 schema
+ * @param oldNodePath 原节点完整路径（包含 properties/items）
+ * @param newRootKey 为新节点生成的根 key
+ */
+function cloneSchemaWithNewIds(schema: any, oldNodePath: string, newRootKey: string) {
+  const oldRootSegments = normalizePathSegments(oldNodePath)
+  const newRootSegments = [...oldRootSegments.slice(0, -1), newRootKey]
+  const pathMap = new Map<string, string>()
+
+  const walk = (node: any, oldSegments: string[], newSegments: string[]): any => {
+    const cloned: any = cloneSchema(node)
+
+    // 记录旧路径到新路径的映射（供 reactions 替换）
+    pathMap.set(oldSegments.join('.'), newSegments.join('.'))
+
+    if (node.properties && typeof node.properties === 'object') {
+      const newProperties: Record<string, any> = {}
+      Object.entries(node.properties).forEach(([key, childSchema]) => {
+        const newKey = `f_${uid()}`
+        const childOldSegments = [...oldSegments, key]
+        const childNewSegments = [...newSegments, newKey]
+        newProperties[newKey] = walk(childSchema, childOldSegments, childNewSegments)
+      })
+      cloned.properties = newProperties
+    }
+
+    if (node.items && typeof node.items === 'object') {
+      // items 本身不需要新 key，但内部 properties 需要重新编号
+      cloned.items = walk(node.items, [...oldSegments, 'items'], [...newSegments, 'items'])
+    }
+
+    return cloned
+  }
+
+  const mapPath = (source: string): string | null => {
+    if (pathMap.has(source))
+      return pathMap.get(source) || null
+
+    for (const [oldPath, newPath] of pathMap.entries()) {
+      if (source.startsWith(`${oldPath}.`)) {
+        return `${newPath}${source.slice(oldPath.length)}`
+      }
+    }
+    return null
+  }
+
+  const updateReactions = (node: any) => {
+    if (!node || typeof node !== 'object')
+      return
+
+    const reactions = node['x-reactions']
+    if (reactions && Array.isArray(reactions.dependencies)) {
+      reactions.dependencies = reactions.dependencies.map((dep: any) => {
+        if (dep && typeof dep.source === 'string') {
+          const newSource = mapPath(dep.source)
+          if (newSource) {
+            return {
+              ...dep,
+              source: newSource,
+            }
+          }
+        }
+        return dep
+      })
+      node['x-reactions'] = reactions
+    }
+
+    if (node.properties) {
+      Object.values(node.properties).forEach(child => updateReactions(child))
+    }
+    if (node.items) {
+      updateReactions(node.items)
+    }
+  }
+
+  const newSchema = walk(schema, oldRootSegments, newRootSegments)
+  updateReactions(newSchema)
+
+  return newSchema
+}
+
 /**
  * 将 schema 转换为树形数据结构
  */
@@ -488,7 +582,7 @@ function handleCopyNode() {
   const newFieldName = `f_${uid()}`
 
   // 深拷贝 schema
-  const newSchema = JSON.parse(JSON.stringify(schema))
+  const newSchema = cloneSchemaWithNewIds(schema, nodePath, newFieldName)
 
   // 计算新节点的完整路径
   const pathParts = nodePath.split('.')
