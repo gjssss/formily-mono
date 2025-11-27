@@ -37,6 +37,7 @@ export function schemaWrapper(comp: FormilyComponent): Component {
         const bindProps = computed(() => {
           const currentField = field.value
           const _bindProps: Record<string, any> = {
+            ...(schema.value?.['x-component-props'] || {}),
             value: props.value,
             onChange: props.onChange,
           }
@@ -52,7 +53,10 @@ export function schemaWrapper(comp: FormilyComponent): Component {
             for (const [key, value] of Object.entries(setterSchema.basicSetter)) {
               const path = value['x-path']
               if (path) {
-                _bindProps[key] = getByPath(schema.value, path)
+                const pathValue = getByPath(schema.value, path)
+                if (pathValue !== undefined) {
+                  _bindProps[key] = pathValue
+                }
               }
             }
           }
@@ -61,7 +65,10 @@ export function schemaWrapper(comp: FormilyComponent): Component {
             for (const [key, value] of Object.entries(setterSchema.componentSetter.properties)) {
               const path = value['x-path']
               if (path) {
-                _bindProps[key] = getByPath(schema.value, path)
+                const pathValue = getByPath(schema.value, path)
+                if (pathValue !== undefined) {
+                  _bindProps[key] = pathValue
+                }
               }
             }
           }
