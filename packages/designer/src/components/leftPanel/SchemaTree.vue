@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
+import type { VirtualElement } from '@popperjs/core'
 import type { ElTree } from 'element-plus'
 import { Bottom, CirclePlus, CopyDocument, Delete, FolderAdd, Search, Top } from '@element-plus/icons-vue'
 import { deleteByPath, setByPath } from '@formily-djd/utils'
 import { uid } from '@formily/shared'
-import { computed, inject, nextTick, ref } from 'vue'
+import { computed, inject, nextTick, onBeforeUnmount, ref } from 'vue'
 import { ClosestPosition } from '../../core/dragon'
+
 import { useDesignStore } from '../../core/useDesignStore'
 
 // 获取设计器状态
@@ -22,9 +24,10 @@ const filterText = ref('')
 
 // 右键菜单相关
 const contextMenuVisible = ref(false)
-const contextMenuStyle = ref({ top: '0px', left: '0px' })
 const contextMenuNode = ref<TreeNode | null>(null)
 const contextMenuMode = ref<'node' | 'empty'>('node')
+const contextMenuVirtualRef = ref<VirtualElement | null>(null)
+const outsideClickHandler = ref<((event: MouseEvent) => void) | null>(null)
 
 // 组件选择弹窗相关
 const componentPickerVisible = ref(false)
@@ -273,6 +276,7 @@ const menuItems = computed(() => {
   // 节点菜单：原有菜单项 + 插入选项
   const items: any[] = [
     { type: 'copy', label: '复制', icon: CopyDocument },
+    { type: 'copyTemplate', label: '复制模板', icon: CopyDocument },
     { type: 'delete', label: '删除', icon: Delete },
     'divider',
     { type: 'moveUp', label: '上移', icon: Top },
@@ -284,7 +288,7 @@ const menuItems = computed(() => {
 
   // 容器节点：额外显示"插入内部组件"
   if (node.isContainer) {
-    items.push({ type: 'insertInner', label: '插入内部组件', icon: FolderAdd })
+    items.push({ type: 'insertInner', label: '插入内部', icon: FolderAdd })
   }
 
   return items
@@ -294,49 +298,57 @@ const menuItems = computed(() => {
  * 空白区域右键菜单
  */
 function handleEmptyContextMenu(event: MouseEvent) {
-  event.preventDefault()
-  event.stopPropagation()
-
-  contextMenuMode.value = 'empty'
-  contextMenuNode.value = null
-  contextMenuStyle.value = {
-    top: `${event.clientY}px`,
-    left: `${event.clientX}px`,
-  }
-  contextMenuVisible.value = true
-
-  // 点击其他地方关闭菜单
-  const closeMenu = () => {
-    contextMenuVisible.value = false
-    document.removeEventListener('click', closeMenu)
-  }
-  setTimeout(() => {
-    document.addEventListener('click', closeMenu)
-  }, 0)
+  openContextMenu(event, 'empty', null)
 }
 
 /**
  * 右键菜单 - 打开
  */
 function handleNodeContextMenu(event: MouseEvent, data: TreeNode, _node: any, _element: any) {
+  openContextMenu(event, 'node', data)
+}
+
+function updateContextMenuVirtualRef(event: MouseEvent) {
+  const rect = new DOMRect(event.clientX, event.clientY, 0, 0)
+  contextMenuVirtualRef.value = {
+    getBoundingClientRect: () => rect,
+    contextElement: document.body,
+  } as VirtualElement
+}
+
+function removeOutsideClickListener() {
+  if (outsideClickHandler.value) {
+    document.removeEventListener('click', outsideClickHandler.value)
+    outsideClickHandler.value = null
+  }
+}
+
+function closeContextMenu() {
+  contextMenuVisible.value = false
+  removeOutsideClickListener()
+}
+
+function bindOutsideClickListener() {
+  removeOutsideClickListener()
+  const handler = () => {
+    closeContextMenu()
+  }
+  outsideClickHandler.value = handler
+  document.addEventListener('click', handler)
+}
+
+function openContextMenu(event: MouseEvent, mode: 'node' | 'empty', node: TreeNode | null) {
   event.preventDefault()
   event.stopPropagation()
 
-  contextMenuMode.value = 'node'
-  contextMenuNode.value = data
-  contextMenuStyle.value = {
-    top: `${event.clientY}px`,
-    left: `${event.clientX}px`,
-  }
+  contextMenuMode.value = mode
+  contextMenuNode.value = node
+  updateContextMenuVirtualRef(event)
   contextMenuVisible.value = true
 
-  // 点击其他地方关闭菜单
-  const closeMenu = () => {
-    contextMenuVisible.value = false
-    document.removeEventListener('click', closeMenu)
-  }
+  // 延迟绑定，避免当前事件立即触发关闭
   setTimeout(() => {
-    document.addEventListener('click', closeMenu)
+    bindOutsideClickListener()
   }, 0)
 }
 
@@ -378,7 +390,7 @@ function handleMenuClick(type: string) {
       handleMoveDown()
       return
   }
-  contextMenuVisible.value = false
+  closeContextMenu()
 }
 
 /**
@@ -483,7 +495,7 @@ function handleCopyNode() {
   // 使用 setByPath 添加到 formSchema，触发响应式更新
   setByPath(store.formSchema.value.properties, newNodePath, newSchema)
 
-  contextMenuVisible.value = false
+  closeContextMenu()
 }
 
 /**
@@ -498,7 +510,7 @@ function handleDeleteNode() {
   // 使用 deleteByPath 从 formSchema.value.properties 中删除，触发响应式更新
   deleteByPath(store.formSchema.value.properties, nodePath)
 
-  contextMenuVisible.value = false
+  closeContextMenu()
 }
 
 /**
@@ -561,7 +573,7 @@ function handleMoveUp() {
     setByPath(store.formSchema.value.properties, parentPropertiesPath, newProperties)
   }
 
-  contextMenuVisible.value = false
+  closeContextMenu()
 }
 
 /**
@@ -624,7 +636,7 @@ function handleMoveDown() {
     setByPath(store.formSchema.value.properties, parentPropertiesPath, newProperties)
   }
 
-  contextMenuVisible.value = false
+  closeContextMenu()
 }
 
 /**
@@ -816,6 +828,10 @@ function insertNewComponentToRoot(dragData: any) {
 nextTick(() => {
   expandAll()
 })
+
+onBeforeUnmount(() => {
+  removeOutsideClickListener()
+})
 </script>
 
 <template>
@@ -879,21 +895,27 @@ nextTick(() => {
     </div>
 
     <!-- 右键菜单 -->
-    <Teleport to="body">
-      <div
-        v-show="contextMenuVisible"
-        class="context-menu"
-        :style="contextMenuStyle"
-      >
-        <template v-for="(item, index) in menuItems" :key="index">
-          <div v-if="item === 'divider'" class="menu-divider" />
-          <div v-else class="menu-item" @click="handleMenuClick(item.type)">
-            <ElIcon><component :is="item.icon" /></ElIcon>
-            <span>{{ item.label }}</span>
-          </div>
-        </template>
-      </div>
-    </Teleport>
+    <ElPopover
+      v-model:visible="contextMenuVisible"
+      :virtual-ref="contextMenuVirtualRef"
+      virtual-triggering
+      :show-arrow="false"
+      popper-class="schema-tree-context-menu"
+      placement="bottom-start"
+      :offset="6"
+    >
+      <template #default>
+        <div class="context-menu">
+          <template v-for="(item, index) in menuItems" :key="index">
+            <div v-if="item === 'divider'" class="menu-divider" />
+            <div v-else class="menu-item" @click="handleMenuClick(item.type)">
+              <ElIcon><component :is="item.icon" /></ElIcon>
+              <span>{{ item.label }}</span>
+            </div>
+          </template>
+        </div>
+      </template>
+    </ElPopover>
 
     <!-- 组件选择弹窗 -->
     <ElDialog
@@ -1001,16 +1023,13 @@ nextTick(() => {
   background-color: var(--el-fill-color-light);
 }
 
-/* 右键菜单 */
-.context-menu {
-  position: fixed;
+:deep(.schema-tree-context-menu) {
+  min-width: 160px;
+  padding: 4px;
   background: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
   border-radius: 6px;
   box-shadow: var(--el-box-shadow-light);
-  padding: 4px;
-  min-width: 140px;
-  z-index: 9999;
 }
 
 .menu-item {

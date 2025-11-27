@@ -28,8 +28,13 @@ provide(formContainerKey, computed(() => ({
 </script>
 
 <template>
-  <div class="formily-form-container" :style="{ gap: `${props.gap ?? 8}px` }">
-    <slot />
+  <div>
+    <div class="formily-form-container-title">
+      {{ props.title }}
+    </div>
+    <div class="formily-form-container" :style="{ gap: `${props.gap ?? 8}px` }">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -37,5 +42,15 @@ provide(formContainerKey, computed(() => ({
 .formily-form-container {
   display: flex;
   flex-direction: column;
+  padding: 16px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+}
+
+.formily-form-container-title {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  text-align: center;
 }
 </style>
