@@ -15,6 +15,8 @@ const props = defineProps<{
   size?: 'large' | 'default' | 'small'
   gap?: number
   pattern?: FormilyPattern
+  layoutStyle?: 'none' | 'border' | 'border-none'
+  titleStyle?: 'none' | 'center' | 'left' | 'right'
 }>()
 
 // 提供容器级别的配置给子组件
@@ -25,14 +27,22 @@ provide(formContainerKey, computed(() => ({
   size: props.size,
   pattern: props.pattern,
 })))
+
+const layoutStyleClass = computed(() => {
+  return `formily-form-container-layout-${props.layoutStyle}`
+})
+
+const titleStyleClass = computed(() => {
+  return `formily-form-container-title-${props.titleStyle}`
+})
 </script>
 
 <template>
   <div>
-    <div class="formily-form-container-title">
+    <div class="formily-form-container-title" :class="titleStyleClass">
       {{ props.title }}
     </div>
-    <div class="formily-form-container" :style="{ gap: `${props.gap ?? 8}px` }">
+    <div class="formily-form-container" :class="layoutStyleClass" :style="{ gap: `${props.gap ?? 8}px` }">
       <slot />
     </div>
   </div>
@@ -42,15 +52,33 @@ provide(formContainerKey, computed(() => ({
 .formily-form-container {
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
 }
 
 .formily-form-container-title {
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 8px;
+}
+
+.formily-form-container-layout-border {
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.formily-form-container-layout-border-none {
+  border: none;
+}
+
+.formily-form-container-title-center {
   text-align: center;
+}
+
+.formily-form-container-title-left {
+  text-align: left;
+}
+
+.formily-form-container-title-right {
+  text-align: right;
 }
 </style>

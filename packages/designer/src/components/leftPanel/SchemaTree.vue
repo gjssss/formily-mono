@@ -380,6 +380,9 @@ function handleMenuClick(type: string) {
     case 'copy':
       handleCopyNode()
       return
+    case 'copyTemplate':
+      handleCopyTemplate()
+      return
     case 'delete':
       handleDeleteNode()
       return
@@ -495,6 +498,23 @@ function handleCopyNode() {
   // 使用 setByPath 添加到 formSchema，触发响应式更新
   setByPath(store.formSchema.value.properties, newNodePath, newSchema)
 
+  closeContextMenu()
+}
+
+/**
+ * 复制模板（保存到内存剪贴板）
+ */
+function handleCopyTemplate() {
+  if (!contextMenuNode.value)
+    return
+
+  const nodePath = contextMenuNode.value.path
+  const schema = store.getNodeSchema(nodePath)
+  if (!schema)
+    return
+
+  const temp = JSON.stringify(schema)
+  navigator.clipboard.writeText(temp)
   closeContextMenu()
 }
 
