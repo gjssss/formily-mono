@@ -25,8 +25,6 @@ const props = defineProps<{
   size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
 
-console.log(props)
-
 interface Option {
   label: string
   value: string | number
