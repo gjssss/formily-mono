@@ -46,6 +46,7 @@
     "@antfu/ni": "^26.0.1",
     "@antfu/utils": "^9.2.1",
     "@formily-djd/component": "workspace:*",
+    "@popperjs/core": "^2.11.8",
     "@types/node": "^24.5.2",
     "@unocss/reset": "^66.5.2",
     "ansis": "^4.2.0",

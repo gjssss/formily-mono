@@ -59,7 +59,7 @@ const basicSetterSchema = computed(() => {
   if (!componentSetterSchema.value)
     return null
 
-  const basicSetter = componentSetterSchema.value.basicSetter
+  const basicSetter = (componentSetterSchema.value as any).basicSetter
   if (!basicSetter || Object.keys(basicSetter).length === 0)
     return null
 
@@ -74,7 +74,7 @@ const componentConfigSchema = computed(() => {
   if (!componentSetterSchema.value)
     return null
 
-  const componentSetter = componentSetterSchema.value.componentSetter
+  const componentSetter = (componentSetterSchema.value as any).componentSetter
   if (!componentSetter || !componentSetter.properties || Object.keys(componentSetter.properties).length === 0)
     return null
 
@@ -86,8 +86,8 @@ const fullSetterSchema = computed(() => {
   if (!componentSetterSchema.value)
     return null
 
-  const basic = componentSetterSchema.value.basicSetter || {}
-  const component = componentSetterSchema.value.componentSetter?.properties || {}
+  const basic = (componentSetterSchema.value as any).basicSetter || {}
+  const component = (componentSetterSchema.value as any).componentSetter?.properties || {}
 
   return {
     type: 'object',

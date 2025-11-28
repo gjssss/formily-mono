@@ -49,9 +49,9 @@ export function schemaWrapper(comp: FormilyComponent): Component {
 
           // 映射 setterSchema 中的属性（包含 basicSetter 和组件特定配置）
           // 遍历 basicSetter
-          if (setterSchema.basicSetter) {
-            for (const [key, value] of Object.entries(setterSchema.basicSetter)) {
-              const path = value['x-path']
+          if ((setterSchema as any).basicSetter) {
+            for (const [key, value] of Object.entries((setterSchema as any).basicSetter)) {
+              const path = (value as any)['x-path']
               if (path) {
                 const pathValue = getByPath(schema.value, path)
                 if (pathValue !== undefined) {
@@ -61,9 +61,9 @@ export function schemaWrapper(comp: FormilyComponent): Component {
             }
           }
           // 遍历 componentSetter
-          if (setterSchema.componentSetter?.properties) {
-            for (const [key, value] of Object.entries(setterSchema.componentSetter.properties)) {
-              const path = value['x-path']
+          if ((setterSchema as any).componentSetter?.properties) {
+            for (const [key, value] of Object.entries((setterSchema as any).componentSetter.properties)) {
+              const path = (value as any)['x-path']
               if (path) {
                 const pathValue = getByPath(schema.value, path)
                 if (pathValue !== undefined) {

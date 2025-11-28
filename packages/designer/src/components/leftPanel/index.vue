@@ -3,7 +3,7 @@ import type { FormilyComponent } from '@formily-djd/component'
 import { provide, ref } from 'vue'
 import { LeftPanelKey } from '../../shared'
 import MaterialPanel from '../materialPanel.vue'
-import SchemaTree from './SchemaTree.vue'
+import SchemaTree from './schemaTree/SchemaTree.vue'
 
 const props = withDefaults(defineProps<{
   components: Record<string, FormilyComponent>

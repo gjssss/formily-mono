@@ -13,6 +13,7 @@ export default antfu(
     rules: {
       'pnpm/json-enforce-catalog': 'off',
       'no-console': 'off',
+      'ts/explicit-function-return-type': 'off',
     },
   },
 )
