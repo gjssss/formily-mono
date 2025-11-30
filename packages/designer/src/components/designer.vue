@@ -80,7 +80,9 @@ defineExpose({
 
     <!-- 预览模式 -->
     <div v-else class="designer-preview">
-      <Render ref="renderRef" :schema="store.formSchema.value" :components="components" />
+      <Render
+        ref="renderRef" :schema="store.formSchema.value" :components="components"
+      />
     </div>
   </div>
 </template>

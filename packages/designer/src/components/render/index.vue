@@ -7,11 +7,14 @@ import { createSchemaField, FormProvider } from '@formily/vue'
 import { schemaWrapper } from '../schemaWrap'
 
 const props = defineProps<{
+  values?: Record<string, any>
   schema: ISchema
   components: Record<string, FormilyComponent>
 }>()
 
-const form = createForm()
+const form = createForm({
+  values: props.values ?? {},
+})
 
 const { SchemaField } = createSchemaField({
   components: Object.keys(props.components).reduce((acc, key) => {
