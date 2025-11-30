@@ -1,12 +1,12 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { ArrayField } from '@formily/core'
-import type { Component } from 'vue'
+import type { Component, ComputedRef } from 'vue'
 import { getByPath } from '@formily-djd/utils'
 import { isVoidField } from '@formily/core'
 import { observer } from '@formily/reactive-vue'
 import { RecursionField, useField, useFieldSchema } from '@formily/vue'
 import { computed, defineComponent, h, inject } from 'vue'
-import { ArrayFieldKey, ArrayItemKey } from '@/shared'
+import { ArrayFieldKey, ArrayItemKey, RenderDisabledKey } from '@/shared'
 import ArrayInner from './arrayInner.vue'
 import ArrayItemInner from './arrayItemInner.vue'
 import { useKey } from './composable'
@@ -31,6 +31,7 @@ export function schemaWrapper(comp: FormilyComponent): Component {
         const schema = useFieldSchema()
         const arrayField = inject<ArrayField | undefined>(ArrayFieldKey, undefined)
         const arrayItemIndex = inject<{ index?: number } | undefined>(ArrayItemKey, undefined)
+        const renderDisabled = inject<ComputedRef<boolean>>(RenderDisabledKey, computed(() => false))
 
         const { getKey } = useKey(schema.value)
 
@@ -115,6 +116,9 @@ export function schemaWrapper(comp: FormilyComponent): Component {
 
           if (arrayItemIndex?.index !== undefined) {
             _bindProps.arrayIndex = arrayItemIndex.index
+          }
+          if (renderDisabled.value) {
+            _bindProps.pattern = 'disabled'
           }
 
           return _bindProps

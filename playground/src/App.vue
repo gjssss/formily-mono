@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ISchema } from '@formily/vue'
-import { Designer } from '@formily-djd/designer'
+import { Designer, Render } from '@formily-djd/designer'
 import {
   components
 } from '@formily-djd/component'
@@ -30,7 +30,7 @@ const schema = ref<ISchema>(getEmptySchema())
 const schemaDialogVisible = ref(false)
 const schemaEditorText = ref('')
 const isEditingSchema = ref(false)
-
+const disabled = ref(false)
 // 收藏相关
 const favoritesDialogVisible = ref(false)
 interface Favorite {
@@ -234,6 +234,11 @@ const saveFavoritesToStorage = () => {
     console.error('保存收藏列表失败:', error)
   }
 }
+
+// 切换禁用状态
+const toggleDisabled = () => {
+  disabled.value = !disabled.value
+}
 </script>
 
 <template>
@@ -269,14 +274,25 @@ const saveFavoritesToStorage = () => {
         <ElButton v-if="mode === 'preview'" @click="getValues">
           获取表单值
         </ElButton>
+
+        <ElButton @click="toggleDisabled">
+          切换禁用状态
+        </ElButton>
       </div>
     </div>
 
     <!-- Designer 组件 -->
     <div class="designer-wrapper">
-      <Designer ref="designerRef" v-model="schema" gap="16px" :mode="mode" height="calc(100vh - 57px)" :components="{
+      <Designer ref="designerRef" v-if="mode === 'edit'" v-model="schema" gap="16px" height="calc(100vh - 57px)" :components="{
         ...components
       }" />
+      <div v-else style="padding: 16px; height: calc(100vh - 57px); overflow-y: auto; box-sizing: border-box;">
+        <Render
+          :schema="schema"
+          :components="components"
+          :disabled="disabled"
+        />
+      </div>
     </div>
 
     <!-- Schema 弹窗 -->

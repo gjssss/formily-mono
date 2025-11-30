@@ -4,17 +4,22 @@ import type { ISchema } from '@formily/vue'
 import type { Component } from 'vue'
 import { createForm } from '@formily/core'
 import { createSchemaField, FormProvider } from '@formily/vue'
+import { computed, provide } from 'vue'
+import { RenderDisabledKey } from '@/shared'
 import { schemaWrapper } from '../schemaWrap'
 
 const props = defineProps<{
   values?: Record<string, any>
   schema: ISchema
   components: Record<string, FormilyComponent>
+  disabled?: boolean
 }>()
 
 const form = createForm({
   values: props.values ?? {},
 })
+
+provide(RenderDisabledKey, computed(() => props.disabled ?? false))
 
 const { SchemaField } = createSchemaField({
   components: Object.keys(props.components).reduce((acc, key) => {
