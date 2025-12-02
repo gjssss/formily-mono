@@ -29,6 +29,20 @@ export default {
         'x-decorator': 'FormItem',
         'x-path': 'x-component-props.showWordLimit',
       },
+      perfix: {
+        'type': 'string',
+        'title': '前缀',
+        'x-component': 'Input',
+        'x-decorator': 'FormItem',
+        'x-path': 'x-component-props.perfix',
+      },
+      suffix: {
+        'type': 'string',
+        'title': '后缀',
+        'x-component': 'Input',
+        'x-decorator': 'FormItem',
+        'x-path': 'x-component-props.suffix',
+      },
     },
   },
 } as SetterConfig

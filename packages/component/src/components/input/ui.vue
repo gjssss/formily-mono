@@ -27,6 +27,8 @@ const props = defineProps<{
   clearable?: boolean
   prefixIcon?: string
   suffixIcon?: string
+  perfix?: string
+  suffix?: string
   size?: 'large' | 'default' | 'small' | 'inherit'
 }>()
 
@@ -62,7 +64,14 @@ const patternState = computed(() => {
       :size="inheritedProps.size"
       :model-value="props.value"
       @update:model-value="props.onChange"
-    />
+    >
+      <template v-if="props.perfix" #prepend>
+        {{ props.perfix }}
+      </template>
+      <template v-if="props.suffix" #append>
+        {{ props.suffix }}
+      </template>
+    </ElInput>
   </FormItemLayout>
 </template>
 
