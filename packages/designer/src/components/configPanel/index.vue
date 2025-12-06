@@ -7,7 +7,7 @@ import { createSchemaField, FormProvider } from '@formily/vue'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useDesignStore } from '@/core/useDesignStore'
 import { createConfigForm } from './configForm'
-import ReactionsEditor from './ReactionsEditor.vue'
+import ReactionsEditor from './reactionsEditor'
 
 const props = defineProps<{
   components: Record<string, FormilyComponent>
