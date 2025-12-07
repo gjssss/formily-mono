@@ -116,6 +116,30 @@ export function useNodeActions(options: UseNodeActionsOptions) {
     insertContext.value = null
   }
 
+  const handlePasteSchema = (schema: any) => {
+    if (!insertContext.value)
+      return
+
+    const { targetNode, position } = insertContext.value
+    const newRootKey = `f_${uid()}`
+    const clonedSchema = cloneSchemaWithNewIds(schema, 'paste', newRootKey)
+
+    const dragData = {
+      componentKey: schema['x-component'] || 'Unknown',
+      defaultSchema: clonedSchema,
+    }
+
+    if (position === 'root') {
+      insertNewComponentToRoot(dragData)
+    }
+    else if (targetNode) {
+      insertNewComponent(dragData, targetNode, position)
+    }
+
+    componentPickerVisible.value = false
+    insertContext.value = null
+  }
+
   const getNodePropertiesContext = (nodePath: string) => {
     const pathParts = nodePath.split('.')
     const fieldName = pathParts[pathParts.length - 1]
@@ -406,6 +430,7 @@ export function useNodeActions(options: UseNodeActionsOptions) {
     componentPickerVisible,
     handleMenuClick,
     handleSelectComponent,
+    handlePasteSchema,
     handleExternalDrop,
   }
 }

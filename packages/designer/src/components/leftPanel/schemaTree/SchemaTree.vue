@@ -43,6 +43,7 @@ const {
   componentPickerVisible,
   handleMenuClick,
   handleSelectComponent,
+  handlePasteSchema,
   handleExternalDrop,
 } = useNodeActions({
   store,
@@ -127,6 +128,7 @@ nextTick(() => {
       v-model:visible="componentPickerVisible"
       :grouped-components="groupedComponents"
       @select="handleSelectComponent"
+      @paste-schema="handlePasteSchema"
     />
   </div>
 </template>

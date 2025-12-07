@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
+import type { ISchema } from '@formily/json-schema'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
   visible: boolean
@@ -9,7 +11,39 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:visible', value: boolean): void
   (e: 'select', key: string, component: FormilyComponent): void
+  (e: 'pasteSchema', schema: ISchema): void
 }>()
+
+const clipboardSchema = ref<ISchema | null>(null)
+
+async function checkClipboard() {
+  clipboardSchema.value = null
+  try {
+    const text = await navigator.clipboard.readText()
+    if (!text)
+      return
+    const parsed = JSON.parse(text)
+    if (parsed && typeof parsed === 'object' && parsed['x-component']) {
+      clipboardSchema.value = parsed
+    }
+  }
+  catch {
+    // ignore
+  }
+}
+
+function handlePasteFromClipboard() {
+  if (clipboardSchema.value) {
+    emit('pasteSchema', clipboardSchema.value)
+    emit('update:visible', false)
+  }
+}
+
+watch(() => props.visible, (val) => {
+  if (val) {
+    checkClipboard()
+  }
+})
 </script>
 
 <template>
@@ -20,6 +54,11 @@ const emit = defineEmits<{
     :close-on-click-modal="false"
     @update:model-value="emit('update:visible', $event)"
   >
+    <div v-if="clipboardSchema" class="clipboard-paste-section">
+      <ElButton type="primary" @click="handlePasteFromClipboard">
+        从剪切板粘贴 ({{ clipboardSchema['x-component'] }})
+      </ElButton>
+    </div>
     <div class="component-picker-content">
       <div
         v-for="(items, category) in props.groupedComponents"
@@ -50,6 +89,14 @@ const emit = defineEmits<{
 </template>
 
 <style scoped>
+.clipboard-paste-section {
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--el-border-color-light);
+  background: var(--el-color-primary-light-9);
+  border-radius: 4px;
+}
+
 .component-picker-content {
   max-height: 70vh;
   overflow-y: auto;
