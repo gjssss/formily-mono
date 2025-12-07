@@ -488,23 +488,13 @@ export function useCreateDesignStore(draggable = false): DesignStore {
 
       // 计算父节点的 properties 路径
       let parentPropertiesPath: string
-      const isInArrayItems = pathParts.includes('items')
 
       if (pathParts.length === 1) {
         // 根级别兄弟节点
         parentPropertiesPath = ''
       }
-      else if (isInArrayItems) {
-        // 在 array 的 items.properties 中
-        const itemsIndex = pathParts.lastIndexOf('items')
-        const parentPath = pathParts.slice(0, itemsIndex).join('.')
-        parentPropertiesPath = `${parentPath}.items.properties`
-      }
-      else {
-        // 在普通 properties 中
-        const propertiesIndex = pathParts.lastIndexOf('properties')
-        parentPropertiesPath = pathParts.slice(0, propertiesIndex + 1).join('.')
-      }
+      const propertiesIndex = pathParts.lastIndexOf('properties')
+      parentPropertiesPath = pathParts.slice(0, propertiesIndex + 1).join('.')
 
       // 获取父节点的 properties 对象
       const parentProperties = parentPropertiesPath
@@ -535,7 +525,7 @@ export function useCreateDesignStore(draggable = false): DesignStore {
 
       const newProperties: any = {}
       newEntries.forEach(([key, val]) => {
-        newProperties[key] = val
+        newProperties[key as any] = val
       })
 
       // 使用 setByPath 更新父节点的 properties，触发响应式
