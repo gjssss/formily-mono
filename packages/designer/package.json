@@ -1,7 +1,7 @@
 {
   "name": "@formily-djd/designer",
   "type": "module",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "packageManager": "pnpm@10.17.1",
   "description": "djd formily designer",
   "author": "gaojinsong2010@gmail.com",
