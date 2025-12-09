@@ -1,6 +1,13 @@
+import type { SimpleCondition } from '../types'
 import { ref } from 'vue'
 import { buildSimpleReactions, parseSimpleConditions } from '../utils/simpleConditions'
-import type { SimpleCondition } from '../types'
+
+/**
+ * 检测字段路径是否为数组相对路径
+ */
+function isArrayRelativePath(field: string): boolean {
+  return field.includes('[]') || field.startsWith('.')
+}
 
 function createEmptyCondition(): SimpleCondition {
   return {
@@ -8,6 +15,7 @@ function createEmptyCondition(): SimpleCondition {
     operator: 'eq',
     value: '',
     connector: undefined,
+    isArrayMode: false,
   }
 }
 
@@ -44,7 +52,11 @@ export function useSimpleConditions() {
     const parsedSimpleConditions = parseSimpleConditions(reactions)
 
     if (parsedSimpleConditions) {
-      simpleConditions.value = parsedSimpleConditions
+      // 根据字段路径设置 isArrayMode
+      simpleConditions.value = parsedSimpleConditions.map(condition => ({
+        ...condition,
+        isArrayMode: isArrayRelativePath(condition.field),
+      }))
       return true
     }
 

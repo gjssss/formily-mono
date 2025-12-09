@@ -18,5 +18,8 @@
         "**/node_modules": true,
         "**/bower_components": true
     },
-    "hide-files.files": []
+    "hide-files.files": [],
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json": "untitled:Untitled-1"
+    }
 }

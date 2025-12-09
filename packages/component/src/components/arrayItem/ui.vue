@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { FormilyPattern } from '@/types'
+import { computed } from 'vue'
 import { useFormContainerInherit } from '../common/useFormContainerInherit'
 
 defineOptions({

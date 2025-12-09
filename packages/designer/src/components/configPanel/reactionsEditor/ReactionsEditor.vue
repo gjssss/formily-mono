@@ -25,7 +25,39 @@ const dialogVisible = computed({
 
 const activeTab = ref<'simple' | 'advanced'>('simple')
 
-const { fieldTree } = useFieldTree(toRef(props, 'schema'), toRef(props, 'currentFieldName'))
+// 普通模式字段树（过滤数组字段）
+const normalFieldTreeOptions = computed(() => ({
+  filterArrayFields: true,
+}))
+const { fieldTree: normalFieldTree, isInArray } = useFieldTree(
+  toRef(props, 'schema'),
+  toRef(props, 'currentFieldName'),
+  normalFieldTreeOptions,
+)
+
+// 数组模式字段树（显示当前数组内字段）
+const arrayFieldTreeOptions = computed(() => ({
+  isArrayMode: true,
+}))
+const { fieldTree: arrayFieldTree } = useFieldTree(
+  toRef(props, 'schema'),
+  toRef(props, 'currentFieldName'),
+  arrayFieldTreeOptions,
+)
+
+/**
+ * 根据条件的 isArrayMode 获取对应的字段树
+ */
+function getFieldTreeForCondition(isArrayMode: boolean | undefined) {
+  return isArrayMode ? arrayFieldTree.value : normalFieldTree.value
+}
+
+/**
+ * 切换数组模式时清空字段选择
+ */
+function handleArrayModeChange(condition: any) {
+  condition.field = ''
+}
 
 const {
   dependencies,
@@ -71,20 +103,6 @@ function handleSave() {
     ? buildSimpleReactions()
     : buildAdvancedReactions()
 
-  if (activeTab.value === 'simple' && !reactions) {
-    const vm = getCurrentInstance()
-    const message = vm?.appContext.config.globalProperties?.$message as any
-
-    if (typeof message === 'function') {
-      message.warning?.('请至少添加一条完整的简单条件')
-    }
-    else if (typeof window !== 'undefined') {
-      message.warning?.('请至少添加一条完整的简单条件')
-    }
-
-    return
-  }
-
   emit('save', reactions || {})
   dialogVisible.value = false
 }
@@ -116,17 +134,34 @@ function handleCancel() {
                 <div class="simple-condition-item">
                   <div class="simple-condition-header">
                     <span class="simple-condition-index">条件 {{ index + 1 }}</span>
-                    <ElButton v-if="simpleConditions.length > 1" size="small" type="danger" text @click="removeSimpleCondition(index)">
+                    <ElButton size="small" type="danger" text @click="removeSimpleCondition(index)">
                       删除
                     </ElButton>
                   </div>
 
                   <ElForm label-width="80px">
                     <ElFormItem label="字段">
-                      <ElTreeSelect
-                        v-model="condition.field" :data="fieldTree" placeholder="选择依赖的字段" clearable check-strictly
-                        :render-after-expand="false"
-                      />
+                      <div class="field-select-row">
+                        <ElTreeSelect
+                          v-model="condition.field"
+                          :data="getFieldTreeForCondition(condition.isArrayMode)"
+                          placeholder="选择依赖的字段"
+                          clearable
+                          check-strictly
+                          :render-after-expand="false"
+                          class="field-select"
+                        />
+                        <ElTooltip v-if="isInArray" content="开启后可选择当前数组内的字段（相对路径）" placement="top">
+                          <div class="array-mode-switch">
+                            <span class="array-mode-label">数组内</span>
+                            <ElSwitch
+                              v-model="condition.isArrayMode"
+                              size="small"
+                              @change="handleArrayModeChange(condition)"
+                            />
+                          </div>
+                        </ElTooltip>
+                      </div>
                     </ElFormItem>
 
                     <ElFormItem label="操作">
@@ -181,8 +216,13 @@ function handleCancel() {
                 <ElForm label-width="80px">
                   <ElFormItem label="字段">
                     <ElTreeSelect
-                      v-model="dep.source" :data="fieldTree" placeholder="选择依赖的字段" clearable check-strictly
-                      :render-after-expand="false" @change="handleFieldChange(dep)"
+                      v-model="dep.source"
+                      :data="normalFieldTree"
+                      placeholder="选择依赖的字段"
+                      clearable
+                      check-strictly
+                      :render-after-expand="false"
+                      @change="handleFieldChange(dep)"
                     />
                   </ElFormItem>
 
@@ -352,5 +392,29 @@ function handleCancel() {
 .connector-label {
   color: #606266;
   font-size: 13px;
+}
+
+.field-select-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.field-select {
+  flex: 1;
+}
+
+.array-mode-switch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.array-mode-label {
+  font-size: 12px;
+  color: #606266;
+  white-space: nowrap;
 }
 </style>

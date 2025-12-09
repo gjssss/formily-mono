@@ -1,5 +1,5 @@
-import type { ISchema } from '@formily/json-schema'
 import type { SetterConfig } from '@formily-djd/component'
+import type { ISchema } from '@formily/json-schema'
 import { getByPath } from '@formily-djd/utils'
 
 /**

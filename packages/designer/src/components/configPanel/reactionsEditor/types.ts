@@ -18,4 +18,6 @@ export interface SimpleCondition {
   operator: SimpleOperator
   value: string
   connector?: SimpleConnector
+  /** 是否为数组模式（配置当前数组内的相对路径） */
+  isArrayMode?: boolean
 }

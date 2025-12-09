@@ -1,5 +1,5 @@
 import type { ComputedRef, Ref } from 'vue'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 export interface NodeRect {
   x: number

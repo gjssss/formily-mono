@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import type { FormilyPattern } from '@/types'
 import { computed } from 'vue'
 import FormItemLayout from '../common/FormItemLayout.vue'
 import { useFormContainerInherit } from '../common/useFormContainerInherit'
-import type { FormilyPattern } from '@/types'
 
 defineOptions({
   name: 'InputNumberComponent',

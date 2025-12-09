@@ -1,6 +1,6 @@
-import { uid } from '@formily/shared'
-
 import type { TreeNode } from '../types'
+
+import { uid } from '@formily/shared'
 
 // 深拷贝 schema，避免共用引用
 export function cloneSchema<T>(schema: T): T {

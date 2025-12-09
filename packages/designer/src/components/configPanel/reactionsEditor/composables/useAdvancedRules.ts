@@ -1,5 +1,5 @@
-import { ref } from 'vue'
 import type { Dependency, StateRule } from '../types'
+import { ref } from 'vue'
 
 function createDefaultDependency(): Dependency {
   return {
