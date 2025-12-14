@@ -12,7 +12,7 @@ export default {
     description: '表单容器，可以为内部组件提供统一配置',
   },
   defaultSchema: {
-    'type': 'void',
+    'type': 'object',
     'title': '表单容器',
     'x-component': 'FormContainer',
     'x-pattern': 'editable',

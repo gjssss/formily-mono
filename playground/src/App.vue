@@ -16,6 +16,7 @@ const mode = ref<'edit' | 'preview'>('edit')
 
 // Designer 实例引用
 const designerRef = ref<any>(null)
+const renderRef = ref<any>(null)
 
 // 默认空 Schema
 const getEmptySchema = (): ISchema => ({
@@ -82,7 +83,7 @@ const toggleMode = () => {
 
 // 获取表单值
 const getValues = () => {
-  const values = designerRef.value?.getFormValues()
+  const values = renderRef.value?.form?.values
   console.log('表单值:', values)
   ElMessage({
     message: '表单值已输出到控制台',
@@ -288,6 +289,7 @@ const toggleDisabled = () => {
       }" />
       <div v-else style="padding: 16px; height: calc(100vh - 57px); overflow-y: auto; box-sizing: border-box;">
         <Render
+        ref="renderRef"
           :schema="schema"
           :components="components"
           :disabled="disabled"
