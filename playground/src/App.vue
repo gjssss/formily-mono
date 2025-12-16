@@ -31,6 +31,8 @@ const schema = ref<ISchema>(getEmptySchema())
 const schemaDialogVisible = ref(false)
 const schemaEditorText = ref('')
 const isEditingSchema = ref(false)
+const valuesDialogVisible = ref(false)
+const formValuesEditorText = ref('')
 const disabled = ref(false)
 // 收藏相关
 const favoritesDialogVisible = ref(false)
@@ -81,15 +83,57 @@ const toggleMode = () => {
   mode.value = mode.value === 'edit' ? 'preview' : 'edit'
 }
 
-// 获取表单值
-const getValues = () => {
-  const values = renderRef.value?.form?.values
-  console.log('表单值:', values)
-  ElMessage({
-    message: '表单值已输出到控制台',
-    type: 'success',
-  })
-  console.log('表单值:', JSON.stringify(values, null, 2))
+watch(mode, (nextMode) => {
+  if (nextMode !== 'preview') {
+    valuesDialogVisible.value = false
+  }
+})
+
+// 查看/编辑表单值
+const openValuesDialog = () => {
+  const form = renderRef.value?.form
+  if (!form) {
+    ElMessage({
+      message: '请先切换到预览模式并等待表单加载完成',
+      type: 'warning',
+    })
+    return
+  }
+
+  const values = form.values ?? {}
+  formValuesEditorText.value = JSON.stringify(values, null, 2)
+  valuesDialogVisible.value = true
+}
+
+const applyFormValues = async () => {
+  const form = renderRef.value?.form
+  if (!form) {
+    ElMessage({
+      message: '表单未初始化，请先渲染表单',
+      type: 'warning',
+    })
+    return
+  }
+
+  try {
+    const parsedValues = formValuesEditorText.value.trim()
+      ? JSON.parse(formValuesEditorText.value)
+      : {}
+    form.setInitialValues(parsedValues, 'overwrite')
+    form.setValues(parsedValues, 'overwrite')
+    await form.reset('*')
+    ElMessage({
+      message: '表单值已更新',
+      type: 'success',
+    })
+    valuesDialogVisible.value = false
+  }
+  catch (error) {
+    ElMessage({
+      message: '表单值格式错误，请检查 JSON',
+      type: 'error',
+    })
+  }
 }
 
 // 打开 Schema 弹窗（查看模式）
@@ -271,9 +315,9 @@ const toggleDisabled = () => {
           {{ mode === 'edit' ? '编辑模式' : '预览模式' }}
         </ElButton>
 
-        <!-- 获取表单值 -->
-        <ElButton v-if="mode === 'preview'" @click="getValues">
-          获取表单值
+        <!-- 查看表单值 -->
+        <ElButton v-if="mode === 'preview'" @click="openValuesDialog">
+          查看表单值
         </ElButton>
 
         <ElButton @click="toggleDisabled">
@@ -287,7 +331,7 @@ const toggleDisabled = () => {
       <Designer ref="designerRef" v-if="mode === 'edit'" v-model="schema" gap="16px" height="calc(100vh - 57px)" :components="{
         ...components
       }" />
-      <div v-else style="padding: 16px; height: calc(100vh - 57px); overflow-y: auto; box-sizing: border-box;">
+      <div v-if="mode === 'preview'" style="padding: 16px; height: calc(100vh - 57px); overflow-y: auto; box-sizing: border-box;">
         <Render
         ref="renderRef"
           :schema="schema"
@@ -296,6 +340,23 @@ const toggleDisabled = () => {
         />
       </div>
     </div>
+
+    <!-- 表单值弹窗 -->
+    <ElDialog v-model="valuesDialogVisible" title="表单值" width="50%" :close-on-click-modal="false">
+      <ElInput
+        v-model="formValuesEditorText"
+        type="textarea"
+        :rows="18"
+        placeholder="表单值 JSON"
+        style="font-family: 'Courier New', monospace; font-size: 13px;"
+      />
+      <template #footer>
+        <div class="dialog-footer">
+          <ElButton @click="valuesDialogVisible = false">取消</ElButton>
+          <ElButton type="primary" @click="applyFormValues">应用</ElButton>
+        </div>
+      </template>
+    </ElDialog>
 
     <!-- Schema 弹窗 -->
     <ElDialog v-model="schemaDialogVisible" title="Schema 编辑器" width="60%" :close-on-click-modal="false">
