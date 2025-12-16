@@ -29,12 +29,12 @@ export default {
         'x-decorator': 'FormItem',
         'x-path': 'x-component-props.showWordLimit',
       },
-      perfix: {
+      prefix: {
         'type': 'string',
         'title': '前缀',
         'x-component': 'Input',
         'x-decorator': 'FormItem',
-        'x-path': 'x-component-props.perfix',
+        'x-path': 'x-component-props.prefix',
       },
       suffix: {
         'type': 'string',
