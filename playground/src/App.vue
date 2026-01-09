@@ -121,7 +121,6 @@ const applyFormValues = async () => {
       : {}
     form.setInitialValues(parsedValues, 'overwrite')
     form.setValues(parsedValues, 'overwrite')
-    await form.reset('*')
     ElMessage({
       message: '表单值已更新',
       type: 'success',
@@ -129,6 +128,7 @@ const applyFormValues = async () => {
     valuesDialogVisible.value = false
   }
   catch (error) {
+    console.error('表单值格式错误:', error)
     ElMessage({
       message: '表单值格式错误，请检查 JSON',
       type: 'error',
