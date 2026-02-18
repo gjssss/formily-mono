@@ -1,23 +1,34 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+// #ifdef H5
+import { Render } from '@formily-djd/designer'
+// #endif
+import InputComponent from '@/components/input'
 
-definePage({
-  style: {
-    navigationBarTitleText: 'Playground 首页',
+const schema = {
+  type: 'object',
+  properties: {
+    f_wgkybduuxr7: {
+      'type': 'string',
+      'title': '输入框',
+      'x-component': 'Input',
+      'x-pattern': 'inherit',
+      'x-component-props': {
+        placeholder: '请输入',
+      },
+    },
   },
-})
-
-const count = ref(0)
+}
 </script>
 
 <template>
   <view class="page">
     <view class="title">
-      Wot Design Uni Playground
+      Formily Playground
     </view>
-    <wd-button type="primary" @click="count += 1">
-      点击次数：{{ count }}
-    </wd-button>
+    <Render
+      :schema="schema"
+      :components="{ Input: InputComponent }"
+    />
   </view>
 </template>
 

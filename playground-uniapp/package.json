@@ -34,6 +34,7 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-4080520251106001",
     "@dcloudio/uni-mp-xhs": "3.0.0-4080520251106001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-4080520251106001",
+    "@formily-djd/designer": "workspace:*",
     "vue": "~3.4.38",
     "wot-design-uni": "^1.14.0"
   },
