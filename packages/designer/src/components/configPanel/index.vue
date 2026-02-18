@@ -2,9 +2,10 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { Form as FormilyForm } from '@formily/core'
 import type { ISchema } from '@formily/vue'
-import { ArrayItems, Checkbox, FormItem, Input, InputNumber, Radio, Select, Space, Switch } from '@formily/element-plus'
+import type { Component } from 'vue'
 import { createSchemaField, FormProvider } from '@formily/vue'
-import { computed, ref, shallowRef, watch } from 'vue'
+import { computed, inject, ref, shallowRef, watch } from 'vue'
+import { DesignerAdapterKey } from '@/core/adapter'
 import { useDesignStore } from '@/core/useDesignStore'
 import { createConfigForm } from './configForm'
 import ReactionsEditor from './reactionsEditor'
@@ -13,22 +14,35 @@ const props = defineProps<{
   components: Record<string, FormilyComponent>
 }>()
 
+const requiredSetterKeys = [
+  'FormItem',
+  'Input',
+  'InputNumber',
+  'Checkbox',
+  'Radio',
+  'Switch',
+  'Select',
+  'Space',
+  'ArrayItems',
+] as const
+
 // 获取设计器状态
 const store = useDesignStore()
+const adapter = inject(DesignerAdapterKey, null)
+const hasSetterAdapter = computed(() =>
+  requiredSetterKeys.every(key => Boolean(adapter?.setterComponents?.[key])),
+)
+const schemaFieldComponent = computed<Component | null>(() => {
+  if (!hasSetterAdapter.value)
+    return null
+  const setterComponents = adapter?.setterComponents
+  if (!setterComponents)
+    return null
 
-// 创建 SchemaField
-const { SchemaField } = createSchemaField({
-  components: {
-    FormItem,
-    Input,
-    InputNumber,
-    Checkbox,
-    Radio,
-    Switch,
-    Select,
-    Space,
-    ArrayItems,
-  },
+  const { SchemaField } = createSchemaField({
+    components: setterComponents as Record<string, Component>,
+  })
+  return SchemaField
 })
 
 // 配置表单实例
@@ -113,7 +127,7 @@ watch(
 )
 
 // 折叠面板激活项（默认展开）
-const activeCollapse = shallowRef(['base', 'operate', 'component'])
+const activeCollapse = shallowRef(['base', 'component'])
 
 // 用于强制重新渲染 SchemaField
 const formKey = computed(() => store.selectedFieldName.value || 'empty')
@@ -157,25 +171,39 @@ function handleSaveReactions(reactions: any) {
         {{ componentName }} 配置
       </h3>
 
-      <FormProvider v-if="configForm" :key="formKey" :form="configForm">
+      <div class="config-operate">
+        <ElButton type="primary" @click="openReactionsEditor">
+          条件渲染
+        </ElButton>
+      </div>
+
+      <div v-if="!hasSetterAdapter" class="config-adapter-guide">
+        <ElAlert
+          title="未配置 Setter 适配器"
+          type="warning"
+          :closable="false"
+          show-icon
+          description="当前 Designer 未注入 adapter，无法编辑基础配置和组件配置。"
+        />
+        <p class="guide-title">
+          接入示例：
+        </p>
+        <pre class="guide-code"><code>import { elementPlusAdapter } from '@formily-djd/designer/element-plus'
+
+&lt;Designer :adapter="elementPlusAdapter" ... /&gt;</code></pre>
+      </div>
+
+      <FormProvider v-else-if="configForm && schemaFieldComponent" :key="formKey" :form="configForm">
         <!-- 折叠面板 -->
         <ElCollapse v-model="activeCollapse" class="config-section">
           <!-- 基础配置区域 -->
           <ElCollapseItem v-if="basicSetterSchema" name="base" title="基本配置">
-            <SchemaField :schema="basicSetterSchema" />
-          </ElCollapseItem>
-
-          <ElCollapseItem name="operate" title="操作配置">
-            <div>
-              <ElButton type="primary" @click="openReactionsEditor">
-                条件渲染
-              </ElButton>
-            </div>
+            <component :is="schemaFieldComponent" :schema="basicSetterSchema" />
           </ElCollapseItem>
 
           <!-- 组件配置区域 -->
           <ElCollapseItem v-if="componentConfigSchema" name="component" title="组件配置">
-            <SchemaField :schema="componentConfigSchema" />
+            <component :is="schemaFieldComponent" :schema="componentConfigSchema" />
           </ElCollapseItem>
         </ElCollapse>
       </FormProvider>
@@ -220,6 +248,35 @@ function handleSaveReactions(reactions: any) {
   border-bottom: 1px solid #ebeef5;
   background-color: #fff;
   flex-shrink: 0;
+}
+
+.config-operate {
+  padding: 12px 16px;
+  border-bottom: 1px solid #ebeef5;
+  background-color: #fff;
+}
+
+.config-adapter-guide {
+  padding: 12px 16px;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.guide-title {
+  margin: 12px 0 8px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.guide-code {
+  margin: 0;
+  padding: 10px 12px;
+  background-color: #f5f7fa;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #606266;
+  white-space: pre-wrap;
 }
 
 .config-section {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ISchema } from '@formily/vue'
 import { Designer, Render } from '@formily-djd/designer'
+import { elementPlusAdapter } from '@formily-djd/designer/element-plus'
 import {
   components
 } from '@formily-djd/component'
@@ -330,7 +331,7 @@ const toggleDisabled = () => {
     <div class="designer-wrapper">
       <Designer ref="designerRef" v-if="mode === 'edit'" v-model="schema" gap="16px" height="calc(100vh - 57px)" :components="{
         ...components
-      }" />
+      }" :adapter="elementPlusAdapter" />
       <div v-if="mode === 'preview'" style="padding: 16px; height: calc(100vh - 57px); overflow-y: auto; box-sizing: border-box;">
         <Render
         ref="renderRef"

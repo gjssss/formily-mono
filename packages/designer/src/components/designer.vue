@@ -2,7 +2,9 @@
 import type { FormilyComponent } from '@formily-djd/component'
 import type { Form } from '@formily/core'
 import type { ISchema } from '@formily/vue'
+import type { DesignerAdapter } from '@/core/adapter'
 import { computed, provide, ref, watch } from 'vue'
+import { DesignerAdapterKey } from '@/core/adapter'
 import { useCreateDesignStore } from '../core/useCreateDesignStore'
 import Canvas from './canvas.vue'
 import ConfigPanel from './configPanel/index.vue'
@@ -15,6 +17,7 @@ const props = withDefaults(defineProps<{
   modelValue?: ISchema
   draggable?: boolean
   height?: string
+  adapter?: DesignerAdapter
 }>(), {
   mode: 'edit',
   draggable: false,
@@ -30,6 +33,7 @@ const store = useCreateDesignStore(props.draggable)
 
 // Provide components 给子组件使用（用于组件选择弹窗）
 provide('designerComponents', props.components)
+provide(DesignerAdapterKey, props.adapter ?? null)
 
 // 表单实例引用
 const renderRef = ref<{ form: Form } | null>(null)

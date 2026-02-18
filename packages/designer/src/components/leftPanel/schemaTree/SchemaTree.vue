@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormilyComponent } from '@formily-djd/component'
-import { Search } from '@element-plus/icons-vue'
-import { inject, nextTick } from 'vue'
+import { computed, inject, nextTick } from 'vue'
+import { DesignerAdapterKey } from '@/core/adapter'
 
 import { useDesignStore } from '../../../core/useDesignStore'
 import ComponentPicker from './components/ComponentPicker.vue'
@@ -9,9 +9,12 @@ import ContextMenu from './components/ContextMenu.vue'
 import { useContextMenu } from './composables/useContextMenu'
 import { useNodeActions } from './composables/useNodeActions'
 import { useSchemaTree } from './composables/useSchemaTree'
+import { fallbackDesignerIcons } from './icons'
 
 const store = useDesignStore()
 const components = inject<Record<string, FormilyComponent>>('designerComponents', {})
+const adapter = inject(DesignerAdapterKey, null)
+const searchIcon = computed(() => adapter?.icons?.Search ?? fallbackDesignerIcons.Search)
 
 const {
   treeRef,
@@ -70,7 +73,7 @@ nextTick(() => {
         @input="handleFilterChange"
       >
         <template #prefix>
-          <ElIcon><Search /></ElIcon>
+          <ElIcon><component :is="searchIcon" /></ElIcon>
         </template>
       </ElInput>
       <div class="toolbar-buttons">

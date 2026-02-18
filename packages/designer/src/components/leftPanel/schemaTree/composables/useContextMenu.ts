@@ -1,20 +1,25 @@
 import type { VirtualElement } from '@popperjs/core'
 import type { TreeNode } from '../types'
-import { Bottom, CirclePlus, CopyDocument, Delete, FolderAdd, Top } from '@element-plus/icons-vue'
-
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, inject, onBeforeUnmount, ref } from 'vue'
+import { DesignerAdapterKey } from '@/core/adapter'
+import { fallbackDesignerIcons } from '../icons'
 
 export function useContextMenu() {
+  const adapter = inject(DesignerAdapterKey, null)
   const contextMenuVisible = ref(false)
   const contextMenuNode = ref<TreeNode | null>(null)
   const contextMenuMode = ref<'node' | 'empty'>('node')
   const contextMenuVirtualRef = ref<VirtualElement | null>(null)
   const outsideClickHandler = ref<((event: MouseEvent) => void) | null>(null)
+  const icons = computed(() => ({
+    ...fallbackDesignerIcons,
+    ...adapter?.icons,
+  }))
 
   const menuItems = computed(() => {
     if (contextMenuMode.value === 'empty') {
       return [
-        { type: 'insertRoot', label: '插入组件', icon: CirclePlus },
+        { type: 'insertRoot', label: '插入组件', icon: icons.value.CirclePlus },
       ]
     }
 
@@ -23,19 +28,19 @@ export function useContextMenu() {
       return []
 
     const items: any[] = [
-      { type: 'copy', label: '复制', icon: CopyDocument },
-      { type: 'copyTemplate', label: '复制模板', icon: CopyDocument },
-      { type: 'delete', label: '删除', icon: Delete },
+      { type: 'copy', label: '复制', icon: icons.value.CopyDocument },
+      { type: 'copyTemplate', label: '复制模板', icon: icons.value.CopyDocument },
+      { type: 'delete', label: '删除', icon: icons.value.Delete },
       'divider',
-      { type: 'moveUp', label: '上移', icon: Top },
-      { type: 'moveDown', label: '下移', icon: Bottom },
+      { type: 'moveUp', label: '上移', icon: icons.value.Top },
+      { type: 'moveDown', label: '下移', icon: icons.value.Bottom },
       'divider',
-      { type: 'insertBefore', label: '上方插入', icon: CirclePlus },
-      { type: 'insertAfter', label: '下方插入', icon: CirclePlus },
+      { type: 'insertBefore', label: '上方插入', icon: icons.value.CirclePlus },
+      { type: 'insertAfter', label: '下方插入', icon: icons.value.CirclePlus },
     ]
 
     if (node.isContainer)
-      items.push({ type: 'insertInner', label: '插入内部', icon: FolderAdd })
+      items.push({ type: 'insertInner', label: '插入内部', icon: icons.value.FolderAdd })
 
     return items
   })

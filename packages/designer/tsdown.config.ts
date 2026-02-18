@@ -12,6 +12,11 @@ export default defineConfig({
   },
   entry: [
     'src/index.ts',
+    'src/element-plus.ts',
+  ],
+  external: [
+    '@element-plus/icons-vue',
+    '@formily/element-plus',
   ],
   alias: {
     '@': fileURLToPath(new URL('./src', import.meta.url)),

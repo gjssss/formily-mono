@@ -10,6 +10,10 @@
   "sideEffects": false,
   "exports": {
     ".": "./dist/index.mjs",
+    "./element-plus": {
+      "types": "./dist/element-plus.d.mts",
+      "default": "./dist/element-plus.mjs"
+    },
     "./package.json": "./package.json",
     "./css": "./dist/index.css"
   },
@@ -29,10 +33,6 @@
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "prepare": "simple-git-hooks"
-  },
-  "peerDependencies": {
-    "@element-plus/icons-vue": "^2.3.2",
-    "@formily/element-plus": "^1.1.0"
   },
   "dependencies": {
     "@formily-djd/utils": "workspace:*",
