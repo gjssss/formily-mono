@@ -14,8 +14,10 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "@formily-djd/component": "workspace:*",
     "@formily-djd/designer": "workspace:*",
+    "@formily/element-plus": "^1.1.0",
     "@formily/vue": "^2.3.7",
     "element-plus": "^2.11.7",
     "vue": "^3.5.22"

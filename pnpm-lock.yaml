@@ -111,18 +111,12 @@ importers:
 
   packages/designer:
     dependencies:
-      '@element-plus/icons-vue':
-        specifier: ^2.3.2
-        version: 2.3.2(vue@3.5.22(typescript@5.9.3))
       '@formily-djd/utils':
         specifier: workspace:*
         version: link:../utils
       '@formily/core':
         specifier: ^2.3.7
         version: 2.3.7
-      '@formily/element-plus':
-        specifier: ^1.1.0
-        version: 1.1.0(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
       '@formily/json-schema':
         specifier: ^2.3.7
         version: 2.3.7(typescript@5.9.3)
@@ -148,9 +142,15 @@ importers:
       '@antfu/utils':
         specifier: ^9.2.1
         version: 9.3.0
+      '@element-plus/icons-vue':
+        specifier: ^2.3.2
+        version: 2.3.2(vue@3.5.22(typescript@5.9.3))
       '@formily-djd/component':
         specifier: workspace:*
         version: link:../component
+      '@formily/element-plus':
+        specifier: ^1.1.0
+        version: 1.1.0(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
       '@popperjs/core':
         specifier: ^2.11.8
         version: 2.11.8
@@ -250,12 +250,18 @@ importers:
 
   playground:
     dependencies:
+      '@element-plus/icons-vue':
+        specifier: ^2.3.2
+        version: 2.3.2(vue@3.5.22(typescript@5.9.3))
       '@formily-djd/component':
         specifier: workspace:*
         version: link:../packages/component
       '@formily-djd/designer':
         specifier: workspace:*
         version: link:../packages/designer
+      '@formily/element-plus':
+        specifier: ^1.1.0
+        version: 1.1.0(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
       '@formily/vue':
         specifier: ^2.3.7
         version: 2.3.7(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
