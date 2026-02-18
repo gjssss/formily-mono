@@ -1,6 +1,6 @@
 {
   "name": "@formily-djd/root",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "scripts": {
     "build": "pnpm build:utils && pnpm build:component && pnpm build:designer && pnpm build:playground",
     "build:utils": "pnpm --filter @formily-djd/utils build",
